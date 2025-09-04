@@ -1,1 +1,1 @@
-# Kototeka
+# Kototeka - test task for learning.

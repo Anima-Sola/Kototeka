@@ -34,6 +34,6 @@ const darkTheme = {
   error: "#F44336",
 };
 
-const Colors = darkTheme;
+const Colors = lightTheme;
 
 export default Colors;

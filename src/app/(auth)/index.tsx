@@ -28,18 +28,18 @@ const Login = () => {
       <View style={styles.formContainer}>
         <FormProvider {...methods}>
           <View style={styles.emailInputContainer}>
-          <EmailInput name="email" />
+            <EmailInput name="email" />
           </View>
           <View style={styles.passwordInputContainer}>
-          <PasswordInput name="password" />
+            <PasswordInput name="password" />
           </View>
         </FormProvider>
       </View>
       <View style={styles.buttonContainer}>
         <Button
           mode={"contained"}
-          buttonColor={Colors.primary}
-          textColor={Colors.onPrimary}
+          style={methods.formState.isValid ? styles.button : styles.disabledButton}
+          labelStyle={styles.labelButton}
           disabled={!methods.formState.isValid}
           onPress={methods.handleSubmit(onSubmit)}
         >
@@ -53,7 +53,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.main,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 16,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 20,
     fontSize: 30,
-    color: Colors.onBackground,
+    color: Colors.mainText,
   },
   formContainer: {
     flex: 1,
@@ -73,14 +73,27 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   text: {
-    color: Colors.onBackground,
+    color: Colors.mainText,
   },
   emailInputContainer: {
     height: 74,
   },
   passwordInputContainer: {
     height: 74,
-  }
+  },
+  button: {
+    backgroundColor: Colors.accent,
+    padding: 5,
+  },
+  disabledButton: {
+    backgroundColor: Colors.disabled,
+    padding: 5,
+  },
+  labelButton: {
+    color: Colors.secondary,
+    fontSize: 18,
+    fontWeight: "600",
+  },
 });
 
 export default Login;

@@ -14,7 +14,7 @@ export default function RootLayout() {
       {Platform.OS === "ios" ? (
         <View style={{ ...styles.statusBarColorIos, height: statusBarHeight }} />
       ) : null}
-      <ExpoStatusBar style="auto" backgroundColor={Colors.secondary} />
+      <ExpoStatusBar style="auto" backgroundColor={Colors.statusBar} />
       <Stack screenOptions={{ headerShown: false }}>
         {isLoggedIn ? <Stack.Screen name="(main)" /> : <Stack.Screen name="(auth)" />}
       </Stack>
@@ -27,6 +27,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statusBarColorIos: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.statusBar,
   },
 });

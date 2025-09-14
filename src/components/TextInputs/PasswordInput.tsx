@@ -39,15 +39,15 @@ export default function PasswordInput({
             style={styles.eyeIcon}
           >
             {isSecuredText ? (
-              <EyeClosed size={24} color={Colors.onSurface} />
+              <EyeClosed size={24} color={Colors.accent} />
             ) : (
-              <EyeOpened size={24} color={Colors.onSurface} />
+              <EyeOpened size={24} color={Colors.accent} />
             )}
           </TouchableOpacity>
           <TextInput
             style={[styles.input, error ? styles.inputError : null]}
             placeholder={placeholder}
-            placeholderTextColor={Colors.onSurface}
+            placeholderTextColor={Colors.placeholder}
             secureTextEntry={isSecuredText}
             value={value}
             onChangeText={onChange}
@@ -67,13 +67,13 @@ const styles = StyleSheet.create({
   input: {
     height: 44,
     borderWidth: 1,
-    borderColor: Colors.outline,
+    borderColor: Colors.border,
     borderRadius: 8,
     paddingLeft: 12,
     paddingRight: 35,
     fontSize: 16,
-    backgroundColor: Colors.surface,
-    color: Colors.onSurface,
+    backgroundColor: Colors.secondary,
+    color: Colors.mainText,
   },
   inputError: {
     borderColor: Colors.error,

@@ -27,7 +27,7 @@ export default function EmailInput({
           <TextInput
             style={[styles.input, error ? styles.inputError : null]}
             placeholder={placeholder}
-            placeholderTextColor={Colors.onSurface}
+            placeholderTextColor={Colors.placeholder}
             value={value}
             onChangeText={onChange}
             keyboardType="email-address"
@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
   input: {
     height: 44,
     borderWidth: 1,
-    borderColor: Colors.outline,
+    borderColor: Colors.border,
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    backgroundColor: Colors.surface,
-    color: Colors.onSurface,
+    backgroundColor: Colors.secondary,
+    color: Colors.mainText,
   },
   inputError: {
     borderColor: Colors.error,

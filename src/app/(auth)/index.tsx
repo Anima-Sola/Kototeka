@@ -61,8 +61,10 @@ const styles = StyleSheet.create({
   textHeader: {
     paddingTop: 40,
     paddingBottom: 20,
-    fontSize: 30,
+    fontSize: 50,
     color: Colors.mainText,
+    fontFamily: 'AmaticBold',
+    fontWeight: 500,
   },
   formContainer: {
     flex: 1,
@@ -92,7 +94,7 @@ const styles = StyleSheet.create({
   labelButton: {
     color: Colors.secondary,
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: 'ShantellBold',
   },
 });
 

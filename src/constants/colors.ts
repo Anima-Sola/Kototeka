@@ -26,6 +26,6 @@ export const darkTheme = {
   disabled: '#B1AFB1',
 };
 
-const Colors = lightTheme;
+const Colors = darkTheme;
 
 export default Colors;

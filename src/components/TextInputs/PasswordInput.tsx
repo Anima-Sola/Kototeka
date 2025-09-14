@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 35,
     fontSize: 16,
+    fontFamily: 'ShantellLightItalic',
     backgroundColor: Colors.secondary,
     color: Colors.mainText,
   },
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: Colors.error,
     fontSize: 13,
+    fontFamily: 'ShantellLightItalic',
   },
   eyeIcon: {
     position: "absolute",

@@ -1,54 +1,46 @@
 import { useEffect } from "react";
-import { View, StyleSheet, Platform, StatusBar } from "react-native";
-import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import Colors from "../constants/colors";
+import { useAuthStore } from "../store/store";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { isSignedIn, setIsSignedIn } = useAuthStore();
   const [fontsLoaded] = useFonts({
-    AmaticBold: require("../../assets/fonts/AmaticSC-Bold.ttf"),
-    AmaticRegular: require("../../assets/fonts/AmaticSC-Regular.ttf"),
-    ShantellRegular: require("../../assets/fonts/ShantellSans-Regular.ttf"),
-    ShantellBold: require("../../assets/fonts/ShantellSans-Bold.ttf"),
-    ShantellLightItalic: require("../../assets/fonts/ShantellSans-LightItalic.ttf"),
+    AmaticBold: require("../../assets/Fonts/AmaticSC-Bold.ttf"),
+    AmaticRegular: require("../../assets/Fonts/AmaticSC-Regular.ttf"),
+    ShantellRegular: require("../../assets/Fonts/ShantellSans-Regular.ttf"),
+    ShantellBold: require("../../assets/Fonts/ShantellSans-Bold.ttf"),
+    ShantellLightItalic: require("../../assets/Fonts/ShantellSans-LightItalic.ttf"),
   });
-  const isLoggedIn = false;
-  const insets = useSafeAreaInsets();
-  const statusBarHeight = Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
 
   useEffect(() => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync();
+      setTimeout(() => SplashScreen.hideAsync(), 2000);
     }
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log("User is logged in:", currentUser.email);
+        setIsSignedIn(true);
+      } else {
+        console.log("User is logged out");
+        setIsSignedIn(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <SafeAreaProvider style={styles.container}>
-      {Platform.OS === "ios" ? (
-        <View style={{ ...styles.statusBarColorIos, height: statusBarHeight }} />
-      ) : null}
-      <ExpoStatusBar style="auto" backgroundColor={Colors.statusBar} />
-      <Stack screenOptions={{ headerShown: false }}>
-        {isLoggedIn ? <Stack.Screen name="(main)" /> : <Stack.Screen name="(auth)" />}
-      </Stack>
-    </SafeAreaProvider>
+    <Stack screenOptions={{ headerShown: false }}>
+      {isSignedIn ? <Stack.Screen name="(home)" /> : <Stack.Screen name="(auth)" />}
+    </Stack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  statusBarColorIos: {
-    backgroundColor: Colors.statusBar,
-  },
-});

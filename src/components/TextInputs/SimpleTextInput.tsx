@@ -4,23 +4,20 @@ import RegExps from "../../constants/RegExps";
 import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
 
-export default function EmailInput({
-  name = "email",
-  placeholder = "Электронная почта",
+export default function SimpleTextInput({
+  name = "",
+  placeholder = "",
+  maxLength = 50,
   inputProps = {},
 }) {
   return (
     <Controller
       name={name}
       rules={{
-        required: "Email обязателен",
-        pattern: {
-          value: RegExps.email,
-          message: "Введите корректный email",
-        },
+        required: "Обязательное поле",
         maxLength: {
-          value: 254,
-          message: "Email слишком длинный",
+          value: maxLength,
+          message: "Значение слишком длинное",
         },
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -31,7 +28,7 @@ export default function EmailInput({
             placeholderTextColor={Colors.placeholder}
             value={value}
             onChangeText={onChange}
-            keyboardType="email-address"
+            keyboardType="default"
             autoCapitalize="none"
             autoCorrect={false}
             {...inputProps}

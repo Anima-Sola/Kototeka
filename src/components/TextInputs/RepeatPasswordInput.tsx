@@ -1,37 +1,33 @@
 import { useState } from "react";
 import { View, TextInput, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Controller } from "react-hook-form";
-import RegExps from "../../constants/RegExps";
 import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
 import EyeOpened from "../../../assets/Icons/EyeOpened";
 import EyeClosed from "../../../assets/Icons/EyeClosed";
 
-export default function PasswordInput({
-  name = "password",
-  placeholder = "Пароль",
+export default function RepeatPasswordInput({
+  name = "",
+  placeholder = "Повторите пароль",
+  passwordToCheck = "",
   inputProps = {},
 }) {
   const [isSecuredText, setIsSecuredText] = useState(true);
+
+  const passwordsMatchingCheck = (data: string) => {
+    if (passwordToCheck !== data) {
+      return 'Пароли не совпадают';
+    }
+
+    return true;
+  };
 
   return (
     <Controller
       name={name}
       rules={{
-        required: "Пароль обязателен",
-        pattern: {
-          value: RegExps.password,
-          message:
-            "Минимум одна цифра, заглавная буква и спецсимвол",
-        },
-        maxLength: {
-          value: 30,
-          message: "Пароль слишком длинный",
-        },
-        minLength: {
-          value: 10,
-          message: "Пароль слишком короткий",
-        },
+        required: "Обязательное поле",
+        validate: passwordsMatchingCheck,
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <View>

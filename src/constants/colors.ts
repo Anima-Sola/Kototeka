@@ -1,5 +1,5 @@
-export const lightTheme = {
-  statusBar: '#F2F2F2',
+const lightTheme = {
+  statusBar: '#D4D4D4',
   main: '#EDEDED',
   secondary: '#FFFFFF',
   mainText: '#000',
@@ -12,7 +12,7 @@ export const lightTheme = {
   disabled: '#B1AFB1',
 };
 
-export const darkTheme = {
+const darkTheme = {
   statusBar: '#1E1B24',
   main: '#22202B',
   secondary: '#2F2E39',
@@ -26,6 +26,6 @@ export const darkTheme = {
   disabled: '#B1AFB1',
 };
 
-const Colors = darkTheme;
+const Colors = lightTheme;
 
 export default Colors;

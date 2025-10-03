@@ -1,15 +1,17 @@
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useAuthStore } from "../store/store";
+import Wrapper from "../components/Wrapper/Wrapper";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { isSignedIn, setIsSignedIn } = useAuthStore();
+  const { setIsSignedIn } = useAuthStore();
+  const router = useRouter();
   const [fontsLoaded] = useFonts({
     AmaticBold: require("../../assets/Fonts/AmaticSC-Bold.ttf"),
     AmaticRegular: require("../../assets/Fonts/AmaticSC-Regular.ttf"),
@@ -29,18 +31,24 @@ export default function RootLayout() {
       if (currentUser) {
         console.log("User is logged in:", currentUser.email);
         setIsSignedIn(true);
+        router.replace("/(main)");
       } else {
         console.log("User is logged out");
         setIsSignedIn(false);
+        router.replace("/(auth)/login");
       }
     });
 
     return () => unsubscribe();
   }, []);
 
+  const isSignedIn = useAuthStore((state) => state.isSignedIn);
+
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {isSignedIn ? <Stack.Screen name="(home)" /> : <Stack.Screen name="(auth)" />}
-    </Stack>
+    <Wrapper>
+      <Stack screenOptions={{ headerShown: false }}>
+        {isSignedIn ? <Stack.Screen name="(main)" /> : <Stack.Screen name="(auth)" />}
+      </Stack>
+    </Wrapper>
   );
 }

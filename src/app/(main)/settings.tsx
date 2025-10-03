@@ -13,12 +13,12 @@ const Settings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.main,
     alignItems: "center",
     justifyContent: "center",
   },
   text: {
-    color: Colors.onBackground,
+    color: Colors.mainText,
   },
 });
 

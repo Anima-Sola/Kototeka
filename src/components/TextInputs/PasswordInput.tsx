@@ -11,18 +11,16 @@ export default function PasswordInput({
   name = "password",
   placeholder = "Пароль",
   inputProps = {},
+  checkFormat = true,
 }) {
   const [isSecuredText, setIsSecuredText] = useState(true);
 
-  return (
-    <Controller
-      name={name}
-      rules={{
+  const rules = checkFormat
+    ? {
         required: "Пароль обязателен",
         pattern: {
           value: RegExps.password,
-          message:
-            "Минимум одна цифра, заглавная буква и спецсимвол",
+          message: "Минимум одна цифра, заглавная буква и спецсимвол",
         },
         maxLength: {
           value: 30,
@@ -32,7 +30,15 @@ export default function PasswordInput({
           value: 10,
           message: "Пароль слишком короткий",
         },
-      }}
+      }
+    : {
+        required: "Пароль обязателен",
+      };
+
+  return (
+    <Controller
+      name={name}
+      rules={rules}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <View>
           <TouchableOpacity
@@ -73,7 +79,7 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 35,
     fontSize: fontSizes.FONT16,
-    fontFamily: 'ShantellLightItalic',
+    fontFamily: "ShantellLightItalic",
     backgroundColor: Colors.secondary,
     color: Colors.mainText,
   },
@@ -85,7 +91,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: Colors.error,
     fontSize: fontSizes.FONT13,
-    fontFamily: 'ShantellLightItalic',
+    fontFamily: "ShantellLightItalic",
   },
   eyeIcon: {
     position: "absolute",

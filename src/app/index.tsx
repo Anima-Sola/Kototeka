@@ -1,28 +1,8 @@
-import { View, StyleSheet, Platform, StatusBar } from "react-native";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import Home from "./(home)/home";
-import Login from "./(auth)/login";
-import { useAuthStore } from "../store/store";
-import Colors from "../constants/colors";
+import { Redirect } from 'expo-router';
+import { useAuthStore } from '../store/store';
 
-export default function index() {
-  const { isSignedIn } = useAuthStore();
-  const insets = useSafeAreaInsets();
-  const statusBarHeight = Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
-
-  return (
-    <SafeAreaProvider style={styles.container}>
-      <View style={{ ...styles.statusBar, height: statusBarHeight }} />
-      {isSignedIn ? <Home /> : <Login />}
-    </SafeAreaProvider>
-  );
+export default function Index() {
+  const isSignedIn = useAuthStore((state) => state.isSignedIn);
+  
+  return <Redirect href={isSignedIn ? "/(main)" : "/(auth)"} />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  statusBar: {
-    backgroundColor: Colors.statusBar,
-  },
-});

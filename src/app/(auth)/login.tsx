@@ -44,7 +44,7 @@ const Login = () => {
             <EmailInput name="email" />
           </View>
           <View style={styles.passwordInputContainer}>
-            <PasswordInput name="password" />
+            <PasswordInput name="password" checkFormat={false} />
           </View>
         </FormProvider>
       </ScrollView>

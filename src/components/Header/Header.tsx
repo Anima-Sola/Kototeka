@@ -1,15 +1,6 @@
 import { FC, ReactNode } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-  StatusBar,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Colors from "../../constants/colors";
-import { IconType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 
 type HeaderIcon = {
@@ -32,39 +23,30 @@ const Header: FC<HeaderProps> = ({
   onLeftIconPress,
   onRightIconPress,
 }) => {
-  const insets = useSafeAreaInsets();
-  const statusBarHeight = Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
-
   const HeaderIcon: FC<HeaderIcon> = ({ onPress, icon }) => {
     return <TouchableOpacity onPress={onPress}>{icon}</TouchableOpacity>;
   };
 
   return (
-    <View>
-      <View style={{ ...styles.statusBar, height: statusBarHeight }} />
-      <View style={styles.bar}>
-        {leftIcon ? (
-          <HeaderIcon onPress={onLeftIconPress} icon={leftIcon} />
-        ) : (
-          <View style={styles.empty} />
-        )}
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title}</Text>
-        </View>
-        {rightIcon ? (
-          <HeaderIcon onPress={onRightIconPress} icon={rightIcon} />
-        ) : (
-          <View style={styles.empty} />
-        )}
+    <View style={styles.bar}>
+      {leftIcon ? (
+        <HeaderIcon onPress={onLeftIconPress} icon={leftIcon} />
+      ) : (
+        <View style={styles.empty} />
+      )}
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{title}</Text>
       </View>
+      {rightIcon ? (
+        <HeaderIcon onPress={onRightIconPress} icon={rightIcon} />
+      ) : (
+        <View style={styles.empty} />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  statusBar: {
-    backgroundColor: Colors.statusBar,
-  },
   bar: {
     width: "100%",
     flexDirection: "row",

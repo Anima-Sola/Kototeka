@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Text, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, Link } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -47,6 +47,7 @@ const Login = () => {
             <PasswordInput name="password" checkFormat={false} />
           </View>
         </FormProvider>
+        <Link style={styles.restorePasswordLink} href="/restorePassword">Забыли пароль?</Link>
       </ScrollView>
       <View style={styles.buttonContainer}>
         <Button
@@ -93,6 +94,13 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     width: "100%",
+  },
+  restorePasswordLink: {
+    fontSize: fontSizes.FONT14,
+    fontFamily: "ShantellBold",
+    color: Colors.accent,
+    alignSelf: 'flex-end',
+    marginTop: -24,
   },
   buttonContainer: {
     width: "100%",

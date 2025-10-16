@@ -67,12 +67,13 @@ export default function MainLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBarLabelStyle: {
-    fontSize: fontSizes.FONT12,
-    fontFamily: "ShantellBold",
-    fontWeight: 300,
-  },
   tabBarStyle: {
     backgroundColor: Colors.secondary,
+    paddingTop: 5, // отступ сверху
+    height: 80, // увеличиваем общую высоту таббара
+  },
+  tabBarLabelStyle: {
+    fontSize: fontSizes.FONT10,
+    fontFamily: "ShantellBold",
   },
 });

@@ -1,38 +1,64 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { signOut } from "firebase/auth";
-import { auth } from "../../../firebaseConfig";
+import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import getCatsImages from "../../API/getCatsImages";
 import Colors from "../../constants/colors";
-import { Button } from "react-native-paper";
+import CatCard from "../../components/CatCard/CatCard";
 
 const Home = () => {
-  const logout = async () => {
+  const [cats, setCats] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
     try {
-      await signOut(auth);
-    } catch (error) {
-      console.log("Ошибка");
+      const req = {
+        limit: 10,
+      };
+
+      const data = await getCatsImages(req);
+      setCats(data);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (isLoading)
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Главный экран</Text>
-      <Button mode={"contained"} onPress={logout}>
-        Выход
-      </Button>
+      <FlatList
+        data={cats}
+        renderItem={({ item }) => <CatCard cat={item} />}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        onRefresh={() => fetchData()}
+        refreshing={isLoading}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
     backgroundColor: Colors.main,
     alignItems: "center",
     justifyContent: "center",
   },
-  text: {
-    color: Colors.mainText,
+  container: {
+    flex: 1,
+    backgroundColor: Colors.main,
+    paddingTop: 16,
   },
 });
 

@@ -10,6 +10,7 @@ const lightTheme = {
   error: "#F87171",
   placeholder: '#D4D4D4',
   disabled: '#B1AFB1',
+  white: '#fff',
 };
 
 const darkTheme = {
@@ -24,6 +25,7 @@ const darkTheme = {
   error: "#F87171",
   placeholder: '#514E59',
   disabled: '#B1AFB1',
+  white: '#fff',
 };
 
 const Colors = lightTheme;

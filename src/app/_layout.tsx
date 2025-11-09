@@ -4,13 +4,13 @@ import { auth } from "../../firebaseConfig";
 import { Stack, useRouter } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useAuthStore } from "../store/store";
+import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { setIsSignedIn } = useAuthStore();
+  const { setIsSignedIn } = useStore();
   const router = useRouter();
   const [fontsLoaded] = useFonts({
     AmaticBold: require("../../assets/Fonts/AmaticSC-Bold.ttf"),
@@ -42,7 +42,7 @@ export default function RootLayout() {
     return () => unsubscribe();
   }, []);
 
-  const isSignedIn = useAuthStore((state) => state.isSignedIn);
+  const isSignedIn = useStore((state) => state.isSignedIn);
 
   return (
     <Wrapper>

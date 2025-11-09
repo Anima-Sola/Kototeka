@@ -1,8 +1,8 @@
 import { Redirect } from 'expo-router';
-import { useAuthStore } from '../store/store';
+import useStore from '../store/store';
 
 export default function Index() {
-  const isSignedIn = useAuthStore((state) => state.isSignedIn);
+  const isSignedIn = useStore((state) => state.isSignedIn);
   
   return <Redirect href={isSignedIn ? "/(main)" : "/(auth)"} />;
 }

@@ -3,11 +3,13 @@ import URLs from "../constants/urls";
 
 type reqParams = {
   limit?: number;
+  
 };
 
 const getCatsImages = async ({ limit = 10 }: reqParams) => {
   const params = new URLSearchParams({
     limit: limit.toString(),
+    has_breeds: '1',
   });
 
   try {

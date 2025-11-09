@@ -1,15 +1,17 @@
 import { create } from "zustand";
+import { createAuthSlice } from "./authSlice";
+import { createCatsSlice } from "./catsSlice";
+import { createFavouriteCatsSlice } from "./favouritesSlice";
+import { IAuthSlice, ICatsSlice, IFavouriteCatsSlice } from "../constants/interfaces";
 
-interface AuthState {
-  isSignedIn: boolean;
-  userName: string;
-  setIsSignedIn: (value: boolean) => void;
-  setUserName: (value: string) => void;
-}
+type StoreState = IAuthSlice & ICatsSlice & IFavouriteCatsSlice;
 
-export const useAuthStore = create<AuthState>((set) => ({
-  isSignedIn: false,
-  userName: "",
-  setIsSignedIn: (value: boolean) => set({ isSignedIn: value }),
-  setUserName: (value: string) => set({ userName: value }),
-}));
+const useStore = create<StoreState>((set, get, api) => {
+  return {
+    ...createAuthSlice(set, get, api),
+    ...createCatsSlice(set, get, api),
+    ...createFavouriteCatsSlice(set, get, api),
+  };
+});
+
+export default useStore;

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import getCatsImages from "../../API/getCatsImages";
 import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
+import useStore from "../../store/store";
 
 const Home = () => {
-  const [cats, setCats] = useState([]);
+  const { cats, setCats } = useStore();
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {

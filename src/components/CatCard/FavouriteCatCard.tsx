@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Colors from "../../constants/colors";
-import { CatType } from "../../constants/types";
+import { favouriteCatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -18,11 +18,11 @@ import addFavouriteCat from "../../API/addFavouriteCat";
 const imageWidth = Dimensions.get("screen").width - 32;
 
 type CatCardProps = {
-  cat: CatType;
+  cat: favouriteCatType;
 };
 
-const CatCard: FC<CatCardProps> = ({ cat }) => {
-  const [isFavourite, setIsFavourite] = useState(false);
+const FavouriteCatCard: FC<CatCardProps> = ({ cat }) => {
+  const [isFavourite, setIsFavourite] = useState(true);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
 
@@ -36,12 +36,12 @@ const CatCard: FC<CatCardProps> = ({ cat }) => {
   };
 
   return (
-    <View style={{ ...styles.container }}>
+    <View style={styles.container}>
       <TouchableOpacity>
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
           source={{
-            uri: cat.url,
+            uri: cat.image.url,
           }}
           onLoadEnd={() => setIsImageLoading(false)}
           onError={() => {
@@ -49,7 +49,7 @@ const CatCard: FC<CatCardProps> = ({ cat }) => {
             setIsImageLoadingError(true);
           }}
         />
-        <Text style={styles.catNameText}>{cat.breeds[0].name}</Text>
+        {/*<Text style={styles.catNameText}>{cat.breeds[0].name}</Text>*/}
         <View style={styles.favouriteIconContainer}>
           {isFavourite ? (
             <TouchableOpacity onPress={toggleFavourites}>
@@ -93,12 +93,11 @@ const CatCard: FC<CatCardProps> = ({ cat }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.main,
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 16,
     marginBottom: 16,
-    borderRadius: 20,
   },
   loaderContainer: {
     position: "absolute",
@@ -115,9 +114,8 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT16,
     color: Colors.white,
     fontFamily: "ShantellBold",
-    textShadowOffset: { width: -1, height: 1 },
+    textShadowOffset: { width: 1, height: 1 },
     textShadowColor: Colors.black,
-    textShadowRadius: 1,
   },
   readMoreText: {
     position: "absolute",
@@ -142,4 +140,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CatCard;
+export default FavouriteCatCard;

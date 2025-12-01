@@ -6,10 +6,10 @@ import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
 
 const Home = () => {
-  const { cats, setCats } = useStore();
+  const { cats, setCats, favouriteCats, setFavouriteCats } = useStore();
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = async () => {
+  const fetchCatImagesData = async () => {
     try {
       const req = {
         limit: 10,
@@ -25,7 +25,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchCatImagesData();
   }, []);
 
   if (isLoading)
@@ -42,7 +42,7 @@ const Home = () => {
         renderItem={({ item }) => <CatCard cat={item} />}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => fetchData()}
+        onRefresh={() => fetchCatImagesData()}
         refreshing={isLoading}
       />
     </View>

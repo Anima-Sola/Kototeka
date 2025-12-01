@@ -1,4 +1,4 @@
-import { CatType } from "./types";
+import { CatType, favouriteCatType } from "./types";
 
 export interface IAuthSlice {
   isSignedIn: boolean;
@@ -13,7 +13,7 @@ export interface ICatsSlice {
 }
 
 export interface IFavouriteCatsSlice {
-  favouriteCats: Array<CatType>;
-  setFavouriteCats: (value: Array<CatType>) => void;
+  favouriteCats: Array<favouriteCatType>;
+  setFavouriteCats: (value: Array<favouriteCatType>) => void;
 }
 

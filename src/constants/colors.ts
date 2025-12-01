@@ -11,6 +11,7 @@ const lightTheme = {
   placeholder: '#D4D4D4',
   disabled: '#B1AFB1',
   white: '#fff',
+  black: '#000',
 };
 
 const darkTheme = {
@@ -26,6 +27,7 @@ const darkTheme = {
   placeholder: '#514E59',
   disabled: '#B1AFB1',
   white: '#fff',
+  black: '#000',
 };
 
 const Colors = lightTheme;

@@ -1,18 +1,9 @@
 import URLs from "../constants/urls";
 import { headers } from "../constants/api";
 
-type reqParams = {
-  limit?: number;
-};
-
-const getCatsImages = async ({ limit = 10 }: reqParams) => {
-  const params = new URLSearchParams({
-    limit: limit.toString(),
-    has_breeds: "1",
-  });
-
+const getFavouriteCats = async () => {
   try {
-    const response = await fetch(URLs.images + "/search?" + params, {
+    const response = await fetch(URLs.favourites, {
       headers,
     });
 
@@ -27,4 +18,4 @@ const getCatsImages = async ({ limit = 10 }: reqParams) => {
   }
 };
 
-export default getCatsImages;
+export default getFavouriteCats;

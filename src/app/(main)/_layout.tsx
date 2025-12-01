@@ -52,11 +52,11 @@ export default function MainLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Настройки",
+          title: "Мои загрузки",
           tabBarIcon: ({ focused }) => (
             <FontAwesome
               size={28}
-              name="cog"
+              name="upload"
               color={focused ? Colors.accent : Colors.secondaryText}
             />
           ),

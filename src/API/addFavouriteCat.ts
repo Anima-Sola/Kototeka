@@ -1,7 +1,7 @@
 import URLs from "../constants/urls";
 import { headers } from "../constants/api"; 
 
-const addFavouriteCat = async (image_id: string) => {
+const addFavouriteCatAPI = async (image_id: string) => {
   const params = {
     image_id,
   };
@@ -24,4 +24,4 @@ const addFavouriteCat = async (image_id: string) => {
   }
 };
 
-export default addFavouriteCat;
+export default addFavouriteCatAPI;

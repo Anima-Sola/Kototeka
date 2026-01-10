@@ -11,9 +11,13 @@ import {
 import Colors from "../../constants/colors";
 import { CatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import addFavouriteCat from "../../API/addFavouriteCat";
+import addFavouriteCatAPI from "../../API/addFavouriteCat";
+import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
+import getFavouriteCatByIdAPI from "../../API/getFavouriteCatById";
+import useStore from "../../store/store";
+import { isElementInArray } from "../../utils/functions";
+import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 
 const imageWidth = Dimensions.get("screen").width - 32;
 
@@ -22,17 +26,43 @@ type CatCardProps = {
 };
 
 const CatCard: FC<CatCardProps> = ({ cat }) => {
-  const [isFavourite, setIsFavourite] = useState(false);
+  const { favouriteCats, addFavouriteCat, deleteFavouriteCat } = useStore();
+  const isFavourite = isElementInArray(cat.id, favouriteCats);
+
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
 
-  const toggleFavourites = async () => {
-    setIsFavourite(!isFavourite);
+  const addToFavourites = async () => {
+    setIsFavouriteToggling(true);
+
     try {
-      const data = await addFavouriteCat(cat.id);
+      const addResponse = await addFavouriteCatAPI(cat.id);
+      const favouriteCat = await getFavouriteCatByIdAPI(addResponse.id);
+      addFavouriteCat(favouriteCat);
     } catch (error: any) {
       console.log("Ошибка: ", error);
+    } finally {
+      setIsFavouriteToggling(false);
     }
+  };
+
+  const deleteFromFavourites = async () => {
+    setIsFavouriteToggling(true);
+
+    try {
+      const data = await deleteFavouriteCatAPI(cat.id);
+      deleteFavouriteCat(cat.id);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsFavouriteToggling(false);
+    }
+  };
+
+  const toggleFavourites = async () => {
+    if (isFavourite) deleteFromFavourites();
+    else addToFavourites();
   };
 
   return (
@@ -51,24 +81,10 @@ const CatCard: FC<CatCardProps> = ({ cat }) => {
         />
         <Text style={styles.catNameText}>{cat.breeds[0].name}</Text>
         <View style={styles.favouriteIconContainer}>
-          {isFavourite ? (
-            <TouchableOpacity onPress={toggleFavourites}>
-              <FontAwesome
-                name="heart"
-                size={30}
-                color={Colors.white}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
+          {isFavouriteToggling ? (
+            <ActivityIndicator size={'small'}/>
           ) : (
-            <TouchableOpacity onPress={toggleFavourites}>
-              <FontAwesome
-                name="heart-o"
-                size={30}
-                color={Colors.white}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
+            <FavouriteIcon isFavourite={isFavourite} onPress={toggleFavourites} />
           )}
         </View>
         <View style={styles.shareIconContainer}>

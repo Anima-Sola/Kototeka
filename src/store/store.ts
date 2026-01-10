@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createAuthSlice } from "./authSlice";
 import { createCatsSlice } from "./catsSlice";
-import { createFavouriteCatsSlice } from "./favouritesSlice";
+import { createFavouriteCatsSlice } from "./favouriteCatsSlice";
 import { IAuthSlice, ICatsSlice, IFavouriteCatsSlice } from "../constants/interfaces";
 
 type StoreState = IAuthSlice & ICatsSlice & IFavouriteCatsSlice;

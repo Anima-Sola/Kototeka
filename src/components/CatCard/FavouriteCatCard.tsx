@@ -8,12 +8,13 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import useStore from "../../store/store";
 import Colors from "../../constants/colors";
 import { favouriteCatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import addFavouriteCat from "../../API/addFavouriteCat";
+import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
+import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 
 const imageWidth = Dimensions.get("screen").width - 32;
 
@@ -22,16 +23,21 @@ type CatCardProps = {
 };
 
 const FavouriteCatCard: FC<CatCardProps> = ({ cat }) => {
-  const [isFavourite, setIsFavourite] = useState(true);
+  const { deleteFavouriteCat } = useStore();
+  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
 
   const toggleFavourites = async () => {
-    setIsFavourite(!isFavourite);
+    setIsFavouriteToggling(true);
+
     try {
-      const data = await addFavouriteCat(cat.id);
+      const data = await deleteFavouriteCatAPI(cat.id);
+      deleteFavouriteCat(cat.id);
     } catch (error: any) {
       console.log("Ошибка: ", error);
+    } finally {
+      setIsFavouriteToggling(false);
     }
   };
 
@@ -51,24 +57,10 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat }) => {
         />
         {/*<Text style={styles.catNameText}>{cat.breeds[0].name}</Text>*/}
         <View style={styles.favouriteIconContainer}>
-          {isFavourite ? (
-            <TouchableOpacity onPress={toggleFavourites}>
-              <FontAwesome
-                name="heart"
-                size={30}
-                color={Colors.white}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
+          {isFavouriteToggling ? (
+            <ActivityIndicator size={"small"} />
           ) : (
-            <TouchableOpacity onPress={toggleFavourites}>
-              <FontAwesome
-                name="heart-o"
-                size={30}
-                color={Colors.white}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
+            <FavouriteIcon isFavourite={true} onPress={toggleFavourites} />
           )}
         </View>
         <View style={styles.shareIconContainer}>

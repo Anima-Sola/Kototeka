@@ -1,9 +1,9 @@
 import URLs from "../constants/urls";
 import { headers } from "../constants/api";
 
-const getCatById = async () => {
+const getCatById = async (id: string) => {
   try {
-    const response = await fetch(URLs.images + "HDxfaNlLj", {
+    const response = await fetch(URLs.images + id, {
       headers,
     });
 

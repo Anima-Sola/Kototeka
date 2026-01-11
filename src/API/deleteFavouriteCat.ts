@@ -1,10 +1,10 @@
 import URLs from "../constants/urls";
 import { headers } from "../constants/api"; 
 
-const deleteFavouriteCatAPI = async (id: string) => {
-  console.log(id);
+const deleteFavouriteCatAPI = async (id: string | number) => {
+  const strId = id.toString()
   try {
-    const response = await fetch(URLs.favourites + '/' + id, {
+    const response = await fetch(URLs.favourites + '/' + strId, {
       method: "DELETE",
       headers,
     });

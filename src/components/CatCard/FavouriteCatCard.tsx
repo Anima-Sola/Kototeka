@@ -28,7 +28,7 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat }) => {
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
 
-  const toggleFavourites = async () => {
+  const deleteFromFavourites = async () => {
     setIsFavouriteToggling(true);
 
     try {
@@ -60,7 +60,7 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat }) => {
           {isFavouriteToggling ? (
             <ActivityIndicator size={"small"} />
           ) : (
-            <FavouriteIcon isFavourite={true} onPress={toggleFavourites} />
+            <FavouriteIcon isFavourite={true} onPress={deleteFromFavourites} />
           )}
         </View>
         <View style={styles.shareIconContainer}>
@@ -124,6 +124,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 10,
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   shareIconContainer: {
     position: "absolute",

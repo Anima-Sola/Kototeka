@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef } from "react";
 import {
   Text,
   View,
@@ -32,6 +32,7 @@ const CatCard: FC<CatCardProps> = ({ cat }) => {
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
+  const favouriteCatId = useRef(0);
 
   const addToFavourites = async () => {
     setIsFavouriteToggling(true);
@@ -39,6 +40,7 @@ const CatCard: FC<CatCardProps> = ({ cat }) => {
     try {
       const addResponse = await addFavouriteCatAPI(cat.id);
       const favouriteCat = await getFavouriteCatByIdAPI(addResponse.id);
+      favouriteCatId.current = favouriteCat.id;
       addFavouriteCat(favouriteCat);
     } catch (error: any) {
       console.log("Ошибка: ", error);
@@ -51,8 +53,8 @@ const CatCard: FC<CatCardProps> = ({ cat }) => {
     setIsFavouriteToggling(true);
 
     try {
-      const data = await deleteFavouriteCatAPI(cat.id);
-      deleteFavouriteCat(cat.id);
+      const data = await deleteFavouriteCatAPI(favouriteCatId.current);
+      deleteFavouriteCat(favouriteCatId.current);
     } catch (error: any) {
       console.log("Ошибка: ", error);
     } finally {
@@ -150,6 +152,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 10,
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   shareIconContainer: {
     position: "absolute",

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import getCatsImages from "../../API/getCatsImages";
+import getFavouriteCats from "../../API/getFavouriteCats";
 import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
@@ -8,6 +9,17 @@ import useStore from "../../store/store";
 const Home = () => {
   const { cats, setCats, favouriteCats, setFavouriteCats } = useStore();
   const [isLoading, setIsLoading] = useState(true);
+
+  const fetchFavouriteCatsData = async () => {
+    try {
+      const data = await getFavouriteCats();
+      setFavouriteCats(data);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const fetchCatImagesData = async () => {
     try {
@@ -25,6 +37,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    fetchFavouriteCatsData();
     fetchCatImagesData();
   }, []);
 

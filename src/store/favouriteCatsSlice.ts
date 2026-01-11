@@ -1,5 +1,5 @@
 import { IFavouriteCatsSlice } from "../constants/interfaces";
-import { favouriteCatType, CatType } from "../constants/types";
+import { favouriteCatType } from "../constants/types";
 
 export const createFavouriteCatsSlice = (set: any, get: any, api: any): IFavouriteCatsSlice => ({
   favouriteCats: [],
@@ -12,7 +12,7 @@ export const createFavouriteCatsSlice = (set: any, get: any, api: any): IFavouri
       favouriteCats: [value, ...state.favouriteCats],
     }))
   },
-  deleteFavouriteCat: (value: string) => {
+  deleteFavouriteCat: (value: string | number) => {
     set((state: IFavouriteCatsSlice) => ({
       favouriteCats: state.favouriteCats.filter(cat => cat.id !== value),
     }))

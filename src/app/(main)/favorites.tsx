@@ -7,12 +7,11 @@ import useStore from "../../store/store";
 
 const Favourites = () => {
   const { favouriteCats, setFavouriteCats } = useStore();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchFavouriteCatsData = async () => {
     try {
       const data = await getFavouriteCats();
-      console.log(data);
       setFavouriteCats(data);
     } catch (error: any) {
       console.log("Ошибка: ", error);
@@ -20,12 +19,6 @@ const Favourites = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    //if (favouriteCats.length === 0) {
-    fetchFavouriteCatsData();
-    //}
-  }, []);
 
   if (isLoading)
     return (
@@ -41,7 +34,7 @@ const Favourites = () => {
         renderItem={({ item }) => <FavouriteCatCard cat={item} />}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => fetchFavouriteCatsData()}
+        onRefresh={fetchFavouriteCatsData}
         refreshing={isLoading}
       />
     </View>

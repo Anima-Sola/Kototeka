@@ -31,11 +31,12 @@ const Favourites = () => {
     <View style={styles.container}>
       <FlatList
         data={favouriteCats}
-        renderItem={({ item }) => <FavouriteCatCard cat={item} />}
+        renderItem={({ item }) => <FavouriteCatCard cat={item} numOfColumns={2}/>}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         onRefresh={fetchFavouriteCatsData}
         refreshing={isLoading}
+        numColumns={2}
       />
     </View>
   );
@@ -51,7 +52,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.main,
-    paddingTop: 16,
   },
 });
 

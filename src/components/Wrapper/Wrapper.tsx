@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { View, StyleSheet, Platform, StatusBar } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
+import ToolBar from "../ToolBar/ToolBar";
 import Colors from "../../constants/colors";
 
 type WrapperProps = {
@@ -14,6 +15,7 @@ export default function Wrapper({ children }: WrapperProps) {
   return (
     <SafeAreaProvider style={styles.container}>
       <View style={{ ...styles.statusBar, height: statusBarHeight }} />
+      <ToolBar />
       {children}
     </SafeAreaProvider>
   );

@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
-import getCatsImages from "../../API/getCatsImages";
+import getCats from "../../API/getCats";
 import getFavouriteCats from "../../API/getFavouriteCats";
 import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
 
 const Home = () => {
-  const { cats, setCats, favouriteCats, setFavouriteCats } = useStore();
+  const { cats, setCats, setFavouriteCats } = useStore();
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchFavouriteCatsData = async () => {
@@ -21,13 +21,13 @@ const Home = () => {
     }
   };
 
-  const fetchCatImagesData = async () => {
+  const fetchCatsData = async () => {
     try {
       const req = {
-        limit: 10,
+        limit: 20,
       };
 
-      const data = await getCatsImages(req);
+      const data = await getCats(req);
       setCats(data);
     } catch (error: any) {
       console.log("Ошибка: ", error);
@@ -38,7 +38,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchFavouriteCatsData();
-    fetchCatImagesData();
+    fetchCatsData();
   }, []);
 
   if (isLoading)
@@ -52,11 +52,12 @@ const Home = () => {
     <View style={styles.container}>
       <FlatList
         data={cats}
-        renderItem={({ item }) => <CatCard cat={item} />}
+        renderItem={({ item }) => <CatCard cat={item} numOfColumns={2}/>}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => fetchCatImagesData()}
+        onRefresh={() => fetchCatsData()}
         refreshing={isLoading}
+        numColumns={2}
       />
     </View>
   );
@@ -72,7 +73,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.main,
-    paddingTop: 16,
   },
 });
 

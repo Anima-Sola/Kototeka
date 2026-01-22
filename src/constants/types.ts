@@ -14,6 +14,7 @@ export type CatType = {
 export type favouriteCatType = {
   created_at: string,
   id: string,
+  breeds: any;
   image: {
     id: string,
     url: string,

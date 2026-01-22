@@ -1,9 +1,9 @@
 import URLs from "../constants/urls";
 import { headers } from "../constants/api";
 
-const getCatById = async (id: string) => {
+const getCatByIdAPI = async (id: string) => {
   try {
-    const response = await fetch(URLs.images + id, {
+    const response = await fetch(URLs.images + '/' + id, {
       headers,
     });
 
@@ -18,4 +18,4 @@ const getCatById = async (id: string) => {
   }
 };
 
-export default getCatById;
+export default getCatByIdAPI;

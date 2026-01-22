@@ -6,20 +6,26 @@ import Colors from "../../constants/colors";
 type FavouriteIconType = {
   isFavourite: boolean;
   onPress: () => void;
+  size: number;
 };
 
-const FavouriteIcon: FC<FavouriteIconType> = ({ isFavourite, onPress }) => {
+const FavouriteIcon: FC<FavouriteIconType> = ({ isFavourite, onPress, size }) => {
   return (
     <View>
       {isFavourite ? (
         <TouchableOpacity onPress={onPress}>
-          <FontAwesome name="heart" size={30} color={Colors.white} style={styles.icon} />
+          <FontAwesome
+            name="heart"
+            size={size}
+            color={Colors.white}
+            style={styles.icon}
+          />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity onPress={onPress}>
           <FontAwesome
             name="heart-o"
-            size={30}
+            size={size}
             color={Colors.white}
             style={styles.icon}
           />

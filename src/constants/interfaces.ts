@@ -17,5 +17,6 @@ export interface IFavouriteCatsSlice {
   setFavouriteCats: (value: Array<favouriteCatType>) => void;
   addFavouriteCat: (value: favouriteCatType) => void;
   deleteFavouriteCat: (value: string | number) => void;
+  addFavoriteCatBreeds: (id: string, value: any[]) => void;
 }
 

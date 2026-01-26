@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -15,6 +15,8 @@ export default function MainLayout() {
         tabBarInactiveTintColor: Colors.secondaryText,
         tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarStyle: styles.tabBarStyle,
+        tabBarIconStyle: styles.iconContainer,
+        tabBarItemStyle: styles.itemContainer,
       }}
     >
       <Tabs.Screen
@@ -26,7 +28,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Котики",
+          tabBarLabel: 'Котики',
           tabBarIcon: ({ focused }) => (
             <FontAwesome6
               size={28}
@@ -39,7 +41,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="favorites"
         options={{
-          title: "Избранное",
+          tabBarLabel: "Избранное",
           tabBarIcon: ({ focused }) => (
             <AntDesign
               size={28}
@@ -52,7 +54,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Мои загрузки",
+          tabBarLabel: "Мои загрузки",
           tabBarIcon: ({ focused }) => (
             <FontAwesome
               size={28}
@@ -69,11 +71,22 @@ export default function MainLayout() {
 const styles = StyleSheet.create({
   tabBarStyle: {
     backgroundColor: Colors.secondary,
-    paddingTop: 5, // отступ сверху
-    height: 80, // увеличиваем общую высоту таббара
+    position: "absolute",
+    bottom: Platform.OS === "ios" ? 30 : 50,
+    height: 60,
+    marginHorizontal: 16,
+    borderRadius: 20,
   },
   tabBarLabelStyle: {
     fontSize: fontSizes.FONT10,
     fontFamily: "ShantellBold",
   },
+  iconContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  itemContainer: {
+    height: 60,
+  }
 });

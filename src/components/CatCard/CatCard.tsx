@@ -72,7 +72,7 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
     <View style={{ ...styles.container }}>
       <TouchableOpacity disabled={!hasBreeds}>
         <Image
-          style={{ width: imageWidth, height: imageWidth }}
+          style={{ ...styles.image, width: imageWidth, height: imageWidth }}
           source={{
             uri: cat.url,
           }}
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondary,
     margin: 1,
     alignSelf: "center",
+    borderRadius: 5,
   },
   loaderContainer: {
     position: "absolute",
@@ -129,6 +130,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: "center",
     justifyContent: "center",
+  },
+  image: {
+    borderRadius: 5,
   },
   favouriteIconContainer: {
     position: "absolute",

@@ -5,10 +5,12 @@ import getFavouriteCats from "../../API/getFavouriteCats";
 import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
+import TopBar from "../../components/TopBar/TopBar";
 
 const Home = () => {
   const { cats, setCats, setFavouriteCats } = useStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [numColumns, setNumOfColumns] = useState(1);
 
   const fetchFavouriteCatsData = async () => {
     try {
@@ -51,13 +53,15 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <FlatList
+        key={numColumns}
         data={cats}
-        renderItem={({ item }) => <CatCard cat={item} numOfColumns={2}/>}
+        ListHeaderComponent={<TopBar setNumOfColumns={setNumOfColumns} />}
+        renderItem={({ item }) => <CatCard cat={item} numOfColumns={numColumns} />}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         onRefresh={() => fetchCatsData()}
         refreshing={isLoading}
-        numColumns={2}
+        numColumns={numColumns}
       />
     </View>
   );

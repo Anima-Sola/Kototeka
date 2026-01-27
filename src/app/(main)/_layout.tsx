@@ -1,6 +1,6 @@
 import { StyleSheet, Platform } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Tabs } from "expo-router";
 import Colors from "../../constants/colors";
@@ -11,12 +11,12 @@ export default function MainLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors.accent,
-        tabBarInactiveTintColor: Colors.secondaryText,
-        tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarStyle: styles.tabBarStyle,
         tabBarIconStyle: styles.iconContainer,
         tabBarItemStyle: styles.itemContainer,
+        tabBarActiveTintColor: Colors.accent,
+        tabBarInactiveTintColor: Colors.secondaryText,
+        tabBarLabelStyle: styles.tabBarLabelStyle,
       }}
     >
       <Tabs.Screen
@@ -28,11 +28,11 @@ export default function MainLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          tabBarLabel: 'Котики',
+          tabBarLabel: "Gallary",
           tabBarIcon: ({ focused }) => (
-            <FontAwesome6
+            <Ionicons
+              name="paw-sharp"
               size={28}
-              name="cat"
               color={focused ? Colors.accent : Colors.secondaryText}
             />
           ),
@@ -41,7 +41,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="favorites"
         options={{
-          tabBarLabel: "Избранное",
+          tabBarLabel: "Favourites",
           tabBarIcon: ({ focused }) => (
             <AntDesign
               size={28}
@@ -52,13 +52,13 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="upload"
         options={{
-          tabBarLabel: "Мои загрузки",
+          tabBarLabel: "Uploads",
           tabBarIcon: ({ focused }) => (
-            <FontAwesome
-              size={28}
+            <Feather
               name="upload"
+              size={28}
               color={focused ? Colors.accent : Colors.secondaryText}
             />
           ),
@@ -76,17 +76,17 @@ const styles = StyleSheet.create({
     height: 60,
     marginHorizontal: 16,
     borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  iconContainer: {
+    marginTop: 4,
   },
   tabBarLabelStyle: {
     fontSize: fontSizes.FONT10,
     fontFamily: "ShantellBold",
   },
-  iconContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   itemContainer: {
     height: 60,
-  }
+  },
 });

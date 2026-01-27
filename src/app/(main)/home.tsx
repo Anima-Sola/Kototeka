@@ -52,10 +52,10 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
+      <TopBar setNumOfColumns={setNumOfColumns} />
       <FlatList
         key={numColumns}
         data={cats}
-        ListHeaderComponent={<TopBar setNumOfColumns={setNumOfColumns} />}
         renderItem={({ item }) => <CatCard cat={item} numOfColumns={numColumns} />}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}

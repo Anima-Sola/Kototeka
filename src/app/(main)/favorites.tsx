@@ -31,10 +31,10 @@ const Favourites = () => {
 
   return (
     <View style={styles.container}>
+      <TopBar setNumOfColumns={setNumOfColumns} />
       <FlatList
         key={numColumns}
         data={favouriteCats}
-        ListHeaderComponent={<TopBar setNumOfColumns={setNumOfColumns} />}
         renderItem={({ item }) => (
           <FavouriteCatCard cat={item} numOfColumns={numColumns} />
         )}

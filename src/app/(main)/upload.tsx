@@ -5,7 +5,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import { Button } from "react-native-paper";
 
-const Settings = () => {
+const Upload = () => {
   const logout = async () => {
     try {
       await signOut(auth);
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default Upload;

@@ -64,6 +64,19 @@ export default function MainLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          tabBarLabel: "Settings",
+          tabBarIcon: ({ focused }) => (
+            <Feather
+              name="settings"
+              size={28}
+              color={focused ? Colors.accent : Colors.secondaryText}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

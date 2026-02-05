@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
+import { useRouter } from 'expo-router'
 import { ActivityIndicator } from "react-native-paper";
 import addFavouriteCatAPI from "../../API/addFavouriteCat";
 import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
@@ -24,6 +25,7 @@ type CatCardProps = {
 };
 
 const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
+  const router = useRouter();
   const { favouriteCats, addFavouriteCat, deleteFavouriteCat } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
@@ -70,7 +72,7 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
 
   return (
     <View style={{ ...styles.container }}>
-      <TouchableOpacity disabled={!hasBreeds}>
+      <TouchableOpacity onPress={() => router.push(`/${cat.id}`)}>
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
           source={{

@@ -4,6 +4,7 @@ import Colors from "../../constants/colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Entypo from "@expo/vector-icons/Entypo";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 type TopBarType = {
   setNumOfColumns: (value: number) => void;
@@ -12,15 +13,29 @@ type TopBarType = {
 const TopBar: FC<TopBarType> = ({ setNumOfColumns }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setNumOfColumns(1)}>
-        <FontAwesome name="square" size={32} color={Colors.black} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setNumOfColumns(2)}>
-        <Entypo name="grid" size={45} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setNumOfColumns(3)}>
-        <Fontisto name="nav-icon-grid" size={28} color="black" />
-      </TouchableOpacity>
+      <View style={styles.filterContainer} />
+      <View style={styles.gridContainer}>
+        <View style={styles.gridIcon}>
+          <TouchableOpacity onPress={() => setNumOfColumns(1)}>
+            <FontAwesome name="square" size={32} color={Colors.secondaryText} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.gridIcon}>
+          <TouchableOpacity onPress={() => setNumOfColumns(2)}>
+            <Entypo name="grid" size={45} color={Colors.secondaryText} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.gridIcon}>
+          <TouchableOpacity onPress={() => setNumOfColumns(3)}>
+            <Fontisto name="nav-icon-grid" size={28} color={Colors.secondaryText} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.filterContainer}>
+        <TouchableOpacity>
+          <Ionicons name="options" size={40} color={Colors.secondaryText} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -29,11 +44,23 @@ const styles = StyleSheet.create({
   container: {
     height: 50,
     backgroundColor: Colors.statusBar,
+    borderTopColor: Colors.disabled,
+    borderTopWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  gridContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderTopColor: Colors.disabled,
-    borderTopWidth: 1,
+  },
+  gridIcon: {
+    marginHorizontal: 5,
+  },
+  filterContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
   },
 });
 

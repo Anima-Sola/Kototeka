@@ -13,11 +13,11 @@ export default function RootLayout() {
   const { setIsSignedIn } = useStore();
   const router = useRouter();
   const [fontsLoaded] = useFonts({
-    AmaticBold: require("../../assets/Fonts/AmaticSC-Bold.ttf"),
-    AmaticRegular: require("../../assets/Fonts/AmaticSC-Regular.ttf"),
-    ShantellRegular: require("../../assets/Fonts/ShantellSans-Regular.ttf"),
-    ShantellBold: require("../../assets/Fonts/ShantellSans-Bold.ttf"),
-    ShantellLightItalic: require("../../assets/Fonts/ShantellSans-LightItalic.ttf"),
+    AmaticBold: require("../../assets/fonts/AmaticSC-Bold.ttf"),
+    AmaticRegular: require("../../assets/fonts/AmaticSC-Regular.ttf"),
+    ShantellRegular: require("../../assets/fonts/ShantellSans-Regular.ttf"),
+    ShantellBold: require("../../assets/fonts/ShantellSans-Bold.ttf"),
+    ShantellLightItalic: require("../../assets/fonts/ShantellSans-LightItalic.ttf"),
   });
 
   useEffect(() => {

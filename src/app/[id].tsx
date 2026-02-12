@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { View, Image, StyleSheet, Dimensions, Text } from "react-native";
+import { View, StyleSheet, Dimensions, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import useStore from "../store/store";
 import ProfileTopBar from "../components/TopBar/ProfileTopBar";
 import Colors from "../constants/colors";
 import fontSizes from "../constants/fontSizes";
+import { Image } from "expo-image";
+import { blurhash } from "../constants/common";
 
 const CatProfile = () => {
   const { cats } = useStore();
@@ -22,10 +24,12 @@ const CatProfile = () => {
       <ProfileTopBar />
       <Image
         style={{ ...styles.image, width: imageWidth, height: imageWidth }}
-        source={{
-          uri: cat?.url,
-        }}
+        source={cat?.url}
+        placeholder={{ blurhash }}
+        contentFit="cover"
+        cachePolicy={'memory-disk'}
         onLoadEnd={() => setIsImageLoading(false)}
+        transition={1000}
         onError={() => {
           setIsImageLoading(false);
           setIsImageLoadingError(true);
@@ -34,7 +38,9 @@ const CatProfile = () => {
       {breeds && (
         <View style={styles.infoContainer}>
           <Text style={styles.name}>{breeds.name}</Text>
-          <Text selectable style={styles.description}>{breeds.description}</Text>
+          <Text selectable style={styles.description}>
+            {breeds.description}
+          </Text>
         </View>
       )}
       {isImageLoading && (
@@ -68,8 +74,8 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.FONT32,
     color: Colors.mainText,
     fontFamily: "AmaticBold",
-    alignSelf: 'center',
-  }, 
+    alignSelf: "center",
+  },
   description: {
     fontSize: fontSizes.FONT14,
     fontFamily: "ShantellRegular",

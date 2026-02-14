@@ -67,7 +67,9 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
 
   return (
     <View style={{ ...styles.container }}>
-      <TouchableOpacity onPress={() => router.push(`/${cat.id}`)}>
+      <TouchableOpacity
+        onPress={() => router.push({ pathname: '/catProfile', params: { catId: cat.id } })}
+      >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
           source={cat.url}

@@ -28,7 +28,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      
       if (currentUser) {
         console.log("User is logged in:", currentUser.email);
         setIsSignedIn(true);
@@ -47,9 +46,16 @@ export default function RootLayout() {
 
   return (
     <Wrapper>
-      <Stack screenOptions={{ headerShown: false }}>
-        {isSignedIn ? <Stack.Screen name="(main)" /> : <Stack.Screen name="(auth)" />}
-      </Stack>
+      {isSignedIn ? (
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(main)" />
+          <Stack.Screen name="(profile)"></Stack.Screen>
+        </Stack>
+      ) : (
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(auth)" />
+        </Stack>
+      )}
     </Wrapper>
   );
 }

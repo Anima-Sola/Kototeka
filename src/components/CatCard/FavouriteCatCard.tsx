@@ -1,14 +1,8 @@
 import { FC, useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-  //ActivityIndicator,
-} from "react-native";
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
+import { Image } from "expo-image";
 import useStore from "../../store/store";
 import Colors from "../../constants/colors";
 import { favouriteCatType } from "../../constants/types";
@@ -17,6 +11,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
 import getCatByIdAPI from "../../API/getCatById";
 import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
+import { blurhash } from "../../constants/common";
 
 const imageWidth = Dimensions.get("screen").width - 32;
 
@@ -26,6 +21,7 @@ type CatCardProps = {
 };
 
 const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
+  const router = useRouter();
   const { deleteFavouriteCat, addFavoriteCatBreeds } = useStore();
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
@@ -53,7 +49,7 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
 
     try {
       const response = await getCatByIdAPI(cat.image.id);
-      addFavoriteCatBreeds(cat.id, response.breeds[0]);
+      if(response.breeds) addFavoriteCatBreeds(cat.id, response.breeds[0]);
     } catch (error: any) {
       console.log("Ошибка: ", error);
     }
@@ -65,12 +61,18 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity disabled={!hasBreeds}>
+      <TouchableOpacity
+        onPress={() =>
+          router.push({ pathname: "/favouriteCatProfile", params: { catId: cat.id } })
+        }
+      >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
-          source={{
-            uri: cat.image.url,
-          }}
+          source={cat.image.url}
+          placeholder={{ blurhash }}
+          contentFit="cover"
+          cachePolicy={"memory-disk"}
+          transition={1000}
           onLoadEnd={() => setIsImageLoading(false)}
           onError={() => {
             setIsImageLoading(false);

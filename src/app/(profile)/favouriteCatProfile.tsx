@@ -2,32 +2,33 @@ import { useState } from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
-import useStore from "../store/store";
-import ProfileTopBar from "../components/TopBar/ProfileTopBar";
-import Colors from "../constants/colors";
-import fontSizes from "../constants/fontSizes";
+import useStore from "../../store/store";
+import ProfileTopBar from "../../components/TopBar/ProfileTopBar";
+import Colors from "../../constants/colors";
+import fontSizes from "../../constants/fontSizes";
 import { Image } from "expo-image";
-import { blurhash } from "../constants/common";
+import { blurhash } from "../../constants/common";
 
-const CatProfile = () => {
-  const { cats } = useStore();
-  const { id } = useLocalSearchParams<{ id: string }>();
+const imageWidth = Dimensions.get("screen").width;
+
+const FavouriteCatProfile = () => {
+  const { favouriteCats } = useStore();
+  const { catId } = useLocalSearchParams<{ catId: string }>();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
 
-  const cat = cats.find((cat) => cat.id === id);
-  const imageWidth = Dimensions.get("screen").width;
-  const breeds = cat?.breeds[0];
+  const cat = favouriteCats.find((cat) => cat.id.toString() === catId.toString());
+  const breeds = cat?.breeds;
 
   return (
     <View>
       <ProfileTopBar />
       <Image
         style={{ ...styles.image, width: imageWidth, height: imageWidth }}
-        source={cat?.url}
+        source={cat?.image.url}
         placeholder={{ blurhash }}
         contentFit="cover"
-        cachePolicy={'memory-disk'}
+        cachePolicy={"memory-disk"}
         onLoadEnd={() => setIsImageLoading(false)}
         transition={1000}
         onError={() => {
@@ -83,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CatProfile;
+export default FavouriteCatProfile;

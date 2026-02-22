@@ -9,7 +9,7 @@ import TopBar from "../../components/TopBar/TopBar";
 const Favourites = () => {
   const { favouriteCats, setFavouriteCats } = useStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [numColumns, setNumOfColumns] = useState(1);
+  const [numColumns, setNumOfColumns] = useState(2);
 
   const fetchFavouriteCatsData = async () => {
     try {

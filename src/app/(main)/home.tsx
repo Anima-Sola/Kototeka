@@ -10,7 +10,7 @@ import TopBar from "../../components/TopBar/TopBar";
 const Home = () => {
   const { cats, setCats, setFavouriteCats } = useStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [numColumns, setNumOfColumns] = useState(1);
+  const [numColumns, setNumOfColumns] = useState(2);
 
   const fetchFavouriteCatsData = async () => {
     try {

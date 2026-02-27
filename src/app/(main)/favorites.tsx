@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import getFavouriteCats from "../../API/getFavouriteCats";
 import Colors from "../../constants/colors";
 import FavouriteCatCard from "../../components/CatCard/FavouriteCatCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
+import getCatByIdAPI from "../../API/getCatById";
+import { favouriteCatType } from "../../constants/types";
 
 const Favourites = () => {
-  const { favouriteCats, setFavouriteCats } = useStore();
+  const { favouriteCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
 
@@ -15,6 +18,31 @@ const Favourites = () => {
     try {
       const data = await getFavouriteCats();
       setFavouriteCats(data);
+      return data;
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    }
+  };
+
+  const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
+    const promises = favouriteCats.map(async (favouriteCat) => {
+      try {
+        const response = await getCatByIdAPI(favouriteCat.image.id);
+        if (response.breeds) addFavoriteCatBreeds(favouriteCat.id, response.breeds[0]);
+      } catch (error: any) {
+        console.log("Ошибка: ", error);
+      }
+    });
+
+    return await Promise.all(promises);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+
+    try {
+      const favouriteCats = await fetchFavouriteCatsData();
+      await getFavouriteCatsBreeds(favouriteCats);
     } catch (error: any) {
       console.log("Ошибка: ", error);
     } finally {
@@ -40,7 +68,7 @@ const Favourites = () => {
         )}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        onRefresh={fetchFavouriteCatsData}
+        onRefresh={fetchData}
         refreshing={isLoading}
         numColumns={numColumns}
       />

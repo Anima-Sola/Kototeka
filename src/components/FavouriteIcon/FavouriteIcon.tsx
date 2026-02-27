@@ -7,28 +7,28 @@ type FavouriteIconType = {
   isFavourite: boolean;
   onPress: () => void;
   size: number;
+  color?: string;
+  isShadow?: boolean;
 };
 
-const FavouriteIcon: FC<FavouriteIconType> = ({ isFavourite, onPress, size }) => {
+const FavouriteIcon: FC<FavouriteIconType> = ({
+  isFavourite,
+  onPress,
+  size,
+  color = Colors.white,
+  isShadow = true,
+}) => {
+  const iconStyle = isShadow ? styles.icon : {};
+
   return (
     <View>
       {isFavourite ? (
         <TouchableOpacity onPress={onPress}>
-          <FontAwesome
-            name="heart"
-            size={size}
-            color={Colors.white}
-            style={styles.icon}
-          />
+          <FontAwesome name="heart" size={size} color={color} style={iconStyle} />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity onPress={onPress}>
-          <FontAwesome
-            name="heart-o"
-            size={size}
-            color={Colors.white}
-            style={styles.icon}
-          />
+          <FontAwesome name="heart-o" size={size} color={color} style={iconStyle} />
         </TouchableOpacity>
       )}
     </View>

@@ -8,30 +8,72 @@ import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
 import { Image } from "expo-image";
 import { blurhash } from "../../constants/common";
-import TextItem from "../../components/ProfileItems/TextItem";
-import MarkItem from "../../components/ProfileItems/MarkItem";
-import SingleParamItem from "../../components/ProfileItems/SingleParamItem";
-import LinkItem from "../../components/ProfileItems/LinkItem";
+import BreedInfo from "../../components/BreedInfo/BreedInfo";
+import addFavouriteCatAPI from "../../API/addFavouriteCat";
+import getFavouriteCatByIdAPI from "../../API/getFavouriteCatById";
+import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
+import NoBreedInfo from "../../components/BreedInfo/NoBreedInfo";
 
 const imageWidth = Dimensions.get("screen").width;
 
 const FavouriteCatProfile = () => {
-  const { favouriteCats } = useStore();
-  const router = useRouter();
+  const { favouriteCats, addFavouriteCat, deleteFavouriteCat } = useStore();
   const { catId } = useLocalSearchParams<{ catId: string }>();
+  const favouriteCat = favouriteCats.find((cat) => cat.id.toString() === catId.toString());
+
+  if(!favouriteCat) return null;
+  
+  const router = useRouter();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
+  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
 
-  const cat = favouriteCats.find((cat) => cat.id.toString() === catId.toString());
-  const breeds = cat?.breeds;
+  const breeds = favouriteCat.breeds;
+
+  const addToFavourites = async () => {
+    setIsFavouriteToggling(true);
+
+    try {
+      const addingFavouriteCatResult = await addFavouriteCatAPI(favouriteCat.id);
+      const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
+      addFavouriteCat(addedFavouriteCat);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsFavouriteToggling(false);
+    }
+  };
+
+  const deleteFromFavourites = async () => {
+    setIsFavouriteToggling(true);
+
+    try {
+      const data = await deleteFavouriteCatAPI(favouriteCat.id);
+      setTimeout(() => deleteFavouriteCat(favouriteCat.id), 500);
+      router.back();
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsFavouriteToggling(false);
+    }
+  };
+
+  const toggleFavourites = async () => {
+    if (favouriteCat) deleteFromFavourites();
+    else addToFavourites();
+  };
 
   return (
     <View style={styles.container}>
-      <ProfileTopBar />
+      <ProfileTopBar
+        isFavourite={Boolean(favouriteCat)}
+        isFavouriteToggling={isFavouriteToggling}
+        onFavouriteIconPress={toggleFavourites}
+      />
       <ScrollView>
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
-          source={cat?.image.url}
+          source={favouriteCat?.image.url}
           placeholder={{ blurhash }}
           contentFit="cover"
           cachePolicy={"memory-disk"}
@@ -42,53 +84,7 @@ const FavouriteCatProfile = () => {
             setIsImageLoadingError(true);
           }}
         />
-        {breeds && (
-          <View style={styles.infoContainer}>
-            <TextItem name={`Name: ${breeds.name}`} text={breeds.description} />
-            <TextItem name={"Alternative names"} text={breeds.alt_names} />
-            <TextItem name={"Temperament"} text={breeds.temperament} />
-            <MarkItem name={"Adaptability"} mark={breeds.adaptability} />
-            <MarkItem name={"Affection level"} mark={breeds.affection_level} />
-            <MarkItem name={"Energy level"} mark={breeds.energy_level} />
-            <MarkItem name={"Dog friendly"} mark={breeds.dog_friendly} />
-            <MarkItem name={"Child friendly"} mark={breeds.child_friendly} />
-            <MarkItem name={"Stranger friendly"} mark={breeds.stranger_friendly} />
-            <MarkItem name={"Grooming"} mark={breeds.grooming} />
-            <MarkItem name={"Health issues"} mark={breeds.health_issues} />
-            <MarkItem name={"Social needs"} mark={breeds.social_needs} />
-            <MarkItem name={"Shedding level"} mark={breeds.shedding_level} />
-            <MarkItem name={"Intelligence"} mark={breeds.intelligence} />
-            <MarkItem name={"Vocalisation"} mark={breeds.vocalisation} />
-            <SingleParamItem name={"Origin"} param={breeds.origin} />
-            <SingleParamItem name={"Weight, kg."} param={breeds.weight.metric} />
-            <SingleParamItem name={"Life span, years"} param={breeds.life_span} />
-            <SingleParamItem
-              name={"Experimental"}
-              param={breeds.experimental ? "Yes" : "No"}
-            />
-            <SingleParamItem name={"Hairless"} param={breeds.hairless ? "Yes" : "No"} />
-            <SingleParamItem
-              name={"Hypoallergenic"}
-              param={breeds.hypoallergenic ? "Yes" : "No"}
-            />
-            <SingleParamItem name={"Indoor"} param={breeds.indoor ? "Yes" : "No"} />
-            <SingleParamItem name={"Natural"} param={breeds.natural ? "Yes" : "No"} />
-            <SingleParamItem name={"Rare"} param={breeds.rare ? "Yes" : "No"} />
-            <SingleParamItem name={"Rex"} param={breeds.rex ? "Yes" : "No"} />
-            <SingleParamItem
-              name={"Short legs"}
-              param={breeds.short_legs ? "Yes" : "No"}
-            />
-            <SingleParamItem
-              name={"Suppressed tail"}
-              param={breeds.suppressed_tail ? "Yes" : "No"}
-            />
-            <LinkItem name={"Cfa page"} link={breeds.cfa_url} />
-            <LinkItem name={"Vcahospitals  page"} link={breeds.vcahospitals_url} />
-            <LinkItem name={"Vetstreet  page"} link={breeds.vetstreet_url} />
-            <LinkItem name={"Wikipedia page"} link={breeds.wikipedia_url} />
-          </View>
-        )}
+        {breeds ? <BreedInfo breeds={breeds} /> : <NoBreedInfo />}
         {isImageLoading && (
           <View style={styles.loaderContainer}>
             <ActivityIndicator size={"large"} />
@@ -126,10 +122,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.secondaryText,
     borderBottomWidth: 1,
     borderTopWidth: 1,
-  },
-  infoContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 200,
   },
   buttonContainer: {
     width: "100%",

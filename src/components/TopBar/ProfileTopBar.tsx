@@ -1,11 +1,23 @@
 import { FC } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { useRouter } from "expo-router";
 import Colors from "../../constants/colors";
 import Feather from "@expo/vector-icons/Feather";
+import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 
-const ProfileTopBar: FC = () => {
-    const router = useRouter();
+type ProfileTopBarProps = {
+  isFavourite: boolean;
+  isFavouriteToggling: boolean;
+  onFavouriteIconPress: () => void;
+};
+
+const ProfileTopBar: FC<ProfileTopBarProps> = ({
+  isFavourite,
+  onFavouriteIconPress,
+  isFavouriteToggling,
+}) => {
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -13,6 +25,19 @@ const ProfileTopBar: FC = () => {
         <Feather name="arrow-left" size={32} color={Colors.secondaryText} />
       </TouchableOpacity>
       <View style={styles.shareIconsContainer}>
+        <View style={styles.icon}>
+          {isFavouriteToggling ? (
+            <ActivityIndicator size={32} color={Colors.secondaryText} />
+          ) : (
+            <FavouriteIcon
+              isFavourite={isFavourite}
+              onPress={onFavouriteIconPress}
+              size={32}
+              color={Colors.secondaryText}
+              isShadow={false}
+            />
+          )}
+        </View>
         <TouchableOpacity style={styles.icon} onPress={() => {}}>
           <Feather name="share-2" size={32} color={Colors.secondaryText} />
         </TouchableOpacity>
@@ -39,7 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   shareIconsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
 });
 

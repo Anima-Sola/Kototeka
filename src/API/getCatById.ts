@@ -8,6 +8,7 @@ const getCatByIdAPI = async (id: string) => {
     });
 
     if (!response.ok) {
+      return [];
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 

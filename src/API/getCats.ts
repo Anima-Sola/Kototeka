@@ -8,7 +8,7 @@ type reqParams = {
 const getCats = async ({ limit = 10 }: reqParams) => {
   const params = new URLSearchParams({
     limit: limit.toString(),
-    has_breeds: "1",
+    //has_breeds: "1",
   });
 
   try {
@@ -17,7 +17,7 @@ const getCats = async ({ limit = 10 }: reqParams) => {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.statusText}`);
     }
 
     const data = await response.json();

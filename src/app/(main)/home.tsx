@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import getCats from "../../API/getCats";
 import getFavouriteCats from "../../API/getFavouriteCats";
+import getCatByIdAPI from "../../API/getCatById";
 import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
+import { ActivityIndicator } from "react-native-paper";
+import { favouriteCatType } from "../../constants/types";
 
 const Home = () => {
-  const { cats, setCats, setFavouriteCats } = useStore();
+  const { cats, setCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
   const [isLoading, setIsLoading] = useState(true);
   const [numColumns, setNumOfColumns] = useState(2);
 
@@ -16,31 +19,54 @@ const Home = () => {
     try {
       const data = await getFavouriteCats();
       setFavouriteCats(data);
+      return data;
     } catch (error: any) {
       console.log("Ошибка: ", error);
-    } finally {
-      setIsLoading(false);
     }
+  };
+
+  const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
+    const promises = favouriteCats.map(async (favouriteCat) => {
+      try {
+        const response = await getCatByIdAPI(favouriteCat.image.id);
+        if (response.breeds) addFavoriteCatBreeds(favouriteCat.id, response.breeds[0]);
+      } catch (error: any) {
+        console.log("Ошибка: ", error);
+      }
+    });
+
+    return await Promise.all(promises);
   };
 
   const fetchCatsData = async () => {
     try {
       const req = {
-        limit: 20,
+        limit: 50,
       };
 
       const data = await getCats(req);
       setCats(data);
     } catch (error: any) {
       console.log("Ошибка: ", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchFavouriteCatsData();
-    fetchCatsData();
+    setIsLoading(true);
+
+    const fetchData = async () => {
+      try {
+        const favouriteCats = await fetchFavouriteCatsData();
+        await getFavouriteCatsBreeds(favouriteCats);
+        await fetchCatsData();
+      } catch (error: any) {
+        console.log("Ошибка: ", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (isLoading)

@@ -16,7 +16,7 @@ export const createFavouriteCatsSlice = (
       favouriteCats: [value, ...state.favouriteCats],
     }));
   },
-  deleteFavouriteCat: (value: string | number) => {
+  deleteFavouriteCat: (value: string) => {
     set((state: IFavouriteCatsSlice) => ({
       favouriteCats: state.favouriteCats.filter((cat) => cat.id !== value),
     }));

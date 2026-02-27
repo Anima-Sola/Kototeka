@@ -9,6 +9,9 @@ export type CatType = {
   id: string;
   url: string;
   width: number;
+  favourite?: {
+    id: string;
+  }
 };
 
 export type favouriteCatType = {

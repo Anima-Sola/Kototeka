@@ -1,19 +1,15 @@
 import { FC, useState, useEffect } from "react";
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { Image } from "expo-image";
 import useStore from "../../store/store";
 import Colors from "../../constants/colors";
 import { favouriteCatType } from "../../constants/types";
-import fontSizes from "../../constants/fontSizes";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
-import getCatByIdAPI from "../../API/getCatById";
 import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 import { blurhash } from "../../constants/common";
-
-const imageWidth = Dimensions.get("screen").width - 32;
 
 type CatCardProps = {
   cat: favouriteCatType;
@@ -22,7 +18,7 @@ type CatCardProps = {
 
 const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
   const router = useRouter();
-  const { deleteFavouriteCat, addFavoriteCatBreeds } = useStore();
+  const { deleteFavouriteCat } = useStore();
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
@@ -43,21 +39,6 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
       setIsFavouriteToggling(false);
     }
   };
-
-  const loadFavouriteCatDataById = async () => {
-    if (!cat.image.id) return;
-
-    try {
-      const response = await getCatByIdAPI(cat.image.id);
-      if(response.breeds) addFavoriteCatBreeds(cat.id, response.breeds[0]);
-    } catch (error: any) {
-      console.log("Ошибка: ", error);
-    }
-  };
-
-  useEffect(() => {
-    loadFavouriteCatDataById();
-  }, [cat.breeds?.name]);
 
   return (
     <View style={styles.container}>
@@ -94,8 +75,8 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
           <View style={styles.infoIconContainer}>
             <TouchableOpacity>
               <Ionicons
-                name="information-circle-outline"
-                size={52 - iconScale}
+                name="documents-outline"
+                size={50 - iconScale}
                 color={Colors.white}
                 style={styles.icon}
               />
@@ -145,8 +126,8 @@ const styles = StyleSheet.create({
   },
   infoIconContainer: {
     position: "absolute",
-    top: 5,
-    left: 5,
+    top: 6,
+    left: 6,
   },
 });
 

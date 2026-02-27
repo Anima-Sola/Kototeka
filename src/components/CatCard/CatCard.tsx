@@ -1,4 +1,4 @@
-import { FC, useState, useRef } from "react";
+import { FC, useState } from "react";
 import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
@@ -21,25 +21,24 @@ type CatCardProps = {
 
 const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
   const router = useRouter();
-  const { favouriteCats, addFavouriteCat, deleteFavouriteCat } = useStore();
+  const { favouriteCats, addFavouriteCat, deleteFavouriteCat, addFavoriteCatBreeds } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
 
-  const favouriteCatId = useRef(0);
   const hasBreeds = cat.breeds.length !== 0;
   const imageWidth = Dimensions.get("screen").width * (1 / numOfColumns) - 2;
-  const isFavourite = isElementInArray(cat.id, favouriteCats);
+  const favouriteCat = isElementInArray(cat.id, favouriteCats);
   const iconScale = 10 * numOfColumns;
 
   const addToFavourites = async () => {
     setIsFavouriteToggling(true);
 
     try {
-      const addResponse = await addFavouriteCatAPI(cat.id);
-      const favouriteCat = await getFavouriteCatByIdAPI(addResponse.id);
-      favouriteCatId.current = favouriteCat.id;
-      addFavouriteCat(favouriteCat);
+      const addingFavouriteCatResult = await addFavouriteCatAPI(cat.id);
+      const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
+      addFavouriteCat(addedFavouriteCat);
+      if(hasBreeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);
     } catch (error: any) {
       console.log("Ошибка: ", error);
     } finally {
@@ -48,11 +47,12 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
   };
 
   const deleteFromFavourites = async () => {
+    if (!favouriteCat) return;
     setIsFavouriteToggling(true);
 
     try {
-      const data = await deleteFavouriteCatAPI(favouriteCatId.current);
-      deleteFavouriteCat(favouriteCatId.current);
+      const data = await deleteFavouriteCatAPI(favouriteCat.id);
+      deleteFavouriteCat(favouriteCat.id);
     } catch (error: any) {
       console.log("Ошибка: ", error);
     } finally {
@@ -61,14 +61,16 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
   };
 
   const toggleFavourites = async () => {
-    if (isFavourite) deleteFromFavourites();
+    if (favouriteCat) deleteFromFavourites();
     else addToFavourites();
   };
 
   return (
     <View style={{ ...styles.container }}>
       <TouchableOpacity
-        onPress={() => router.push({ pathname: '/catProfile', params: { catId: cat.id } })}
+        onPress={() =>
+          router.push({ pathname: "/catProfile", params: { catId: cat.id } })
+        }
       >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
@@ -88,7 +90,7 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
             <ActivityIndicator size={45 - iconScale} color={Colors.white} />
           ) : (
             <FavouriteIcon
-              isFavourite={isFavourite}
+              isFavourite={Boolean(favouriteCat)}
               onPress={toggleFavourites}
               size={45 - iconScale}
             />
@@ -97,8 +99,8 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
         {hasBreeds && (
           <View style={styles.infoIconContainer}>
             <Ionicons
-              name="information-circle-outline"
-              size={52 - iconScale}
+              name="documents-outline"
+              size={50 - iconScale}
               color={Colors.white}
               style={styles.icon}
             />
@@ -146,8 +148,8 @@ const styles = StyleSheet.create({
   },
   infoIconContainer: {
     position: "absolute",
-    top: 5,
-    left: 5,
+    top: 6,
+    left: 6,
   },
 });
 

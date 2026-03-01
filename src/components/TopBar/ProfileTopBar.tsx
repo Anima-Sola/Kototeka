@@ -5,19 +5,30 @@ import { useRouter } from "expo-router";
 import Colors from "../../constants/colors";
 import Feather from "@expo/vector-icons/Feather";
 import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
+import { shareImage } from "../../utils/functions";
 
 type ProfileTopBarProps = {
   isFavourite: boolean;
   isFavouriteToggling: boolean;
   onFavouriteIconPress: () => void;
+  imageUrl: string;
 };
 
 const ProfileTopBar: FC<ProfileTopBarProps> = ({
   isFavourite,
   onFavouriteIconPress,
   isFavouriteToggling,
+  imageUrl,
 }) => {
   const router = useRouter();
+
+  const handleShareImage = async () => {
+    /*try {
+      await shareImage(imageUrl);
+    } catch (error) {
+      console.log("Sharing cancelled or failed");
+    }*/
+  };
 
   return (
     <View style={styles.container}>
@@ -38,7 +49,7 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
             />
           )}
         </View>
-        <TouchableOpacity style={styles.icon} onPress={() => {}}>
+        <TouchableOpacity style={styles.icon} onPress={handleShareImage}>
           <Feather name="share-2" size={32} color={Colors.secondaryText} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon} onPress={() => {}}>
@@ -54,7 +65,9 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: Colors.statusBar,
     borderTopColor: Colors.disabled,
+    borderBottomColor: Colors.disabled,
     borderTopWidth: 1,
+    borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
   },

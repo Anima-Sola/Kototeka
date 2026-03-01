@@ -10,6 +10,7 @@ export interface IAuthSlice {
 export interface ICatsSlice {
   cats: Array<CatType>;
   setCats: (value: Array<CatType>) => void;
+  addCats: (value: Array<CatType>) => void;
 }
 
 export interface IFavouriteCatsSlice {

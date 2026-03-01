@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, Text } from "react-native";
 import getCats from "../../API/getCats";
 import getFavouriteCats from "../../API/getFavouriteCats";
 import getCatByIdAPI from "../../API/getCatById";
@@ -9,9 +9,10 @@ import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
 import { ActivityIndicator } from "react-native-paper";
 import { favouriteCatType } from "../../constants/types";
+import fontSizes from "../../constants/fontSizes";
 
 const Home = () => {
-  const { cats, setCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
+  const { cats, setCats, addCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
   const [isLoading, setIsLoading] = useState(true);
   const [numColumns, setNumOfColumns] = useState(2);
 
@@ -39,15 +40,36 @@ const Home = () => {
   };
 
   const fetchCatsData = async () => {
+    setIsLoading(true);
+
     try {
       const req = {
-        limit: 50,
+        limit: 20,
       };
 
       const data = await getCats(req);
       setCats(data);
     } catch (error: any) {
       console.log("Ошибка: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchAddCatsData = async () => {
+    setIsLoading(true);
+
+    try {
+      const req = {
+        limit: 20,
+      };
+
+      const data = await getCats(req);
+      addCats(data);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,10 +91,14 @@ const Home = () => {
     fetchData();
   }, []);
 
-  if (isLoading)
+  if (isLoading && cats.length === 0)
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size={"large"} />
+      <View style={styles.container}>
+        <TopBar setNumOfColumns={setNumOfColumns} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size={"large"} />
+          <Text style={styles.text}>Cats are coming!</Text>
+        </View>
       </View>
     );
 
@@ -88,6 +114,8 @@ const Home = () => {
         onRefresh={() => fetchCatsData()}
         refreshing={isLoading}
         numColumns={numColumns}
+        onEndReached={fetchAddCatsData }
+        onEndReachedThreshold={0.3}
       />
     </View>
   );
@@ -97,12 +125,18 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     backgroundColor: Colors.main,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 200,
   },
   container: {
     flex: 1,
     backgroundColor: Colors.main,
+  },
+  text: {
+    fontSize: fontSizes.FONT32,
+    color: Colors.mainText,
+    fontFamily: "AmaticBold",
+    alignSelf: "center",
+    marginTop: 10,
   },
 });
 

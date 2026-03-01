@@ -72,6 +72,7 @@ const CatProfile = () => {
         isFavourite={Boolean(favouriteCat)}
         isFavouriteToggling={isFavouriteToggling}
         onFavouriteIconPress={toggleFavourites}
+        imageUrl={cat.url}
       />
       <ScrollView>
         <Image

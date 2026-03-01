@@ -8,9 +8,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 type TopBarType = {
   setNumOfColumns: (value: number) => void;
+  isIconsVisible?: boolean;
 };
 
-const TopBar: FC<TopBarType> = ({ setNumOfColumns }) => {
+const TopBar: FC<TopBarType> = ({ setNumOfColumns, isIconsVisible = true }) => {
+  if (!isIconsVisible) return <View style={styles.container} />;
+
   return (
     <View style={styles.container}>
       <View style={styles.filterContainer} />
@@ -45,7 +48,9 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: Colors.statusBar,
     borderTopColor: Colors.disabled,
+    borderBottomColor: Colors.disabled,
     borderTopWidth: 1,
+    borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
   },

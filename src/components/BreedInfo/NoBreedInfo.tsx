@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+    paddingBottom: 200,
   },
   text: {
     fontSize: fontSizes.FONT32,

@@ -3,8 +3,15 @@ import { CatType } from "../constants/types";
 
 export const createCatsSlice = (set: any, get: any, api: any): ICatsSlice => ({
   cats: [],
-  setCats: (value: Array<CatType>) => 
+  setCats: (value: Array<CatType>) =>
     set({
       cats: value,
     }),
+  addCats: (value: Array<CatType>) => {
+    const currentCats = get().cats;
+    currentCats.push(...value);
+    set({
+      cats: currentCats,
+    });
+  },
 });

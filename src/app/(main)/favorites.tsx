@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
 import getFavouriteCats from "../../API/getFavouriteCats";
 import Colors from "../../constants/colors";
 import FavouriteCatCard from "../../components/CatCard/FavouriteCatCard";
@@ -55,7 +54,7 @@ const Favourites = () => {
   if (favouriteCats.length === 0)
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} isIconsVisible={false}/>
+        <TopBar setNumOfColumns={setNumOfColumns} isIconsVisible={false} />
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={Colors.accent} />
           <Text style={styles.text}>No favourite cats</Text>
@@ -64,20 +63,25 @@ const Favourites = () => {
       </View>
     );
 
+  const keyExtractor = (item: favouriteCatType) => item.id;
+  const renderItem = ({ item }: { item: favouriteCatType }) => (
+    <FavouriteCatCard cat={item} numOfColumns={numColumns} />
+  );
+
   return (
     <View style={styles.container}>
       <TopBar setNumOfColumns={setNumOfColumns} />
       <FlatList
         key={numColumns}
         data={favouriteCats}
-        renderItem={({ item }) => (
-          <FavouriteCatCard cat={item} numOfColumns={numColumns} />
-        )}
-        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
         onRefresh={fetchData}
         refreshing={isLoading}
         numColumns={numColumns}
+        maxToRenderPerBatch={20}
+        ListFooterComponent={<View style={styles.footer} />}
       />
     </View>
   );
@@ -100,6 +104,11 @@ const styles = StyleSheet.create({
     fontFamily: "AmaticBold",
     alignSelf: "center",
     marginTop: 10,
+  },
+  footer: {
+    height: 75,
+    alignItems: "center",
+    marginVertical: 20,
   },
 });
 

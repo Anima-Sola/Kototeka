@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, Text } from "react-native";
+import { View, StyleSheet, FlatList, Text, ActivityIndicator } from "react-native";
 import getCats from "../../API/getCats";
 import getFavouriteCats from "../../API/getFavouriteCats";
 import getCatByIdAPI from "../../API/getCatById";
@@ -7,13 +7,14 @@ import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
-import { ActivityIndicator } from "react-native-paper";
-import { favouriteCatType } from "../../constants/types";
+import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
+import { CatType, favouriteCatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 
 const Home = () => {
   const { cats, setCats, addCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddedLoading, setIsAddedLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
 
   const fetchFavouriteCatsData = async () => {
@@ -57,7 +58,7 @@ const Home = () => {
   };
 
   const fetchAddCatsData = async () => {
-    setIsLoading(true);
+    setIsAddedLoading(true);
 
     try {
       const req = {
@@ -69,7 +70,7 @@ const Home = () => {
     } catch (error: any) {
       console.log("Ошибка: ", error);
     } finally {
-      setIsLoading(false);
+      setIsAddedLoading(false);
     }
   };
 
@@ -91,16 +92,29 @@ const Home = () => {
     fetchData();
   }, []);
 
-  if (isLoading && cats.length === 0)
+  if (isLoading && !cats)
     return (
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} />
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size={"large"} />
+          <PaperActivityIndicator size={"large"} />
           <Text style={styles.text}>Cats are coming!</Text>
         </View>
       </View>
     );
+
+  const keyExtractor = (item: CatType) => item.id;
+  const renderItem = ({ item }: { item: CatType }) => (
+    <CatCard cat={item} numOfColumns={numColumns} />
+  );
+
+  const footerComponent = () => {
+    return (
+      <View style={styles.footer}>
+        {isAddedLoading && <ActivityIndicator size={"large"} />}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -108,14 +122,16 @@ const Home = () => {
       <FlatList
         key={numColumns}
         data={cats}
-        renderItem={({ item }) => <CatCard cat={item} numOfColumns={numColumns} />}
-        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
         onRefresh={() => fetchCatsData()}
         refreshing={isLoading}
         numColumns={numColumns}
-        onEndReached={fetchAddCatsData }
+        onEndReached={fetchAddCatsData}
         onEndReachedThreshold={0.3}
+        ListFooterComponent={footerComponent}
+        maxToRenderPerBatch={20}
       />
     </View>
   );
@@ -137,6 +153,11 @@ const styles = StyleSheet.create({
     fontFamily: "AmaticBold",
     alignSelf: "center",
     marginTop: 10,
+  },
+  footer: {
+    height: 125,
+    alignItems: "center",
+    marginVertical: 20,
   },
 });
 

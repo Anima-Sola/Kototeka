@@ -21,3 +21,11 @@ export interface IFavouriteCatsSlice {
   addFavoriteCatBreeds: (id: string, value: any[]) => void;
 }
 
+export interface IUploadedCatsSlice {
+  uploadedCats: Array<CatType>;
+  setUploadedCats: (value: Array<CatType>) => void;
+  addUploadedCat: (value: CatType) => void;
+  addUploadedCats: (value: Array<CatType>) => void;
+  deleteUploadedCat: (value: string) => void;
+}
+

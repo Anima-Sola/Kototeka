@@ -5,6 +5,7 @@ export default function AuthLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="catProfile" />
       <Stack.Screen name="favouriteCatProfile" />
+      <Stack.Screen name="uploadedCatProfile" />
     </Stack>
   );
 }

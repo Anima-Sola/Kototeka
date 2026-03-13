@@ -2,15 +2,22 @@ import { create } from "zustand";
 import { createAuthSlice } from "./authSlice";
 import { createCatsSlice } from "./catsSlice";
 import { createFavouriteCatsSlice } from "./favouriteCatsSlice";
-import { IAuthSlice, ICatsSlice, IFavouriteCatsSlice } from "../constants/interfaces";
+import { createUploadedCatsSlice } from "./uploadedCatsSlice";
+import {
+  IAuthSlice,
+  ICatsSlice,
+  IFavouriteCatsSlice,
+  IUploadedCatsSlice,
+} from "../constants/interfaces";
 
-type StoreState = IAuthSlice & ICatsSlice & IFavouriteCatsSlice;
+type StoreState = IAuthSlice & ICatsSlice & IFavouriteCatsSlice & IUploadedCatsSlice;
 
 const useStore = create<StoreState>((set, get, api) => {
   return {
     ...createAuthSlice(set, get, api),
     ...createCatsSlice(set, get, api),
     ...createFavouriteCatsSlice(set, get, api),
+    ...createUploadedCatsSlice(set, get, api),
   };
 });
 

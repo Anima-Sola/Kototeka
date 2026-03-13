@@ -5,14 +5,13 @@ type reqParams = {
   limit?: number;
 };
 
-const getCats = async ({ limit = 10 }: reqParams) => {
+const getUploadedCatsAPI = async ({ limit = 10 }: reqParams) => {
   const params = new URLSearchParams({
     limit: limit.toString(),
-    //has_breeds: "1",
   });
 
   try {
-    const response = await fetch(URLs.images + "/search?" + params, {
+    const response = await fetch(URLs.images + '/?' + params, {
       headers,
     });
 
@@ -27,4 +26,4 @@ const getCats = async ({ limit = 10 }: reqParams) => {
   }
 };
 
-export default getCats;
+export default getUploadedCatsAPI;

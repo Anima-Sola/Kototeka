@@ -3,6 +3,7 @@ import { View, StyleSheet, FlatList, Text, ActivityIndicator } from "react-nativ
 import getCats from "../../API/getCats";
 import getFavouriteCats from "../../API/getFavouriteCats";
 import getCatByIdAPI from "../../API/getCatById";
+import getUploadedCatsAPI from "../../API/getUploadedCats";
 import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
@@ -12,7 +13,7 @@ import { CatType, favouriteCatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 
 const Home = () => {
-  const { cats, setCats, addCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
+  const { cats, setCats, addCats, setFavouriteCats, addFavoriteCatBreeds, setUploadedCats } = useStore();
   const [isLoading, setIsLoading] = useState(true);
   const [isAddedLoading, setIsAddedLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
@@ -46,10 +47,28 @@ const Home = () => {
     try {
       const req = {
         limit: 20,
+        //limit: 5,
       };
 
       const data = await getCats(req);
       setCats(data);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchUploadedCatsData = async () => {
+    setIsLoading(true);
+
+    try {
+      const req = {
+        limit: 10,
+      };
+
+      const data = await getUploadedCatsAPI(req);
+      setUploadedCats(data);
     } catch (error: any) {
       console.log("Ошибка: ", error);
     } finally {
@@ -80,7 +99,8 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const favouriteCats = await fetchFavouriteCatsData();
-        await getFavouriteCatsBreeds(favouriteCats);
+        //await getFavouriteCatsBreeds(favouriteCats);
+        await fetchUploadedCatsData();
         await fetchCatsData();
       } catch (error: any) {
         console.log("Ошибка: ", error);
@@ -92,7 +112,7 @@ const Home = () => {
     fetchData();
   }, []);
 
-  if (isLoading && !cats)
+  if (isLoading) {
     return (
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} />
@@ -102,8 +122,10 @@ const Home = () => {
         </View>
       </View>
     );
+  }
 
-  const keyExtractor = (item: CatType) => item.id;
+
+  const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: CatType }) => (
     <CatCard cat={item} numOfColumns={numColumns} />
   );
@@ -155,7 +177,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   footer: {
-    height: 125,
+    height: 190,
     alignItems: "center",
     marginVertical: 20,
   },

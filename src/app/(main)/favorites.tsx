@@ -63,7 +63,7 @@ const Favourites = () => {
       </View>
     );
 
-  const keyExtractor = (item: favouriteCatType) => item.id;
+  const keyExtractor = (item: favouriteCatType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: favouriteCatType }) => (
     <FavouriteCatCard cat={item} numOfColumns={numColumns} />
   );
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   footer: {
-    height: 75,
+    height: 190,
     alignItems: "center",
     marginVertical: 20,
   },

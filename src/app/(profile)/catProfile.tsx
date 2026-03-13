@@ -18,17 +18,23 @@ import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
 const imageWidth = Dimensions.get("screen").width;
 
 const CatProfile = () => {
-  const { cats, favouriteCats, addFavouriteCat, deleteFavouriteCat, addFavoriteCatBreeds } = useStore();
+  const {
+    cats,
+    favouriteCats,
+    addFavouriteCat,
+    deleteFavouriteCat,
+    addFavoriteCatBreeds,
+  } = useStore();
   const { catId } = useLocalSearchParams<{ catId: string }>();
   const cat = cats.find((cat) => cat.id === catId);
 
-  if(!cat) return null;
+  if (!cat) return null;
 
   const router = useRouter();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
-  
+
   const favouriteCat = isElementInArray(cat.id, favouriteCats);
   const breeds = cat.breeds[0];
 
@@ -39,7 +45,7 @@ const CatProfile = () => {
       const addingFavouriteCatResult = await addFavouriteCatAPI(cat.id);
       const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
       addFavouriteCat(addedFavouriteCat);
-      if(breeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);
+      if (breeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);
     } catch (error: any) {
       console.log("Ошибка: ", error);
     } finally {
@@ -48,7 +54,7 @@ const CatProfile = () => {
   };
 
   const deleteFromFavourites = async () => {
-    if(!favouriteCat) return;
+    if (!favouriteCat) return;
     setIsFavouriteToggling(true);
 
     try {
@@ -69,10 +75,10 @@ const CatProfile = () => {
   return (
     <View style={styles.container}>
       <ProfileTopBar
+        isFavouriteIconEnabled={true}
         isFavourite={Boolean(favouriteCat)}
-        isFavouriteToggling={isFavouriteToggling}
+        isRequestInProcess={isFavouriteToggling}
         onFavouriteIconPress={toggleFavourites}
-        imageUrl={cat.url}
       />
       <ScrollView>
         <Image

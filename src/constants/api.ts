@@ -5,3 +5,7 @@ export const headers = {
   "Content-Type": "application/json",
   "x-api-key": API_KEY,
 };
+
+export const formHeaders = {
+  "x-api-key": API_KEY,
+};

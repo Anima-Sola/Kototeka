@@ -26,7 +26,7 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
 
-  const hasBreeds = cat.breeds.length !== 0;
+  const hasBreeds = cat.breeds[0];
   const imageWidth = Dimensions.get("screen").width * (1 / numOfColumns) - 2;
   const favouriteCat = isElementInArray(cat.id, favouriteCats);
   const iconScale = 10 * numOfColumns;
@@ -40,7 +40,7 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
       addFavouriteCat(addedFavouriteCat);
       if(hasBreeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsFavouriteToggling(false);
     }

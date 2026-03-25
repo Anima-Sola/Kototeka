@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
-import getFavouriteCats from "../../API/getFavouriteCats";
+import getFavouriteCatsAPI from "../../API/getFavouriteCats";
 import Colors from "../../constants/colors";
 import FavouriteCatCard from "../../components/CatCard/FavouriteCatCard";
 import useStore from "../../store/store";
@@ -15,23 +15,13 @@ const Favourites = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
 
-  const fetchFavouriteCatsData = async () => {
-    try {
-      const data = await getFavouriteCats();
-      setFavouriteCats(data);
-      return data;
-    } catch (error: any) {
-      console.log("Ошибка: ", error);
-    }
-  };
-
   const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
     const promises = favouriteCats.map(async (favouriteCat) => {
       try {
         const response = await getCatByIdAPI(favouriteCat.image.id);
         if (response.breeds) addFavoriteCatBreeds(favouriteCat.id, response.breeds[0]);
       } catch (error: any) {
-        console.log("Ошибка: ", error);
+        throw error;
       }
     });
 
@@ -42,10 +32,11 @@ const Favourites = () => {
     setIsLoading(true);
 
     try {
-      const favouriteCats = await fetchFavouriteCatsData();
+      const favouriteCats = await getFavouriteCatsAPI();
+      setFavouriteCats(favouriteCats);
       await getFavouriteCatsBreeds(favouriteCats);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }

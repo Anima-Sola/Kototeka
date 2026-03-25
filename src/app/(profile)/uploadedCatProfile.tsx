@@ -36,7 +36,7 @@ const UploadedCatProfile = () => {
       setTimeout(() => deleteUploadedCat(uploadedCat.id), 500);
       router.back();
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsDeleting(false);
     }

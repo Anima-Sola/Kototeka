@@ -16,13 +16,6 @@ export const createUploadedCatsSlice = (
       uploadedCats: [value, ...state.uploadedCats],
     }));
   },
-  addUploadedCats: (value: Array<CatType>) => {
-    const currentUploadedCats = get().uploadedCats;
-    currentUploadedCats.push(...value);
-    set({
-      uploadedCats: currentUploadedCats,
-    });
-  },
   deleteUploadedCat: (value: string) => {
     set((state: IUploadedCatsSlice) => ({
       uploadedCats: state.uploadedCats.filter((cat) => cat.id !== value),

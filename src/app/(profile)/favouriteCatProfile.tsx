@@ -40,7 +40,7 @@ const FavouriteCatProfile = () => {
       const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
       addFavouriteCat(addedFavouriteCat);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -54,7 +54,7 @@ const FavouriteCatProfile = () => {
       setTimeout(() => deleteFavouriteCat(favouriteCat.id), 500);
       router.back();
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsFavouriteToggling(false);
     }

@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  FlatList,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList } from "react-native";
 import useStore from "../../store/store";
 import * as ImagePicker from "expo-image-picker";
 import Colors from "../../constants/colors";
@@ -21,19 +13,17 @@ import { CatType } from "../../constants/types";
 import getUploadedCatsAPI from "../../API/getUploadedCats";
 
 const Upload = () => {
-  const { uploadedCats, setUploadedCats, addUploadedCat, addUploadedCats } = useStore();
+  const { uploadedCats, setUploadedCats, addUploadedCat } = useStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [isAddedUploadedCatsLoading, setIsAddedUploadedCatsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] = useState(false);
-  const [isAddedLoading, setIsAddedLoading] = useState(false);
 
   const uploadCat = async (image: string) => {
     try {
       const uploadCatResult = await uploadCatAPI(image);
       if (uploadCatResult) addUploadedCat(uploadCatResult);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     }
   };
 
@@ -42,32 +32,15 @@ const Upload = () => {
 
     try {
       const req = {
-        limit: 10,
+        limit: 1000,
       };
 
       const data = await getUploadedCatsAPI(req);
       setUploadedCats(data);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const fetchAddUploadedCatsData = async () => {
-    setIsAddedUploadedCatsLoading(true);
-
-    try {
-      const req = {
-        limit: 10,
-      };
-
-      const data = await getUploadedCatsAPI(req);
-      addUploadedCats(data);
-    } catch (error: any) {
-      console.log("Ошибка: ", error);
-    } finally {
-      setIsAddedUploadedCatsLoading(false);
     }
   };
 
@@ -140,7 +113,7 @@ const Upload = () => {
     );
   };
 
-  if (uploadedCats.length == 0) {
+  if (uploadedCats.length === 0) {
     return (
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} isIconsVisible={false} />
@@ -160,14 +133,6 @@ const Upload = () => {
     <UploadedCatCard cat={item} numOfColumns={numColumns} />
   );
 
-  const footerComponent = () => {
-    return (
-      <View style={styles.footer}>
-        {isAddedUploadedCatsLoading && <ActivityIndicator size={"large"} />}
-      </View>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <TopBar setNumOfColumns={setNumOfColumns} />
@@ -181,9 +146,7 @@ const Upload = () => {
         refreshing={isLoading}
         numColumns={numColumns}
         maxToRenderPerBatch={20}
-        onEndReached={() => fetchAddUploadedCatsData()}
-        onEndReachedThreshold={0.3}
-        ListFooterComponent={footerComponent}
+        ListFooterComponent={<View style={styles.footer} />}
       />
       {addImageButtons()}
     </View>

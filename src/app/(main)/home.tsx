@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Text, ActivityIndicator } from "react-native";
-import getCats from "../../API/getCats";
-import getFavouriteCats from "../../API/getFavouriteCats";
+import getCatsAPI from "../../API/getCats";
+import getFavouriteCatsAPI from "../../API/getFavouriteCats";
 import getCatByIdAPI from "../../API/getCatById";
 import getUploadedCatsAPI from "../../API/getUploadedCats";
 import Colors from "../../constants/colors";
@@ -13,20 +13,17 @@ import { CatType, favouriteCatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 
 const Home = () => {
-  const { cats, setCats, addCats, setFavouriteCats, addFavoriteCatBreeds, setUploadedCats } = useStore();
+  const {
+    cats,
+    setCats,
+    addCats,
+    setFavouriteCats,
+    addFavoriteCatBreeds,
+    setUploadedCats,
+  } = useStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [isAddedLoading, setIsAddedLoading] = useState(false);
+  const [isAddingCatsLoading, setIsAddingCatsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
-
-  const fetchFavouriteCatsData = async () => {
-    try {
-      const data = await getFavouriteCats();
-      setFavouriteCats(data);
-      return data;
-    } catch (error: any) {
-      console.log("Ошибка: ", error);
-    }
-  };
 
   const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
     const promises = favouriteCats.map(async (favouriteCat) => {
@@ -34,7 +31,7 @@ const Home = () => {
         const response = await getCatByIdAPI(favouriteCat.image.id);
         if (response.breeds) addFavoriteCatBreeds(favouriteCat.id, response.breeds[0]);
       } catch (error: any) {
-        console.log("Ошибка: ", error);
+        throw error;
       }
     });
 
@@ -50,46 +47,29 @@ const Home = () => {
         //limit: 5,
       };
 
-      const data = await getCats(req);
+      const data = await getCatsAPI(req);
       setCats(data);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const fetchUploadedCatsData = async () => {
-    setIsLoading(true);
-
-    try {
-      const req = {
-        limit: 10,
-      };
-
-      const data = await getUploadedCatsAPI(req);
-      setUploadedCats(data);
-    } catch (error: any) {
-      console.log("Ошибка: ", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchAddCatsData = async () => {
-    setIsAddedLoading(true);
+  const fetchAddedCatsData = async () => {
+    setIsAddingCatsLoading(true);
 
     try {
       const req = {
         limit: 20,
       };
 
-      const data = await getCats(req);
+      const data = await getCatsAPI(req);
       addCats(data);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
-      setIsAddedLoading(false);
+      setIsAddingCatsLoading(false);
     }
   };
 
@@ -98,12 +78,16 @@ const Home = () => {
 
     const fetchData = async () => {
       try {
-        const favouriteCats = await fetchFavouriteCatsData();
-        //await getFavouriteCatsBreeds(favouriteCats);
-        await fetchUploadedCatsData();
+        const favouriteCats = await getFavouriteCatsAPI();
+        setFavouriteCats(favouriteCats);
+        await getFavouriteCatsBreeds(favouriteCats);
+        const uploadedCats = await getUploadedCatsAPI({
+          limit: 1000,
+        });
+        setUploadedCats(uploadedCats);
         await fetchCatsData();
       } catch (error: any) {
-        console.log("Ошибка: ", error);
+        throw error;
       } finally {
         setIsLoading(false);
       }
@@ -124,7 +108,6 @@ const Home = () => {
     );
   }
 
-
   const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: CatType }) => (
     <CatCard cat={item} numOfColumns={numColumns} />
@@ -133,7 +116,7 @@ const Home = () => {
   const footerComponent = () => {
     return (
       <View style={styles.footer}>
-        {isAddedLoading && <ActivityIndicator size={"large"} />}
+        {isAddingCatsLoading && <ActivityIndicator size={"large"} />}
       </View>
     );
   };
@@ -150,7 +133,7 @@ const Home = () => {
         onRefresh={() => fetchCatsData()}
         refreshing={isLoading}
         numColumns={numColumns}
-        onEndReached={fetchAddCatsData}
+        onEndReached={fetchAddedCatsData}
         onEndReachedThreshold={0.3}
         ListFooterComponent={footerComponent}
         maxToRenderPerBatch={20}

@@ -1,5 +1,6 @@
 import URLs from "../constants/urls";
 import { headers } from "../constants/api";
+import fetchAPI from "./fetchAPI";
 
 type reqParams = {
   limit?: number;
@@ -11,18 +12,13 @@ const getUploadedCatsAPI = async ({ limit = 10 }: reqParams) => {
   });
 
   try {
-    const response = await fetch(URLs.images + '/?' + params, {
+    const response = await fetchAPI(URLs.images + '/?' + params, {
       headers,
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${JSON.stringify(response)}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Ошибка при получении данных:", error);
+    return response;
+  } catch (error: any) {
+    throw error;
   }
 };
 

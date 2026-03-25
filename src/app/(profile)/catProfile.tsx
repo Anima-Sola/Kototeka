@@ -47,7 +47,7 @@ const CatProfile = () => {
       addFavouriteCat(addedFavouriteCat);
       if (breeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsFavouriteToggling(false);
     }

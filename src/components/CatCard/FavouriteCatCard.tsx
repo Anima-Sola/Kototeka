@@ -34,7 +34,7 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
       await deleteFavouriteCatAPI(cat.id);
       deleteFavouriteCat(cat.id);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsFavouriteToggling(false);
     }

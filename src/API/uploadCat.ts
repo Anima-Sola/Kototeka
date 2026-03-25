@@ -1,10 +1,11 @@
 import URLs from "../constants/urls";
 import { formHeaders } from "../constants/api";
+import fetchAPI from "./fetchAPI";
 
 const uploadCatAPI = async (imageUri: string) => {
   const formData = new FormData();
   const fileName = imageUri.split(/[\\/]/).pop();
-  
+
   formData.append("file", {
     uri: imageUri,
     name: fileName,
@@ -12,20 +13,15 @@ const uploadCatAPI = async (imageUri: string) => {
   } as any);
 
   try {
-    const response = await fetch(URLs.upload, {
+    const response = await fetchAPI(URLs.upload, {
       method: "POST",
       headers: formHeaders,
       body: formData,
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Ошибка при получении данных:", error);
+    return response;
+  } catch (error: any) {
+    throw error;
   }
 };
 

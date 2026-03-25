@@ -34,7 +34,7 @@ const UploadedCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
       await deleteCatAPI(cat.id);
       deleteUploadedCat(cat.id);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsDeleting(false);
     }

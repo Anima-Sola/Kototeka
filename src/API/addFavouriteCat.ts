@@ -1,5 +1,6 @@
 import URLs from "../constants/urls";
-import { headers } from "../constants/api"; 
+import { headers } from "../constants/api";
+import fetchAPI from "./fetchAPI";
 
 const addFavouriteCatAPI = async (image_id: string) => {
   const params = {
@@ -7,20 +8,15 @@ const addFavouriteCatAPI = async (image_id: string) => {
   };
 
   try {
-    const response = await fetch(URLs.favourites, {
+    const response = await fetchAPI(URLs.favourites, {
       method: "POST",
       headers,
       body: JSON.stringify(params),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Ошибка при получении данных:", error);
+    return response;
+  } catch (error: any) {
+    throw error;
   }
 };
 

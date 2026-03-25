@@ -1,21 +1,17 @@
 import URLs from "../constants/urls";
 import { headers } from "../constants/api";
+import fetchAPI from "./fetchAPI";
 
-const getFavouriteCats = async () => {
+const getFavouriteCatsAPI = async () => {
   try {
-    const response = await fetch(URLs.favourites, {
+    const response = await fetchAPI(URLs.favourites, {
       headers,
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Ошибка при получении данных:", error);
+    
+    return response;
+  } catch (error: any) {
+    throw error;
   }
 };
 
-export default getFavouriteCats;
+export default getFavouriteCatsAPI;

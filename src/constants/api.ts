@@ -7,5 +7,6 @@ export const headers = {
 };
 
 export const formHeaders = {
+  'Content-Type': 'multipart/form-data',
   "x-api-key": API_KEY,
 };

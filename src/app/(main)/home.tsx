@@ -21,8 +21,9 @@ const Home = () => {
     addFavoriteCatBreeds,
     setUploadedCats,
   } = useStore();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isAddingCatsLoading, setIsAddingCatsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [numColumns, setNumOfColumns] = useState(2);
 
   const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
@@ -74,7 +75,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    setIsInitialLoading(true);
 
     const fetchData = async () => {
       try {
@@ -89,14 +90,14 @@ const Home = () => {
       } catch (error: any) {
         throw error;
       } finally {
-        setIsLoading(false);
+        setIsInitialLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return (
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} />

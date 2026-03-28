@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import useStore from "../../store/store";
 import * as ImagePicker from "expo-image-picker";
 import Colors from "../../constants/colors";
@@ -17,13 +18,18 @@ const Upload = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const uploadCat = async (image: string) => {
+    setIsUploading(true);
+
     try {
       const uploadCatResult = await uploadCatAPI(image);
       if (uploadCatResult) addUploadedCat(uploadCatResult);
     } catch (error: any) {
       throw error;
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -113,6 +119,14 @@ const Upload = () => {
     );
   };
 
+  const UploadingActivityIndicator = () => {
+    return (
+      <View style={styles.uploadingAvtivityIndicatorContainer}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  };
+
   if (uploadedCats.length === 0) {
     return (
       <View style={styles.container}>
@@ -124,8 +138,9 @@ const Upload = () => {
           <Text style={styles.emptyText}>the device gallery or camera</Text>
         </View>
         {addImageButtons()}
+        {isUploading && UploadingActivityIndicator()}
       </View>
-    );
+    )
   }
 
   const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
@@ -149,6 +164,7 @@ const Upload = () => {
         ListFooterComponent={<View style={styles.footer} />}
       />
       {addImageButtons()}
+      {isUploading && UploadingActivityIndicator()}
     </View>
   );
 };
@@ -164,6 +180,16 @@ const styles = StyleSheet.create({
     paddingTop: 200,
     alignItems: "center",
     alignSelf: "center",
+  },
+  uploadingAvtivityIndicatorContainer: {
+    position: "absolute",
+    zIndex: 100,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
   plusButton: {
     position: "absolute",

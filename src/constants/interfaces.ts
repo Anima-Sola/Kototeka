@@ -28,3 +28,29 @@ export interface IUploadedCatsSlice {
   deleteUploadedCat: (value: string) => void;
 }
 
+export interface ISettingsSlice {
+  mode: 'light' | 'dark' | 'system';
+  resolvedTheme: 'light' | 'dark';
+  setMode: (mode: 'light' | 'dark' | 'system') => void;
+  setResolvedTheme: (theme: 'light' | 'dark') => void;
+}
+
+export interface ITheme {
+  colors: {
+    statusBar: string;
+    main: string;
+    secondary: string;
+    mainText: string;
+    secondaryText: string;
+    border: string;
+    accent: string;
+    accent2: string;
+    error: string;
+    placeholder: string;
+    disabled: string;
+    white: string;
+    black: string;
+    red: string;
+  };
+}
+

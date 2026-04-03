@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Appearance } from "react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import { Stack, useRouter } from "expo-router";
@@ -10,7 +11,7 @@ import Wrapper from "../components/Wrapper/Wrapper";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { setIsSignedIn } = useStore();
+  const { setIsSignedIn, mode, setResolvedTheme } = useStore();
   const router = useRouter();
   const [fontsLoaded] = useFonts({
     AmaticBold: require("../../assets/fonts/AmaticSC-Bold.ttf"),
@@ -25,6 +26,18 @@ export default function RootLayout() {
       setTimeout(() => SplashScreen.hideAsync(), 2000);
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {
+    const updateTheme = () => {
+      const systemTheme = Appearance.getColorScheme() || "light";
+      setResolvedTheme(systemTheme);
+    };
+
+    updateTheme();
+
+    const sub = Appearance.addChangeListener(updateTheme);
+    return () => sub.remove();
+  }, [mode]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

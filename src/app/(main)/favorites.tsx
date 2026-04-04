@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
 import getFavouriteCatsAPI from "../../API/getFavouriteCats";
-import Colors from "../../constants/colors";
 import FavouriteCatCard from "../../components/CatCard/FavouriteCatCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
@@ -9,8 +8,11 @@ import getCatByIdAPI from "../../API/getCatById";
 import { favouriteCatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 const Favourites = () => {
+  const styles = useThemedStyles(createStyles);
   const { favouriteCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
@@ -47,7 +49,7 @@ const Favourites = () => {
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} isIconsVisible={false} />
         <View style={styles.emptyContainer}>
-          <Ionicons name="paw-sharp" size={50} color={Colors.accent} />
+          <Ionicons name="paw-sharp" size={50} color={styles.iconColor.accent} />
           <Text style={styles.text}>No favourite cats</Text>
           <Text style={styles.text}>Please, add them from the gallery</Text>
         </View>
@@ -77,30 +79,33 @@ const Favourites = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  emptyContainer: {
-    flex: 1,
-    backgroundColor: Colors.main,
-    paddingTop: 200,
-    alignItems: "center",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: Colors.main,
-  },
-  text: {
-    fontSize: fontSizes.FONT32,
-    color: Colors.mainText,
-    fontFamily: "AmaticBold",
-    alignSelf: "center",
-    marginTop: 10,
-  },
-  footer: {
-    height: 190,
-    alignItems: "center",
-    marginVertical: 20,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    emptyContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      paddingTop: 200,
+      alignItems: "center",
+    },
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+    },
+    text: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      alignSelf: "center",
+      marginTop: 10,
+    },
+    footer: {
+      height: 190,
+      alignItems: "center",
+      marginVertical: 20,
+    },
+    iconColor: {
+      color: theme.colors.accent,
+    },
+  });
 
 export default Favourites;

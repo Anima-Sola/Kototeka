@@ -1,9 +1,9 @@
 import useStore from "../store/store";
-import { lightThemeNew, darkThemeNew } from "../constants/colors";
+import { lightTheme, darkTheme } from "../constants/colors";
 
 export const useTheme = () => {
   const { mode, resolvedTheme } = useStore();
   const themeKey = mode === "system" ? resolvedTheme : mode;
-  const theme = themeKey === "dark" ? darkThemeNew : lightThemeNew;
+  const theme = themeKey === "dark" ? darkTheme : lightTheme;
   return theme;
 };

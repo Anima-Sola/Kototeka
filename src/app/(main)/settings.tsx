@@ -3,7 +3,6 @@ import useStore from "../../store/store";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
-import { Button } from "react-native-paper";
 import TopBar from "../../components/TopBar/TopBar";
 import { RadioButton } from "react-native-paper";
 import { useThemedStyles } from "../../hooks/useThemedStyles";

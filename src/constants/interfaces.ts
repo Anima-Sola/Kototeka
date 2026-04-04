@@ -51,6 +51,7 @@ export interface ITheme {
     white: string;
     black: string;
     red: string;
+    shadow: string;
   };
 }
 

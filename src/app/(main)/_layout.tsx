@@ -3,10 +3,13 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Tabs } from "expo-router";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 export default function MainLayout() {
+  const styles = useThemedStyles(createStyles);
+
   return (
     <Tabs
       screenOptions={{
@@ -14,8 +17,8 @@ export default function MainLayout() {
         tabBarStyle: styles.tabBarStyle,
         tabBarIconStyle: styles.iconContainer,
         tabBarItemStyle: styles.itemContainer,
-        tabBarActiveTintColor: Colors.accent,
-        tabBarInactiveTintColor: Colors.secondaryText,
+        tabBarActiveTintColor: styles.active.color,
+        tabBarInactiveTintColor: styles.nonActive.color,
         tabBarLabelStyle: styles.tabBarLabelStyle,
       }}
     >
@@ -33,7 +36,7 @@ export default function MainLayout() {
             <Ionicons
               name="paw-sharp"
               size={28}
-              color={focused ? Colors.accent : Colors.secondaryText}
+              color={focused ? styles.active.color : styles.nonActive.color}
             />
           ),
         }}
@@ -46,7 +49,7 @@ export default function MainLayout() {
             <AntDesign
               size={28}
               name="heart"
-              color={focused ? Colors.accent : Colors.secondaryText}
+              color={focused ? styles.active.color : styles.nonActive.color}
             />
           ),
         }}
@@ -59,7 +62,7 @@ export default function MainLayout() {
             <Feather
               name="upload"
               size={28}
-              color={focused ? Colors.accent : Colors.secondaryText}
+              color={focused ? styles.active.color : styles.nonActive.color}
             />
           ),
         }}
@@ -72,7 +75,7 @@ export default function MainLayout() {
             <Feather
               name="settings"
               size={28}
-              color={focused ? Colors.accent : Colors.secondaryText}
+              color={focused ? styles.active.color : styles.nonActive.color}
             />
           ),
         }}
@@ -81,25 +84,33 @@ export default function MainLayout() {
   );
 }
 
-const styles = StyleSheet.create({
-  tabBarStyle: {
-    backgroundColor: Colors.secondary,
-    position: "absolute",
-    bottom: Platform.OS === "ios" ? 30 : 50,
-    height: 60,
-    marginHorizontal: 16,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconContainer: {
-    marginTop: 4,
-  },
-  tabBarLabelStyle: {
-    fontSize: fontSizes.FONT10,
-    fontFamily: "ShantellBold",
-  },
-  itemContainer: {
-    height: 60,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    tabBarStyle: {
+      backgroundColor: theme.colors.secondary,
+      position: "absolute",
+      bottom: Platform.OS === "ios" ? 30 : 50,
+      height: 60,
+      marginHorizontal: 16,
+      borderRadius: 20,
+      justifyContent: "center",
+      alignItems: "center",
+      borderTopWidth: 0,
+    },
+    iconContainer: {
+      marginTop: 4,
+    },
+    tabBarLabelStyle: {
+      fontSize: fontSizes.FONT10,
+      fontFamily: "ShantellBold",
+    },
+    itemContainer: {
+      height: 60,
+    },
+    active: {
+      color: theme.colors.accent,
+    },
+    nonActive: {
+      color: theme.colors.secondaryText,
+    },
+  });

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList } from "react
 import { ActivityIndicator } from "react-native-paper";
 import useStore from "../../store/store";
 import * as ImagePicker from "expo-image-picker";
-import Colors from "../../constants/colors";
 import TopBar from "../../components/TopBar/TopBar";
 import fontSizes from "../../constants/fontSizes";
 import Feather from "@expo/vector-icons/Feather";
@@ -12,8 +11,11 @@ import uploadCatAPI from "../../API/uploadCat";
 import UploadedCatCard from "../../components/CatCard/UploadedCatCard";
 import { CatType } from "../../constants/types";
 import getUploadedCatsAPI from "../../API/getUploadedCats";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 const Upload = () => {
+  const styles = useThemedStyles(createStyles);
   const { uploadedCats, setUploadedCats, addUploadedCat } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
@@ -108,10 +110,10 @@ const Upload = () => {
         {isCameraGallaryBtnsVisible && (
           <View>
             <TouchableOpacity style={styles.cameraButton} onPress={pickImageFromCamera}>
-              <Feather name="camera" size={24} color={Colors.secondaryText} />
+              <Feather name="camera" size={24} color={styles.iconColor.color} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.gallaryButton} onPress={pickImageFromGallary}>
-              <Feather name="image" size={24} color={Colors.secondaryText} />
+              <Feather name="image" size={24} color={styles.iconColor.color} />
             </TouchableOpacity>
           </View>
         )}
@@ -132,7 +134,7 @@ const Upload = () => {
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} isIconsVisible={false} />
         <View style={styles.emptyContainer}>
-          <Ionicons name="paw-sharp" size={50} color={Colors.accent} />
+          <Ionicons name="paw-sharp" size={50} color={styles.pawIconColor.color} />
           <Text style={styles.emptyText}>No uploaded cats</Text>
           <Text style={styles.emptyText}>Please, add them from </Text>
           <Text style={styles.emptyText}>the device gallery or camera</Text>
@@ -140,7 +142,7 @@ const Upload = () => {
         {addImageButtons()}
         {isUploading && UploadingActivityIndicator()}
       </View>
-    )
+    );
   }
 
   const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
@@ -169,101 +171,109 @@ const Upload = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.main,
-  },
-  emptyContainer: {
-    flex: 1,
-    backgroundColor: Colors.main,
-    paddingTop: 200,
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  uploadingAvtivityIndicatorContainer: {
-    position: "absolute",
-    zIndex: 100,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  plusButton: {
-    position: "absolute",
-    width: 80,
-    height: 80,
-    bottom: 130,
-    right: 16,
-    borderRadius: 40,
-    backgroundColor: Colors.white,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  text: {
-    fontSize: fontSizes.FONT32,
-    color: Colors.secondaryText,
-  },
-  emptyText: {
-    fontSize: fontSizes.FONT32,
-    color: Colors.mainText,
-    fontFamily: "AmaticBold",
-    alignSelf: "center",
-    marginTop: 10,
-  },
-  cameraButton: {
-    position: "absolute",
-    width: 60,
-    height: 60,
-    bottom: 290,
-    right: 26,
-    borderRadius: 30,
-    backgroundColor: Colors.white,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+    emptyContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      paddingTop: 200,
+      alignItems: "center",
+      alignSelf: "center",
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  gallaryButton: {
-    position: "absolute",
-    width: 60,
-    height: 60,
-    bottom: 220,
-    right: 26,
-    borderRadius: 30,
-    backgroundColor: Colors.white,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+    uploadingAvtivityIndicatorContainer: {
+      position: "absolute",
+      zIndex: 100,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      justifyContent: "center",
+      alignItems: "center",
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  footer: {
-    height: 190,
-    alignItems: "center",
-    marginVertical: 20,
-  },
-});
+    plusButton: {
+      position: "absolute",
+      width: 80,
+      height: 80,
+      bottom: 130,
+      right: 16,
+      borderRadius: 40,
+      backgroundColor: theme.colors.white,
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: theme.colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    text: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.secondaryText,
+    },
+    emptyText: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      alignSelf: "center",
+      marginTop: 10,
+    },
+    cameraButton: {
+      position: "absolute",
+      width: 60,
+      height: 60,
+      bottom: 290,
+      right: 26,
+      borderRadius: 30,
+      backgroundColor: theme.colors.white,
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: theme.colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    gallaryButton: {
+      position: "absolute",
+      width: 60,
+      height: 60,
+      bottom: 220,
+      right: 26,
+      borderRadius: 30,
+      backgroundColor: theme.colors.white,
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: theme.colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    footer: {
+      height: 190,
+      alignItems: "center",
+      marginVertical: 20,
+    },
+    pawIconColor: {
+      color: theme.colors.accent,
+    },
+    iconColor: {
+      color: theme.colors.secondaryText
+    }
+
+  });
 
 export default Upload;

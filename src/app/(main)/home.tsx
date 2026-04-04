@@ -4,13 +4,14 @@ import getCatsAPI from "../../API/getCats";
 import getFavouriteCatsAPI from "../../API/getFavouriteCats";
 import getCatByIdAPI from "../../API/getCatById";
 import getUploadedCatsAPI from "../../API/getUploadedCats";
-import Colors from "../../constants/colors";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
 import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
 import { CatType, favouriteCatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 const Home = () => {
   const {
@@ -21,6 +22,7 @@ const Home = () => {
     addFavoriteCatBreeds,
     setUploadedCats,
   } = useStore();
+  const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingCatsLoading, setIsAddingCatsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -143,19 +145,19 @@ const Home = () => {
   );
 };
 
-const styles = StyleSheet.create({
+export const createStyles = (theme: ITheme) => StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    backgroundColor: Colors.main,
+    backgroundColor: theme.colors.main,
     paddingTop: 200,
   },
   container: {
     flex: 1,
-    backgroundColor: Colors.main,
+    backgroundColor: theme.colors.main,
   },
   text: {
     fontSize: fontSizes.FONT32,
-    color: Colors.mainText,
+    color: theme.colors.mainText,
     fontFamily: "AmaticBold",
     alignSelf: "center",
     marginTop: 10,

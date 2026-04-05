@@ -47,7 +47,7 @@ const Favourites = () => {
   if (favouriteCats.length === 0)
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} isIconsVisible={false} />
+        <TopBar setNumOfColumns={setNumOfColumns} />
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.accent} />
           <Text style={styles.text}>No favourite cats</Text>
@@ -63,7 +63,6 @@ const Favourites = () => {
 
   return (
     <View style={styles.container}>
-      <TopBar setNumOfColumns={setNumOfColumns} />
       <FlatList
         key={numColumns}
         data={favouriteCats}
@@ -75,7 +74,12 @@ const Favourites = () => {
         numColumns={numColumns}
         maxToRenderPerBatch={20}
         ListFooterComponent={<View style={styles.footer} />}
+        contentContainerStyle={styles.flatListContent}
+        scrollIndicatorInsets={{ top: 60 }}
       />
+      <View style={styles.topBarContainer}>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+      </View>
     </View>
   );
 };
@@ -105,6 +109,17 @@ export const createStyles = (theme: ITheme) =>
     },
     iconColor: {
       color: theme.colors.accent,
+    },
+    topBarContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
+    },
+    flatListContent: {
+      paddingTop: 50,
+      paddingBottom: 80,
     },
   });
 

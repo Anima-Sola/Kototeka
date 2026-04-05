@@ -5,11 +5,12 @@ import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
 import deleteCatAPI from "../../API/deleteCat";
 import useStore from "../../store/store";
-import Colors from "../../constants/colors";
 import { CatType } from "../../constants/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { blurhash } from "../../constants/common";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type CatCardProps = {
   cat: CatType;
@@ -17,6 +18,7 @@ type CatCardProps = {
 };
 
 const UploadedCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
+  const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const { deleteUploadedCat } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
@@ -62,13 +64,13 @@ const UploadedCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
         />
         <View style={styles.favouriteIconContainer}>
           {isDeleting ? (
-            <ActivityIndicator size={45 - iconScale} color={Colors.white} />
+            <ActivityIndicator size={45 - iconScale} color={styles.iconColor.color} />
           ) : (
             <TouchableOpacity onPress={deleteCat}>
               <FontAwesome
                 name="trash-o"
                 size={45 - iconScale}
-                color={Colors.white}
+                color={styles.iconColor.color}
                 style={styles.iconStyle}
               />
             </TouchableOpacity>
@@ -79,7 +81,7 @@ const UploadedCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
             <Ionicons
               name="documents-outline"
               size={50 - iconScale}
-              color={Colors.white}
+              color={styles.iconColor.color}
               style={styles.icon}
             />
           </View>
@@ -94,45 +96,49 @@ const UploadedCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.secondary,
-    margin: 1,
-    alignSelf: "center",
-    borderRadius: 5,
-  },
-  loaderContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: {
-    borderRadius: 5,
-  },
-  favouriteIconContainer: {
-    position: "absolute",
-    bottom: 10,
-    right: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  icon: {
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowColor: Colors.black,
-  },
-  infoIconContainer: {
-    position: "absolute",
-    top: 6,
-    left: 6,
-  },
-  iconStyle: {
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowColor: Colors.black,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.secondary,
+      margin: 1,
+      alignSelf: "center",
+      borderRadius: 5,
+    },
+    loaderContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    image: {
+      borderRadius: 5,
+    },
+    favouriteIconContainer: {
+      position: "absolute",
+      bottom: 10,
+      right: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    icon: {
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowColor: theme.colors.shadow,
+    },
+    infoIconContainer: {
+      position: "absolute",
+      top: 6,
+      left: 6,
+    },
+    iconStyle: {
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowColor: theme.colors.shadow,
+    },
+    iconColor: {
+      color: theme.colors.white,
+    },
+  });
 
 export default UploadedCatCard;

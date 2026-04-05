@@ -38,8 +38,10 @@ export interface ISettingsSlice {
 export interface ITheme {
   colors: {
     statusBar: string;
+    statusBarTransluscent: string;
     main: string;
     secondary: string;
+    secondaryTransluscent: string;
     mainText: string;
     secondaryText: string;
     border: string;
@@ -52,6 +54,7 @@ export interface ITheme {
     black: string;
     red: string;
     shadow: string;
+    uploadPhotoBtn: string;
   };
 }
 

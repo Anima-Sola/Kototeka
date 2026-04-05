@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import Colors from "../../constants/colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Entypo from "@expo/vector-icons/Entypo";
 import Fontisto from "@expo/vector-icons/Fontisto";
@@ -9,31 +8,53 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
 type TopBarType = {
+  numOfColumns: number;
   setNumOfColumns: (value: number) => void;
-  isIconsVisible?: boolean;
 };
 
-const TopBar: FC<TopBarType> = ({ setNumOfColumns, isIconsVisible = true }) => {
+const TopBar: FC<TopBarType> = ({ numOfColumns, setNumOfColumns }) => {
   const styles = useThemedStyles(createStyles);
-  if (!isIconsVisible) return <View style={styles.container} />;
 
   return (
     <View style={styles.container}>
-      <View style={styles.filterContainer} />
       <View style={styles.gridContainer}>
         <View style={styles.gridIcon}>
           <TouchableOpacity onPress={() => setNumOfColumns(1)}>
-            <FontAwesome name="square" size={32} color={styles.iconColor.color} />
+            <FontAwesome
+              name="square"
+              size={32}
+              color={
+                numOfColumns === 1
+                  ? styles.iconColorSelected.color
+                  : styles.iconColor.color
+              }
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.gridIcon}>
           <TouchableOpacity onPress={() => setNumOfColumns(2)}>
-            <Entypo name="grid" size={45} color={styles.iconColor.color} />
+            <Entypo
+              name="grid"
+              size={45}
+              color={
+                numOfColumns === 2
+                  ? styles.iconColorSelected.color
+                  : styles.iconColor.color
+              }
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.gridIcon}>
           <TouchableOpacity onPress={() => setNumOfColumns(3)}>
-            <Fontisto name="nav-icon-grid" size={28} color={styles.iconColor.color} />
+            <Fontisto
+              name="nav-icon-grid"
+              size={28}
+              color={
+                numOfColumns === 3
+                  ? styles.iconColorSelected.color
+                  : styles.iconColor.color
+              }
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -49,11 +70,7 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       height: 50,
-      backgroundColor: theme.colors.statusBar,
-      borderTopColor: theme.colors.disabled,
-      borderBottomColor: theme.colors.disabled,
-      borderTopWidth: 1,
-      borderBottomWidth: 1,
+      backgroundColor: theme.colors.statusBarTransluscent,
       flexDirection: "row",
       justifyContent: "space-between",
     },
@@ -61,6 +78,7 @@ export const createStyles = (theme: ITheme) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
+      marginLeft: 3,
     },
     gridIcon: {
       marginHorizontal: 5,
@@ -71,8 +89,11 @@ export const createStyles = (theme: ITheme) =>
       width: 50,
     },
     iconColor: {
-      color: theme.colors.secondaryText,
-    }
+      color: theme.colors.accent,
+    },
+    iconColorSelected: {
+      color: theme.colors.accent2,
+    },
   });
 
 export default TopBar;

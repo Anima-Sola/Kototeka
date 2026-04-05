@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { View, TextInput, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Controller } from "react-hook-form";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
 import EyeOpened from "../../../assets/Icons/EyeOpened";
 import EyeClosed from "../../../assets/Icons/EyeClosed";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 export default function RepeatPasswordInput({
   name = "",
@@ -12,11 +13,12 @@ export default function RepeatPasswordInput({
   passwordToCheck = "",
   inputProps = {},
 }) {
+  const styles = useThemedStyles(createStyles);
   const [isSecuredText, setIsSecuredText] = useState(true);
 
   const passwordsMatchingCheck = (data: string) => {
     if (passwordToCheck !== data) {
-      return 'Пароли не совпадают';
+      return "Пароли не совпадают";
     }
 
     return true;
@@ -36,15 +38,15 @@ export default function RepeatPasswordInput({
             style={styles.eyeIcon}
           >
             {isSecuredText ? (
-              <EyeClosed size={24} color={Colors.accent} />
+              <EyeClosed size={24} color={styles.iconColor.color} />
             ) : (
-              <EyeOpened size={24} color={Colors.accent} />
+              <EyeOpened size={24} color={styles.iconColor.color} />
             )}
           </TouchableOpacity>
           <TextInput
             style={[styles.input, error ? styles.inputError : null]}
             placeholder={placeholder}
-            placeholderTextColor={Colors.placeholder}
+            placeholderTextColor={styles.placeholderColor.color}
             secureTextEntry={isSecuredText}
             value={value}
             onChangeText={onChange}
@@ -60,33 +62,40 @@ export default function RepeatPasswordInput({
   );
 }
 
-const styles = StyleSheet.create({
-  input: {
-    height: 44,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 8,
-    paddingLeft: 12,
-    paddingRight: 35,
-    fontSize: fontSizes.FONT16,
-    fontFamily: 'ShantellLightItalic',
-    backgroundColor: Colors.secondary,
-    color: Colors.mainText,
-  },
-  inputError: {
-    borderColor: Colors.error,
-  },
-  errorText: {
-    marginTop: 6,
-    marginLeft: 5,
-    color: Colors.error,
-    fontSize: fontSizes.FONT13,
-    fontFamily: 'ShantellLightItalic',
-  },
-  eyeIcon: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-    zIndex: 1,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    input: {
+      height: 44,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: 8,
+      paddingLeft: 12,
+      paddingRight: 35,
+      fontSize: fontSizes.FONT16,
+      fontFamily: "ShantellLightItalic",
+      backgroundColor: theme.colors.secondary,
+      color: theme.colors.mainText,
+    },
+    inputError: {
+      borderColor: theme.colors.error,
+    },
+    errorText: {
+      marginTop: 6,
+      marginLeft: 5,
+      color: theme.colors.error,
+      fontSize: fontSizes.FONT13,
+      fontFamily: "ShantellLightItalic",
+    },
+    eyeIcon: {
+      position: "absolute",
+      right: 10,
+      top: 10,
+      zIndex: 1,
+    },
+    placeholderColor: {
+      color: theme.colors.placeholder,
+    },
+    iconColor: {
+      color: theme.colors.accent,
+    },
+  });

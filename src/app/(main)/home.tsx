@@ -126,7 +126,6 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <TopBar setNumOfColumns={setNumOfColumns} />
       <FlatList
         key={numColumns}
         data={cats}
@@ -140,33 +139,50 @@ const Home = () => {
         onEndReachedThreshold={0.3}
         ListFooterComponent={footerComponent}
         maxToRenderPerBatch={20}
+        contentContainerStyle={styles.flatListContent}
+        scrollIndicatorInsets={{ top: 60 }}
       />
+      <View style={styles.topBarContainer}>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+      </View>
     </View>
   );
 };
 
-export const createStyles = (theme: ITheme) => StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    backgroundColor: theme.colors.main,
-    paddingTop: 200,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.main,
-  },
-  text: {
-    fontSize: fontSizes.FONT32,
-    color: theme.colors.mainText,
-    fontFamily: "AmaticBold",
-    alignSelf: "center",
-    marginTop: 10,
-  },
-  footer: {
-    height: 190,
-    alignItems: "center",
-    marginVertical: 20,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    loadingContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      paddingTop: 200,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+    },
+    text: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      alignSelf: "center",
+      marginTop: 10,
+    },
+    footer: {
+      height: 190,
+      alignItems: "center",
+      marginVertical: 20,
+    },
+    topBarContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
+    },
+    flatListContent: {
+      paddingTop: 50,
+      paddingBottom: 80,
+    },
+  });
 
 export default Home;

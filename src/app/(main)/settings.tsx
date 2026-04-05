@@ -3,7 +3,6 @@ import useStore from "../../store/store";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
-import TopBar from "../../components/TopBar/TopBar";
 import { RadioButton } from "react-native-paper";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
@@ -49,7 +48,6 @@ const Settings = () => {
 
   return (
     <View style={styles.container}>
-      <TopBar isIconsVisible={false} setNumOfColumns={() => {}} />
       <View style={styles.content}>
         <Text style={styles.textHeader}>Theme</Text>
         <View style={styles.radioGroupContainer}>

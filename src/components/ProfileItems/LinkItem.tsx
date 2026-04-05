@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Linking, Alert } from "react-native";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type LinkItemType = {
   name: string;
@@ -10,6 +11,7 @@ type LinkItemType = {
 
 const LinkItem: FC<LinkItemType> = ({ name, link }) => {
   if (!link) return null;
+  const styles = useThemedStyles(createStyles);
 
   const handleLink = async () => {
     const supported = await Linking.canOpenURL(link);
@@ -33,23 +35,24 @@ const LinkItem: FC<LinkItemType> = ({ name, link }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 5,
-  },
-  header: {
-    fontSize: fontSizes.FONT32,
-    color: Colors.mainText,
-    fontFamily: "AmaticBold",
-    alignSelf: "center",
-  },
-  link: {
-    color: "blue",
-    fontSize: fontSizes.FONT14,
-    fontFamily: "ShantellRegular",
-    textDecorationLine: "underline",
-    textAlign: "justify",
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      marginVertical: 5,
+    },
+    header: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      alignSelf: "center",
+    },
+    link: {
+      color: "blue",
+      fontSize: fontSizes.FONT14,
+      fontFamily: "ShantellRegular",
+      textDecorationLine: "underline",
+      textAlign: "justify",
+    },
+  });
 
 export default LinkItem;

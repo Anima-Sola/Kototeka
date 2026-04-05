@@ -1,46 +1,19 @@
-import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
-import Colors from '../../constants/colors';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 interface RatingRectsProps {
-  /**
-   * Значение от 1 до 5, определяющее количество закрашенных прямоугольников
-   */
   value: number;
-  /**
-   * Цвет закрашенных прямоугольников (опционально)
-   */
-  activeColor?: string;
-  /**
-   * Цвет незакрашенных прямоугольников (опционально)
-   */
-  inactiveColor?: string;
-  /**
-   * Размер прямоугольников (опционально)
-   */
   size?: number;
-  /**
-   * Стиль контейнера (опционально)
-   */
-  style?: ViewStyle;
 }
 
-const RatingRects: React.FC<RatingRectsProps> = ({
-  value,
-  activeColor = Colors.accent2,
-  inactiveColor = Colors.disabled,
-  size = 25,
-  style,
-}) => {
-  // Проверяем, что значение в допустимом диапазоне
-  const validatedValue = Math.min(5, Math.max(1, value));
-  
-  // Создаем массив из 5 элементов для отрисовки прямоугольников
-  const rects = Array.from({ length: 5 }, (_, index) => {    
-    // Определяем, должен ли прямоугольник быть закрашен
-    // Закрашиваем, если индекс с конца меньше значения (value)
-    const isActive = index < validatedValue;
-    
+const RatingRects: React.FC<RatingRectsProps> = ({ value, size = 25 }) => {
+  const styles = useThemedStyles(createStyles);
+
+  const rects = Array.from({ length: 5 }, (_, index) => {
+    const isActive = index < value;
+
     return (
       <View
         key={index}
@@ -49,30 +22,35 @@ const RatingRects: React.FC<RatingRectsProps> = ({
           {
             width: size,
             height: size,
-            backgroundColor: isActive ? activeColor : inactiveColor,
-            marginRight: index < 4 ? 4 : 0, // Добавляем отступ между прямоугольниками
+            backgroundColor: isActive
+              ? styles.activeRectColor.color
+              : styles.inactiveRectColor.color,
+            marginRight: index < 4 ? 4 : 0,
           },
         ]}
       />
     );
   });
 
-  return (
-    <View style={[styles.container, style]}>
-      {rects}
-    </View>
-  );
+  return <View style={styles.container}>{rects}</View>;
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rect: {
-    borderRadius: 4, // Немного скругляем углы для лучшего вида
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    rect: {
+      borderRadius: 4,
+    },
+    activeRectColor: {
+      color: theme.colors.accent2,
+    },
+    inactiveRectColor: {
+      color: theme.colors.disabled,
+    },
+  });
 
 export default RatingRects;

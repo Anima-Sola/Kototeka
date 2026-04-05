@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type TextItemType = {
   name: string;
@@ -9,6 +10,9 @@ type TextItemType = {
 };
 
 const SingleParamItem: FC<TextItemType> = ({ name, param }) => {
+  if(!param) return null;
+  const styles = useThemedStyles(createStyles);
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{name}</Text>
@@ -19,19 +23,20 @@ const SingleParamItem: FC<TextItemType> = ({ name, param }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginVertical: 10,
-  },
-  text: {
-    fontSize: fontSizes.FONT32,
-    color: Colors.mainText,
-    fontFamily: "AmaticBold",
-    alignSelf: "center",
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginVertical: 10,
+    },
+    text: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      alignSelf: "center",
+    },
+  });
 
 export default SingleParamItem;

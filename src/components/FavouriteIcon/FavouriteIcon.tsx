@@ -2,6 +2,8 @@ import { FC } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "../../constants/colors";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type FavouriteIconType = {
   isFavourite: boolean;
@@ -15,9 +17,11 @@ const FavouriteIcon: FC<FavouriteIconType> = ({
   isFavourite,
   onPress,
   size,
-  color = Colors.white,
+  color = '',
   isShadow = true,
 }) => {
+  const styles = useThemedStyles(createStyles);
+  if (!color) color = styles.iconColor.color;
   const iconStyle = isShadow ? styles.icon : {};
 
   return (
@@ -35,11 +39,15 @@ const FavouriteIcon: FC<FavouriteIconType> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  icon: {
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowColor: Colors.black,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    icon: {
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowColor: theme.colors.shadow,
+    },
+    iconColor: {
+      color: theme.colors.white,
+    }
+  });
 
 export default FavouriteIcon;

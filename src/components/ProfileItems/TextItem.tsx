@@ -2,6 +2,8 @@ import { FC } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type TextItemType = {
   name: string;
@@ -10,6 +12,7 @@ type TextItemType = {
 
 const TextItem: FC<TextItemType> = ({ name, text }) => {
   if (!text) return null;
+  const styles = useThemedStyles(createStyles);
 
   return (
     <View style={styles.container}>
@@ -21,22 +24,23 @@ const TextItem: FC<TextItemType> = ({ name, text }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 5,
-  },
-  header: {
-    fontSize: fontSizes.FONT32,
-    color: Colors.mainText,
-    fontFamily: "AmaticBold",
-    alignSelf: "center",
-  },
-  text: {
-    fontSize: fontSizes.FONT14,
-    fontFamily: "ShantellRegular",
-    color: Colors.mainText,
-    textAlign: "justify",
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      marginVertical: 5,
+    },
+    header: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      alignSelf: "center",
+    },
+    text: {
+      fontSize: fontSizes.FONT14,
+      fontFamily: "ShantellRegular",
+      color: theme.colors.mainText,
+      textAlign: "justify",
+    },
+  });
 
 export default TextItem;

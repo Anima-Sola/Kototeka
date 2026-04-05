@@ -87,7 +87,7 @@ export default function MainLayout() {
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     tabBarStyle: {
-      backgroundColor: theme.colors.secondary,
+      backgroundColor: theme.colors.secondaryTransluscent,
       position: "absolute",
       bottom: Platform.OS === "ios" ? 30 : 50,
       height: 60,
@@ -106,6 +106,8 @@ export const createStyles = (theme: ITheme) =>
     },
     itemContainer: {
       height: 60,
+      //borderRadius: 20,
+      //backgroundColor: theme.colors.secondaryTransluscent,
     },
     active: {
       color: theme.colors.accent,

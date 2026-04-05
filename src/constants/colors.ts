@@ -3,8 +3,10 @@ import { shadow } from "react-native-paper";
 export const lightTheme = {
   colors: {
     statusBar: "#D4D4D4",
+    statusBarTransluscent: 'rgba(212, 212, 212, 0.5)',
     main: "#EDEDED",
     secondary: "#FFFFFF",
+    secondaryTransluscent: 'rgba(255, 255, 255, 0.95)',
     mainText: "#000",
     secondaryText: "#848484",
     border: "#DBDBDB",
@@ -17,14 +19,17 @@ export const lightTheme = {
     black: "#000",
     red: "#ff0000",
     shadow: '#000',
+    uploadPhotoBtn: '#fff',
   },
 };
 
 export const darkTheme = {
   colors: {
     statusBar: "#1E1B24",
+    statusBarTransluscent: 'rgba(30, 27, 36, 0.5)',
     main: "#22202B",
     secondary: "#2F2E39",
+    secondaryTransluscent: 'rgba(47, 46, 57, 0.95)',
     mainText: "#FFFFFF",
     secondaryText: "#7D7A86",
     border: "#27252E",
@@ -37,6 +42,7 @@ export const darkTheme = {
     black: "#000",
     red: "#ff0000",
     shadow: '#fff',
+    uploadPhotoBtn: '#000',
   },
 };
 

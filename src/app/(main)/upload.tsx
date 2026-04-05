@@ -132,9 +132,9 @@ const Upload = () => {
   if (uploadedCats.length === 0) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} isIconsVisible={false} />
+        <TopBar setNumOfColumns={setNumOfColumns} />
         <View style={styles.emptyContainer}>
-          <Ionicons name="paw-sharp" size={50} color={styles.pawIconColor.color} />
+          <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.emptyText}>No uploaded cats</Text>
           <Text style={styles.emptyText}>Please, add them from </Text>
           <Text style={styles.emptyText}>the device gallery or camera</Text>
@@ -152,7 +152,6 @@ const Upload = () => {
 
   return (
     <View style={styles.container}>
-      <TopBar setNumOfColumns={setNumOfColumns} />
       <FlatList
         key={numColumns}
         data={uploadedCats}
@@ -164,7 +163,12 @@ const Upload = () => {
         numColumns={numColumns}
         maxToRenderPerBatch={20}
         ListFooterComponent={<View style={styles.footer} />}
+        contentContainerStyle={styles.flatListContent}
+        scrollIndicatorInsets={{ top: 60 }}
       />
+      <View style={styles.topBarContainer}>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+      </View>
       {addImageButtons()}
       {isUploading && UploadingActivityIndicator()}
     </View>
@@ -201,7 +205,7 @@ export const createStyles = (theme: ITheme) =>
       bottom: 130,
       right: 16,
       borderRadius: 40,
-      backgroundColor: theme.colors.white,
+      backgroundColor: theme.colors.uploadPhotoBtn,
       alignItems: "center",
       justifyContent: "center",
       shadowColor: theme.colors.shadow,
@@ -215,7 +219,7 @@ export const createStyles = (theme: ITheme) =>
     },
     text: {
       fontSize: fontSizes.FONT32,
-      color: theme.colors.secondaryText,
+      color: theme.colors.accent,
     },
     emptyText: {
       fontSize: fontSizes.FONT32,
@@ -231,7 +235,7 @@ export const createStyles = (theme: ITheme) =>
       bottom: 290,
       right: 26,
       borderRadius: 30,
-      backgroundColor: theme.colors.white,
+      backgroundColor: theme.colors.uploadPhotoBtn,
       alignItems: "center",
       justifyContent: "center",
       shadowColor: theme.colors.shadow,
@@ -250,7 +254,7 @@ export const createStyles = (theme: ITheme) =>
       bottom: 220,
       right: 26,
       borderRadius: 30,
-      backgroundColor: theme.colors.white,
+      backgroundColor: theme.colors.uploadPhotoBtn,
       alignItems: "center",
       justifyContent: "center",
       shadowColor: theme.colors.shadow,
@@ -267,13 +271,20 @@ export const createStyles = (theme: ITheme) =>
       alignItems: "center",
       marginVertical: 20,
     },
-    pawIconColor: {
+    iconColor: {
       color: theme.colors.accent,
     },
-    iconColor: {
-      color: theme.colors.secondaryText
-    }
-
+    topBarContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
+    },
+    flatListContent: {
+      paddingTop: 50,
+      paddingBottom: 80,
+    },
   });
 
 export default Upload;

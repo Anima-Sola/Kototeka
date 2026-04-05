@@ -45,7 +45,3 @@ export const darkTheme = {
     uploadPhotoBtn: '#000',
   },
 };
-
-const Colors = lightTheme.colors;
-
-export default Colors;

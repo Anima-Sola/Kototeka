@@ -9,7 +9,7 @@ import { Image } from "expo-image";
 import { blurhash } from "../../constants/common";
 import BreedInfo from "../../components/BreedInfo/BreedInfo";
 import deleteCatAPI from "../../API/deleteCat";
-import NoBreedInfo from "../../components/BreedInfo/NoBreedInfo";
+import UploadNoBreedInfo from "../../components/BreedInfo/UploadNoBreedInfo";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
@@ -46,14 +46,9 @@ const UploadedCatProfile = () => {
 
   return (
     <View style={styles.container}>
-      <ProfileTopBar
-        isDeleteIconEnabled={true}
-        isRequestInProcess={isDeleting}
-        onDeleteIconPress={deleteCat}
-      />
-      <ScrollView>
+      <ScrollView style={styles.content}>
         <Image
-          style={{ ...styles.image, width: imageWidth, height: imageWidth }}
+          style={{ width: imageWidth, height: imageWidth }}
           source={uploadedCat.url}
           placeholder={{ blurhash }}
           contentFit="cover"
@@ -65,13 +60,20 @@ const UploadedCatProfile = () => {
             setIsImageLoadingError(true);
           }}
         />
-        {/*breeds ? <BreedInfo breeds={breeds} /> : <NoBreedInfo />*/}
+        {breeds ? <BreedInfo breeds={breeds} /> : <UploadNoBreedInfo />}
         {isImageLoading && (
           <View style={styles.loaderContainer}>
             <ActivityIndicator size={"large"} />
           </View>
         )}
       </ScrollView>
+      <View style={styles.topBarContainer}>
+        <ProfileTopBar
+          isDeleteIconEnabled={true}
+          isRequestInProcess={isDeleting}
+          onDeleteIconPress={deleteCat}
+        />
+      </View>
       <View style={styles.buttonContainer}>
         <Button
           mode={"contained"}
@@ -92,6 +94,9 @@ export const createStyles = (theme: ITheme) =>
       flex: 1,
       backgroundColor: theme.colors.main,
     },
+    content: {
+      paddingTop: 50,
+    },
     loaderContainer: {
       position: "absolute",
       top: 0,
@@ -100,11 +105,6 @@ export const createStyles = (theme: ITheme) =>
       bottom: 0,
       alignItems: "center",
       justifyContent: "center",
-    },
-    image: {
-      borderColor: theme.colors.secondaryText,
-      borderBottomWidth: 1,
-      borderTopWidth: 1,
     },
     buttonContainer: {
       width: "100%",
@@ -120,6 +120,13 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",
       lineHeight: 30,
+    },
+    topBarContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
     },
   });
 

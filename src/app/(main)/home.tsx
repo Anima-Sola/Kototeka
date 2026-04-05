@@ -102,7 +102,7 @@ const Home = () => {
   if (isInitialLoading) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} />
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
         <View style={styles.loadingContainer}>
           <PaperActivityIndicator size={"large"} />
           <Text style={styles.text}>Cats are coming!</Text>

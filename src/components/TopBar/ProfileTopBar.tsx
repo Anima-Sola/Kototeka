@@ -81,11 +81,7 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       height: 50,
-      backgroundColor: theme.colors.statusBar,
-      borderTopColor: theme.colors.disabled,
-      borderBottomColor: theme.colors.disabled,
-      borderTopWidth: 1,
-      borderBottomWidth: 1,
+      backgroundColor: theme.colors.statusBarTransluscent,
       flexDirection: "row",
       justifyContent: "space-between",
     },

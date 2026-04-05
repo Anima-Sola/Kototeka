@@ -76,15 +76,9 @@ const CatProfile = () => {
 
   return (
     <View style={styles.container}>
-      <ProfileTopBar
-        isFavouriteIconEnabled={true}
-        isFavourite={Boolean(favouriteCat)}
-        isRequestInProcess={isFavouriteToggling}
-        onFavouriteIconPress={toggleFavourites}
-      />
-      <ScrollView>
+      <ScrollView style={styles.content}>
         <Image
-          style={{ ...styles.image, width: imageWidth, height: imageWidth }}
+          style={{ width: imageWidth, height: imageWidth }}
           source={cat?.url}
           placeholder={{ blurhash }}
           contentFit="cover"
@@ -103,6 +97,14 @@ const CatProfile = () => {
           </View>
         )}
       </ScrollView>
+      <View style={styles.topBarContainer}>
+        <ProfileTopBar
+          isFavouriteIconEnabled={true}
+          isFavourite={Boolean(favouriteCat)}
+          isRequestInProcess={isFavouriteToggling}
+          onFavouriteIconPress={toggleFavourites}
+        />
+      </View>
       <View style={styles.buttonContainer}>
         <Button
           mode={"contained"}
@@ -123,6 +125,9 @@ export const createStyles = (theme: ITheme) =>
       flex: 1,
       backgroundColor: theme.colors.main,
     },
+    content: {
+      paddingTop: 50,
+    },
     loaderContainer: {
       position: "absolute",
       top: 0,
@@ -131,11 +136,6 @@ export const createStyles = (theme: ITheme) =>
       bottom: 0,
       alignItems: "center",
       justifyContent: "center",
-    },
-    image: {
-      borderColor: theme.colors.secondaryText,
-      borderBottomWidth: 1,
-      borderTopWidth: 1,
     },
     buttonContainer: {
       width: "100%",
@@ -151,6 +151,13 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",
       lineHeight: 30,
+    },
+    topBarContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
     },
   });
 

@@ -10,10 +10,11 @@ import EmailInput from "../../components/TextInputs/EmailInput";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
 import SimpleTextInput from "../../components/TextInputs/SimpleTextInput";
 import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
 import Header from "../../components/Header/Header";
 import LeftArrow from "../../../assets/Icons/LeftArrow";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type FormValues = {
   name: string;
@@ -23,6 +24,7 @@ type FormValues = {
 };
 
 const SignUp = () => {
+  const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { ...methods } = useForm<FormValues>({
@@ -51,7 +53,7 @@ const SignUp = () => {
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]}>
       <Header
-        leftIcon={<LeftArrow size={24} color={Colors.accent} />}
+        leftIcon={<LeftArrow size={24} color={styles.iconColor.color} />}
         onLeftIconPress={() => router.back()}
       />
       <Text style={styles.textHeader}>Регистрация</Text>
@@ -91,50 +93,53 @@ const SignUp = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.main,
-    alignItems: "center",
-    justifyContent: "center",
-    
-  },
-  textHeader: {
-    paddingTop: 40,
-    paddingBottom: 20,
-    fontSize: fontSizes.FONT50,
-    color: Colors.mainText,
-    fontFamily: "AmaticBold",
-    fontWeight: 500,
-  },
-  formContainer: {
-    flex: 1,
-    width: "100%",
-    paddingHorizontal: 16,
-  },
-  buttonContainer: {
-    width: "100%",
-    paddingBottom: 15,
-    paddingHorizontal: 16,
-  },
-  text: {
-    color: Colors.mainText,
-  },
-  inputContainer: {
-    height: 74,
-  },
-  signUpButton: {
-    backgroundColor: Colors.accent,
-  },
-  disabledSignUpButton: {
-    backgroundColor: Colors.disabled,
-  },
-  singUpLabelButton: {
-    color: Colors.secondary,
-    fontSize: fontSizes.FONT18,
-    fontFamily: "ShantellBold",
-    lineHeight: 30,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    textHeader: {
+      paddingTop: 40,
+      paddingBottom: 20,
+      fontSize: fontSizes.FONT50,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      fontWeight: 500,
+    },
+    formContainer: {
+      flex: 1,
+      width: "100%",
+      paddingHorizontal: 16,
+    },
+    buttonContainer: {
+      width: "100%",
+      paddingBottom: 15,
+      paddingHorizontal: 16,
+    },
+    text: {
+      color: theme.colors.mainText,
+    },
+    inputContainer: {
+      height: 74,
+    },
+    signUpButton: {
+      backgroundColor: theme.colors.accent,
+    },
+    disabledSignUpButton: {
+      backgroundColor: theme.colors.disabled,
+    },
+    singUpLabelButton: {
+      color: theme.colors.secondary,
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      lineHeight: 30,
+    },
+    iconColor: {
+      color: theme.colors.accent,
+    }
+  });
 
 export default SignUp;

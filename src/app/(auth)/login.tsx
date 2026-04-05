@@ -8,8 +8,9 @@ import { auth } from "../../../firebaseConfig";
 import { Button } from "react-native-paper";
 import EmailInput from "../../components/TextInputs/EmailInput";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type FormValues = {
   email: string;
@@ -17,6 +18,7 @@ type FormValues = {
 };
 
 const Login = () => {
+  const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { ...methods } = useForm<FormValues>({
@@ -47,7 +49,9 @@ const Login = () => {
             <PasswordInput name="password" checkFormat={false} />
           </View>
         </FormProvider>
-        <Link style={styles.restorePasswordLink} href="/restorePassword">Забыли пароль?</Link>
+        <Link style={styles.restorePasswordLink} href="/restorePassword">
+          Забыли пароль?
+        </Link>
       </ScrollView>
       <View style={styles.buttonContainer}>
         <Button
@@ -75,71 +79,72 @@ const Login = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.main,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 16,
-  },
-  textHeader: {
-    paddingTop: 78,
-    paddingBottom: 20,
-    fontSize: fontSizes.FONT50,
-    color: Colors.mainText,
-    fontFamily: "AmaticBold",
-    fontWeight: 500,
-  },
-  formContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  restorePasswordLink: {
-    fontSize: fontSizes.FONT14,
-    fontFamily: "ShantellBold",
-    color: Colors.accent,
-    alignSelf: 'flex-end',
-    marginTop: -24,
-  },
-  buttonContainer: {
-    width: "100%",
-    paddingBottom: 15,
-  },
-  text: {
-    color: Colors.mainText,
-  },
-  emailInputContainer: {
-    height: 74,
-  },
-  passwordInputContainer: {
-    height: 74,
-  },
-  signInButton: {
-    backgroundColor: Colors.accent,
-  },
-  disabledSignInButton: {
-    backgroundColor: Colors.disabled,
-  },
-  singUpButton: {
-    backgroundColor: Colors.main,
-    borderColor: Colors.accent,
-  },
-  singInLabelButton: {
-    color: Colors.secondary,
-    fontSize: fontSizes.FONT18,
-    fontFamily: "ShantellBold",
-    lineHeight: 30,
-  },
-  singUpLabelButton: {
-    color: Colors.accent,
-    fontSize: fontSizes.FONT18,
-    fontFamily: "ShantellBold",
-    lineHeight: 30,
-  },
-  gap: {
-    height: 10,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 16,
+    },
+    textHeader: {
+      paddingTop: 78,
+      paddingBottom: 20,
+      fontSize: fontSizes.FONT50,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      fontWeight: 500,
+    },
+    formContainer: {
+      flex: 1,
+      width: "100%",
+    },
+    restorePasswordLink: {
+      fontSize: fontSizes.FONT14,
+      fontFamily: "ShantellBold",
+      color: theme.colors.accent,
+      alignSelf: "flex-end",
+      marginTop: -24,
+    },
+    buttonContainer: {
+      width: "100%",
+      paddingBottom: 15,
+    },
+    text: {
+      color: theme.colors.mainText,
+    },
+    emailInputContainer: {
+      height: 74,
+    },
+    passwordInputContainer: {
+      height: 74,
+    },
+    signInButton: {
+      backgroundColor: theme.colors.accent,
+    },
+    disabledSignInButton: {
+      backgroundColor: theme.colors.disabled,
+    },
+    singUpButton: {
+      backgroundColor: theme.colors.main,
+      borderColor: theme.colors.accent,
+    },
+    singInLabelButton: {
+      color: theme.colors.secondary,
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      lineHeight: 30,
+    },
+    singUpLabelButton: {
+      color: theme.colors.accent,
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      lineHeight: 30,
+    },
+    gap: {
+      height: 10,
+    },
+  });
 
 export default Login;

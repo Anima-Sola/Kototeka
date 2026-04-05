@@ -1,7 +1,8 @@
 import { FC, ReactNode } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
+import { ITheme } from "../../constants/interfaces";
 
 type HeaderIcon = {
   onPress?: () => void;
@@ -23,6 +24,8 @@ const Header: FC<HeaderProps> = ({
   onLeftIconPress,
   onRightIconPress,
 }) => {
+  const styles = useThemedStyles(createStyles);
+
   const HeaderIcon: FC<HeaderIcon> = ({ onPress, icon }) => {
     return <TouchableOpacity onPress={onPress}>{icon}</TouchableOpacity>;
   };
@@ -46,27 +49,28 @@ const Header: FC<HeaderProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  bar: {
-    width: "100%",
-    flexDirection: "row",
-    height: 38,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 16,
-  },
-  titleContainer: {
-    flex: 1,
-    alignItems: "center",
-  },
-  title: {
-    color: Colors.mainText,
-    fontSize: fontSizes.FONT20,
-    fontFamily: "ShantellBold",
-  },
-  empty: {
-    width: 24,
-  },
-});
+export const createStyles = (theme: ITheme) =>
+  StyleSheet.create({
+    bar: {
+      width: "100%",
+      flexDirection: "row",
+      height: 38,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 16,
+    },
+    titleContainer: {
+      flex: 1,
+      alignItems: "center",
+    },
+    title: {
+      color: theme.colors.mainText,
+      fontSize: fontSizes.FONT20,
+      fontFamily: "ShantellBold",
+    },
+    empty: {
+      width: 24,
+    },
+  });
 
 export default Header;

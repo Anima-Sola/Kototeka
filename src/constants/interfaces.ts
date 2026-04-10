@@ -1,9 +1,13 @@
 import { CatType, favouriteCatType } from "./types";
 
 export interface IAuthSlice {
-  isSignedIn: boolean;
+  isSignedIn: boolean | null;
+  isAppReady: boolean;
+  isFontsLoaded: boolean;
   userName: string;
   setIsSignedIn: (value: boolean) => void;
+  setIsAppReady: (value: boolean) => void; 
+  setIsFontsLoaded: (value: boolean) => void;
   setUserName: (value: string) => void;
 }
 

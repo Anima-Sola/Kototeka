@@ -1,45 +1,23 @@
 import { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Text, ActivityIndicator } from "react-native";
 import getCatsAPI from "../../API/getCats";
-import getFavouriteCatsAPI from "../../API/getFavouriteCats";
-import getCatByIdAPI from "../../API/getCatById";
-import getUploadedCatsAPI from "../../API/getUploadedCats";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
 import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
-import { CatType, favouriteCatType } from "../../constants/types";
+import { CatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import fetchUserData from "../../API/fetchUserData";
 
 const Home = () => {
-  const {
-    cats,
-    setCats,
-    addCats,
-    setFavouriteCats,
-    addFavoriteCatBreeds,
-    setUploadedCats,
-  } = useStore();
+  const { cats, setCats, addCats } = useStore();
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingCatsLoading, setIsAddingCatsLoading] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(false); //true
   const [numColumns, setNumOfColumns] = useState(2);
-
-  const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
-    const promises = favouriteCats.map(async (favouriteCat) => {
-      try {
-        const response = await getCatByIdAPI(favouriteCat.image.id);
-        if (response.breeds) addFavoriteCatBreeds(favouriteCat.id, response.breeds[0]);
-      } catch (error: any) {
-        throw error;
-      }
-    });
-
-    return await Promise.all(promises);
-  };
 
   const fetchCatsData = async () => {
     setIsLoading(true);
@@ -76,19 +54,12 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     setIsInitialLoading(true);
 
     const fetchData = async () => {
       try {
-        const favouriteCats = await getFavouriteCatsAPI();
-        setFavouriteCats(favouriteCats);
-        await getFavouriteCatsBreeds(favouriteCats);
-        const uploadedCats = await getUploadedCatsAPI({
-          limit: 1000,
-        });
-        setUploadedCats(uploadedCats);
-        await fetchCatsData();
+        await fetchUserData();
       } catch (error: any) {
         throw error;
       } finally {
@@ -109,7 +80,7 @@ const Home = () => {
         </View>
       </View>
     );
-  }
+  }*/
 
   const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: CatType }) => (

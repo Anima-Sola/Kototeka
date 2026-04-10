@@ -11,6 +11,8 @@ import PasswordInput from "../../components/TextInputs/PasswordInput";
 import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import useStore from "../../store/store";
+import fetchUserData from "../../API/fetchUserData";
 
 type FormValues = {
   email: string;
@@ -21,6 +23,7 @@ const Login = () => {
   const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { setIsSignedIn } = useStore();
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
@@ -31,6 +34,9 @@ const Login = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await fetchUserData();
+      setIsSignedIn(true);
+      router.replace("/(main)");
       console.log("Успешный вход:", userCredential.user);
     } catch (error: any) {
       console.error("Ошибка входа:", error.message);
@@ -39,7 +45,7 @@ const Login = () => {
 
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]}>
-      <Text style={styles.textHeader}>Вход</Text>
+      <Text style={styles.textHeader}>Sign In</Text>
       <ScrollView style={styles.formContainer}>
         <FormProvider {...methods}>
           <View style={styles.emailInputContainer}>
@@ -50,7 +56,7 @@ const Login = () => {
           </View>
         </FormProvider>
         <Link style={styles.restorePasswordLink} href="/restorePassword">
-          Забыли пароль?
+          Forgot Password?
         </Link>
       </ScrollView>
       <View style={styles.buttonContainer}>
@@ -63,7 +69,7 @@ const Login = () => {
           disabled={!methods.formState.isValid}
           onPress={methods.handleSubmit(onSubmit)}
         >
-          Вход
+          Sing In
         </Button>
         <View style={styles.gap} />
         <Button
@@ -72,7 +78,7 @@ const Login = () => {
           labelStyle={styles.singUpLabelButton}
           onPress={() => router.navigate("/signUp")}
         >
-          Регистрация
+          Sing Up
         </Button>
       </View>
     </KeyboardAvoidingView>

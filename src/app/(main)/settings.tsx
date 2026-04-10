@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useStore from "../../store/store";
+import { useRouter } from "expo-router";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
@@ -9,13 +10,16 @@ import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
 
 const Settings = () => {
+  const router = useRouter();
   const styles = useThemedStyles(createStyles);
   const [theme, setTheme] = useState("system");
-  const { setResolvedTheme, setMode } = useStore();
+  const { setResolvedTheme, setMode, setIsSignedIn } = useStore();
 
   const logout = async () => {
     try {
       await signOut(auth);
+      setIsSignedIn(false);
+      router.replace("/(auth)/login");
     } catch (error) {
       console.log("Ошибка");
     }

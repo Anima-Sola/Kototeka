@@ -23,7 +23,7 @@ type CatCardProps = {
 const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { favouriteCats, addFavouriteCat, deleteFavouriteCat, addFavoriteCatBreeds } =
+  const { favouriteCats, addFavouriteCat, deleteFavouriteCat, addFavoriteCatBreeds, userId } =
     useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
@@ -38,7 +38,7 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
     setIsFavouriteToggling(true);
 
     try {
-      const addingFavouriteCatResult = await addFavouriteCatAPI(cat.id);
+      const addingFavouriteCatResult = await addFavouriteCatAPI(cat.id, userId);
       const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
       addFavouriteCat(addedFavouriteCat);
       if (hasBreeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);

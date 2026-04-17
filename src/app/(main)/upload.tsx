@@ -16,7 +16,7 @@ import { ITheme } from "../../constants/interfaces";
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
-  const { uploadedCats, setUploadedCats, addUploadedCat } = useStore();
+  const { uploadedCats, setUploadedCats, addUploadedCat, userId } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] = useState(false);
@@ -26,7 +26,7 @@ const Upload = () => {
     setIsUploading(true);
 
     try {
-      const uploadCatResult = await uploadCatAPI(image);
+      const uploadCatResult = await uploadCatAPI(image, userId);
       if (uploadCatResult) addUploadedCat(uploadCatResult);
     } catch (error: any) {
       throw error;
@@ -39,11 +39,7 @@ const Upload = () => {
     setIsLoading(true);
 
     try {
-      const req = {
-        limit: 1000,
-      };
-
-      const data = await getUploadedCatsAPI(req);
+      const data = await getUploadedCatsAPI(1000, userId);
       setUploadedCats(data);
     } catch (error: any) {
       throw error;
@@ -132,7 +128,7 @@ const Upload = () => {
   if (uploadedCats.length === 0) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} />
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns}/>
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.emptyText}>No uploaded cats</Text>

@@ -19,7 +19,7 @@ const imageWidth = Dimensions.get("screen").width;
 
 const FavouriteCatProfile = () => {
   const styles = useThemedStyles(createStyles);
-  const { favouriteCats, addFavouriteCat, deleteFavouriteCat } = useStore();
+  const { favouriteCats, addFavouriteCat, deleteFavouriteCat, userId } = useStore();
   const { catId } = useLocalSearchParams<{ catId: string }>();
   const favouriteCat = favouriteCats.find(
     (cat) => cat.id.toString() === catId.toString(),
@@ -38,7 +38,7 @@ const FavouriteCatProfile = () => {
     setIsFavouriteToggling(true);
 
     try {
-      const addingFavouriteCatResult = await addFavouriteCatAPI(favouriteCat.id);
+      const addingFavouriteCatResult = await addFavouriteCatAPI(favouriteCat.id, userId);
       const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
       addFavouriteCat(addedFavouriteCat);
     } catch (error: any) {

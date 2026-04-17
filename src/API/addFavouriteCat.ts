@@ -2,9 +2,10 @@ import URLs from "../constants/urls";
 import { headers } from "../constants/api";
 import fetchAPI from "./fetchAPI";
 
-const addFavouriteCatAPI = async (image_id: string) => {
+const addFavouriteCatAPI = async (image_id: string, userId: string) => {
   const params = {
     image_id,
+    sub_id: userId,
   };
 
   try {

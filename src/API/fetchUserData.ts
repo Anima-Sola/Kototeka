@@ -35,14 +35,12 @@ const fetchCatsData = async () => {
   }
 };
 
-const fetchUserData = async () => {
+const fetchUserData = async (userId: string) => {
   try {
-    const favouriteCats = await getFavouriteCatsAPI();
+    const favouriteCats = await getFavouriteCatsAPI(userId);
     store.setFavouriteCats(favouriteCats);
     await getFavouriteCatsBreeds(favouriteCats);
-    const uploadedCats = await getUploadedCatsAPI({
-      limit: 1000,
-    });
+    const uploadedCats = await getUploadedCatsAPI(1000, userId);
     store.setUploadedCats(uploadedCats);
     await fetchCatsData();
   } catch (error: any) {

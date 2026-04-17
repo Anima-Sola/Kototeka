@@ -7,7 +7,7 @@ import { ITheme } from "../../constants/interfaces";
 
 export default function EmailInput({
   name = "email",
-  placeholder = "Электронная почта",
+  placeholder = "Email",
   inputProps = {},
 }) {
   const styles = useThemedStyles(createStyles);
@@ -16,14 +16,14 @@ export default function EmailInput({
     <Controller
       name={name}
       rules={{
-        required: "Email обязателен",
+        required: "Email is requied",
         pattern: {
           value: RegExps.email,
-          message: "Введите корректный email",
+          message: "Enter a valid email",
         },
         maxLength: {
           value: 254,
-          message: "Email слишком длинный",
+          message: "Email address is too long",
         },
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (

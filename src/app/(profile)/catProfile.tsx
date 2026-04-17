@@ -21,6 +21,7 @@ const imageWidth = Dimensions.get("screen").width;
 const CatProfile = () => {
   const {
     cats,
+    userId,
     favouriteCats,
     addFavouriteCat,
     deleteFavouriteCat,
@@ -44,7 +45,7 @@ const CatProfile = () => {
     setIsFavouriteToggling(true);
 
     try {
-      const addingFavouriteCatResult = await addFavouriteCatAPI(cat.id);
+      const addingFavouriteCatResult = await addFavouriteCatAPI(cat.id, userId);
       const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
       addFavouriteCat(addedFavouriteCat);
       if (breeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);

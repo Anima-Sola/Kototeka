@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { View, StyleSheet, Platform, StatusBar } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import Colors from "../../constants/colors";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 

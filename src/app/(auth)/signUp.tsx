@@ -3,6 +3,7 @@ import { View, StyleSheet, KeyboardAvoidingView, Text, ScrollView } from "react-
 import { useRouter } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Feather from "@expo/vector-icons/Feather";
 import { Button } from "react-native-paper";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
@@ -53,14 +54,14 @@ const SignUp = () => {
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]}>
       <Header
-        leftIcon={<LeftArrow size={24} color={styles.iconColor.color} />}
+        leftIcon={<Feather name="arrow-left" size={32} color={styles.iconColor.color} />}
         onLeftIconPress={() => router.back()}
       />
-      <Text style={styles.textHeader}>Регистрация</Text>
+      <Text style={styles.textHeader}>Sign Up</Text>
       <ScrollView style={styles.formContainer}>
         <FormProvider {...methods}>
           <View style={styles.inputContainer}>
-            <SimpleTextInput name="name" placeholder="Введите ваше имя" />
+            <SimpleTextInput name="name" placeholder="Your name" />
           </View>
           <View style={styles.inputContainer}>
             <EmailInput name="email" />
@@ -86,7 +87,7 @@ const SignUp = () => {
           disabled={!methods.formState.isValid}
           onPress={methods.handleSubmit(onSubmit)}
         >
-          Регистрация
+          Sign Up
         </Button>
       </View>
     </KeyboardAvoidingView>

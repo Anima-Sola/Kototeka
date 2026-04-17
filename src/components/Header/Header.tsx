@@ -54,7 +54,7 @@ export const createStyles = (theme: ITheme) =>
     bar: {
       width: "100%",
       flexDirection: "row",
-      height: 38,
+      height: 50,
       alignItems: "center",
       justifyContent: "center",
       paddingHorizontal: 16,

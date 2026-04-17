@@ -12,11 +12,11 @@ import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "react-native-paper";
 import { sendPasswordResetEmail } from "firebase/auth";
+import Feather from "@expo/vector-icons/Feather";
 import { auth } from "../../../firebaseConfig";
 import EmailInput from "../../components/TextInputs/EmailInput";
 import fontSizes from "../../constants/fontSizes";
 import Header from "../../components/Header/Header";
-import LeftArrow from "../../../assets/Icons/LeftArrow";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
@@ -36,7 +36,7 @@ const SignUp = () => {
     const email = data.email.trim();
     try {
       await sendPasswordResetEmail(auth, email);
-      Alert.alert("Письмо отправлено", "Проверьте почту для восстановления пароля.");
+      Alert.alert("The letter has been sent", "Check your email to reset your password.");
     } catch (error: any) {
       console.error("Ошибка регистрации:", error.message);
     }
@@ -45,12 +45,12 @@ const SignUp = () => {
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]}>
       <Header
-        leftIcon={<LeftArrow size={24} color={styles.iconColor.color} />}
+        leftIcon={<Feather name="arrow-left" size={32} color={styles.iconColor.color} />}
         onLeftIconPress={() => router.back()}
       />
-      <Text style={styles.textHeader}>Введите почту</Text>
+      <Text style={styles.textHeader}>Enter email</Text>
       <Text style={styles.hint}>
-        На указанную почту мы отправим код для восстановления пароля
+        We will send a password reset code to the email address you provided
       </Text>
       <ScrollView style={styles.formContainer}>
         <FormProvider {...methods}>
@@ -69,7 +69,7 @@ const SignUp = () => {
           disabled={!methods.formState.isValid}
           onPress={methods.handleSubmit(onSubmit)}
         >
-          Продолжить
+          Next
         </Button>
       </View>
     </KeyboardAvoidingView>

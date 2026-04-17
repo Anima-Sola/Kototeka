@@ -2,17 +2,14 @@ import URLs from "../constants/urls";
 import { headers } from "../constants/api";
 import fetchAPI from "./fetchAPI";
 
-type reqParams = {
-  limit?: number;
-};
-
-const getUploadedCatsAPI = async ({ limit = 10 }: reqParams) => {
+const getUploadedCatsAPI = async (limit: number, sub_id: string) => {
   const params = new URLSearchParams({
     limit: limit.toString(),
+    sub_id,
   });
 
   try {
-    const response = await fetchAPI(URLs.images + '/?' + params, {
+    const response = await fetchAPI(URLs.images + "/?" + params, {
       headers,
     });
 

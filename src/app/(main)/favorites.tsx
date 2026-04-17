@@ -13,7 +13,7 @@ import { ITheme } from "../../constants/interfaces";
 
 const Favourites = () => {
   const styles = useThemedStyles(createStyles);
-  const { favouriteCats, setFavouriteCats, addFavoriteCatBreeds } = useStore();
+  const { favouriteCats, setFavouriteCats, addFavoriteCatBreeds, userId } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
 
@@ -34,7 +34,7 @@ const Favourites = () => {
     setIsLoading(true);
 
     try {
-      const favouriteCats = await getFavouriteCatsAPI();
+      const favouriteCats = await getFavouriteCatsAPI(userId);
       setFavouriteCats(favouriteCats);
       await getFavouriteCatsBreeds(favouriteCats);
     } catch (error: any) {
@@ -47,9 +47,9 @@ const Favourites = () => {
   if (favouriteCats.length === 0)
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} />
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns}/>
         <View style={styles.emptyContainer}>
-          <Ionicons name="paw-sharp" size={50} color={styles.iconColor.accent} />
+          <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.text}>No favourite cats</Text>
           <Text style={styles.text}>Please, add them from the gallery</Text>
         </View>

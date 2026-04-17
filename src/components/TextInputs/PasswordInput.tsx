@@ -10,7 +10,7 @@ import { ITheme } from "../../constants/interfaces";
 
 export default function PasswordInput({
   name = "password",
-  placeholder = "Пароль",
+  placeholder = "Password",
   inputProps = {},
   checkFormat = true,
 }) {
@@ -19,22 +19,22 @@ export default function PasswordInput({
 
   const rules = checkFormat
     ? {
-        required: "Пароль обязателен",
+        required: "Password is requied",
         pattern: {
           value: RegExps.password,
-          message: "Минимум одна цифра, заглавная буква и спецсимвол",
+          message: "One digit, one uppercase letter, one special character",
         },
         maxLength: {
           value: 30,
-          message: "Пароль слишком длинный",
+          message: "Password is too long",
         },
         minLength: {
           value: 10,
-          message: "Пароль слишком короткий",
+          message: "Password is too short",
         },
       }
     : {
-        required: "Пароль обязателен",
+        required: "Password is requied",
       };
 
   return (

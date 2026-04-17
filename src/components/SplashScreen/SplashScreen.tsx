@@ -1,4 +1,4 @@
-import { useEffect, FC } from "react";
+import { useEffect } from "react";
 import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import * as Font from "expo-font";
@@ -8,11 +8,11 @@ import fetchUserData from "../../API/fetchUserData";
 import useStore from "../../store/store";
 import fontSizes from "../../constants/fontSizes";
 
-const backgroundImage = require("../../../assets/Images/tiger.jpeg");
+const backgroundImage = require("../../../assets/Images/splash.jpeg");
 
 const SplashScreen = () => {
   const styles = useThemedStyles(createStyles);
-  const { isSignedIn, setIsAppReady, isFontsLoaded, setIsFontsLoaded } = useStore();
+  const { isSignedIn, setIsAppReady, isFontsLoaded, setIsFontsLoaded, userId } = useStore();
 
   useEffect(() => {
     const prepare = async () => {
@@ -28,7 +28,7 @@ const SplashScreen = () => {
           setIsFontsLoaded(true);
         }
         if (isSignedIn) {
-          await fetchUserData();
+          await fetchUserData(userId);
         }
       } catch (error: any) {
         throw error;
@@ -62,12 +62,12 @@ export const createStyles = (theme: ITheme) =>
     image: {
       flex: 1,
       paddingVertical: 120,
+      alignItems: 'center',
     },
     logo: {
       fontSize: fontSizes.FONT70,
       color: theme.colors.white,
       fontFamily: "AmaticBold",
-      alignSelf: "center",
     },
     activityIndicatorContainer: {
       flex: 1,
@@ -80,7 +80,6 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT20,
       fontFamily: "ShantellRegular",
       color: theme.colors.white,
-      alignSelf: "center",
     },
   });
 

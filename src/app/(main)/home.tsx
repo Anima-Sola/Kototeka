@@ -16,7 +16,7 @@ const Home = () => {
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingCatsLoading, setIsAddingCatsLoading] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(false); //true
+  //const [isInitialLoading, setIsInitialLoading] = useState(false); //true
   const [numColumns, setNumOfColumns] = useState(2);
 
   const fetchCatsData = async () => {

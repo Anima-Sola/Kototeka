@@ -9,7 +9,7 @@ import { ITheme } from "../../constants/interfaces";
 
 export default function RepeatPasswordInput({
   name = "",
-  placeholder = "Повторите пароль",
+  placeholder = "Repeat the password",
   passwordToCheck = "",
   inputProps = {},
 }) {
@@ -18,7 +18,7 @@ export default function RepeatPasswordInput({
 
   const passwordsMatchingCheck = (data: string) => {
     if (passwordToCheck !== data) {
-      return "Пароли не совпадают";
+      return "The passwords do not match";
     }
 
     return true;
@@ -28,7 +28,7 @@ export default function RepeatPasswordInput({
     <Controller
       name={name}
       rules={{
-        required: "Обязательное поле",
+        required: "Required field",
         validate: passwordsMatchingCheck,
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (

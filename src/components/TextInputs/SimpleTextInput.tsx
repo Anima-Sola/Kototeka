@@ -16,10 +16,10 @@ export default function SimpleTextInput({
     <Controller
       name={name}
       rules={{
-        required: "Обязательное поле",
+        required: "Required field",
         maxLength: {
           value: maxLength,
-          message: "Значение слишком длинное",
+          message: "Value is too long",
         },
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (

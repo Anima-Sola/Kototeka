@@ -11,7 +11,15 @@ import SplashScreen from "../components/SplashScreen/SplashScreen";
 ExpoSplashScreen.hideAsync();
 
 export default function RootLayout() {
-  const { isAppReady, isSignedIn, setIsSignedIn, mode, setResolvedTheme } = useStore();
+  const {
+    isAppReady,
+    isSignedIn,
+    setIsSignedIn,
+    mode,
+    setResolvedTheme,
+    setUserName,
+    setUserId,
+  } = useStore();
 
   //Listening system theme changing
   useEffect(() => {
@@ -29,7 +37,9 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        console.log("User is logged in:", currentUser.email);
+        console.log("User is logged in:", currentUser.email, "User id: ", currentUser.uid);
+        if(currentUser.displayName) setUserName(currentUser.displayName);
+        setUserId(currentUser.uid);
         setIsSignedIn(true);
       } else {
         console.log("User is logged out");
@@ -61,78 +71,3 @@ export default function RootLayout() {
     </Wrapper>
   );
 }
-
-/*import { useEffect } from "react";
-import { Appearance } from "react-native";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
-import { Stack, useRouter } from "expo-router";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import useStore from "../store/store";
-import Wrapper from "../components/Wrapper/Wrapper";
-
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const { setIsSignedIn, mode, setResolvedTheme } = useStore();
-  const router = useRouter();
-  const [fontsLoaded] = useFonts({
-    AmaticBold: require("../../assets/fonts/AmaticSC-Bold.ttf"),
-    AmaticRegular: require("../../assets/fonts/AmaticSC-Regular.ttf"),
-    ShantellRegular: require("../../assets/fonts/ShantellSans-Regular.ttf"),
-    ShantellBold: require("../../assets/fonts/ShantellSans-Bold.ttf"),
-    ShantellLightItalic: require("../../assets/fonts/ShantellSans-LightItalic.ttf"),
-  });
-
-  useEffect(() => {
-    if (fontsLoaded) {
-      setTimeout(() => SplashScreen.hideAsync(), 2000);
-    }
-  }, [fontsLoaded]);
-
-  useEffect(() => {
-    const updateTheme = () => {
-      const systemTheme = Appearance.getColorScheme() || "light";
-      setResolvedTheme(systemTheme);
-    };
-
-    updateTheme();
-
-    const sub = Appearance.addChangeListener(updateTheme);
-    return () => sub.remove();
-  }, [mode]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        console.log("User is logged in:", currentUser.email);
-        setIsSignedIn(true);
-        router.replace("/(main)");
-      } else {
-        console.log("User is logged out");
-        setIsSignedIn(false);
-        router.replace("/(auth)/login");
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const isSignedIn = useStore((state) => state.isSignedIn);
-
-  return (
-    <Wrapper>
-      {isSignedIn ? (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(main)" />
-          <Stack.Screen name="(profile)"></Stack.Screen>
-        </Stack>
-      ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" />
-        </Stack>
-      )}
-    </Wrapper>
-  );
-}*/

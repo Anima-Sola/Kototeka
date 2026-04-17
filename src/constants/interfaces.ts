@@ -5,10 +5,12 @@ export interface IAuthSlice {
   isAppReady: boolean;
   isFontsLoaded: boolean;
   userName: string;
+  userId: string;
   setIsSignedIn: (value: boolean) => void;
   setIsAppReady: (value: boolean) => void; 
   setIsFontsLoaded: (value: boolean) => void;
   setUserName: (value: string) => void;
+  setUserId: (value: string) => void;
 }
 
 export interface ICatsSlice {

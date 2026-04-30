@@ -43,7 +43,7 @@ const SplashScreen = () => {
   return (
     <View style={styles.container}>
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
-        <Text style={styles.logo}>OnlyCats</Text>
+        <Text style={styles.logo}>Purrly</Text>
         <View style={styles.activityIndicatorContainer}>
           <ActivityIndicator size={50} color={styles.activityIndicatorColor.color} />
         </View>

@@ -3,6 +3,7 @@ import { View, StyleSheet, Platform, StatusBar } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { BottomSheetProvider } from "../../contexts/BottomSheetContext";
 
 type WrapperProps = {
   children: ReactNode;
@@ -14,10 +15,12 @@ export default function Wrapper({ children }: WrapperProps) {
   const statusBarHeight = Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
 
   return (
-    <SafeAreaProvider style={styles.container}>
-      <View style={{ ...styles.statusBar, height: statusBarHeight }} />
-      {children}
-    </SafeAreaProvider>
+    <BottomSheetProvider>
+      <SafeAreaProvider style={styles.container}>
+        <View style={{ ...styles.statusBar, height: statusBarHeight }} />
+        {children}
+      </SafeAreaProvider>
+    </BottomSheetProvider>
   );
 }
 

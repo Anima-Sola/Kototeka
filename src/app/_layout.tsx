@@ -8,7 +8,7 @@ import Wrapper from "../components/Wrapper/Wrapper";
 import * as ExpoSplashScreen from "expo-splash-screen";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
 
-ExpoSplashScreen.hideAsync();
+//ExpoSplashScreen.hideAsync();
 
 export default function RootLayout() {
   const {

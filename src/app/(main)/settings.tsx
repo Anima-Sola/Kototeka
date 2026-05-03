@@ -1,7 +1,14 @@
 import { useState } from "react";
 import useStore from "../../store/store";
 import { useRouter } from "expo-router";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Button,
+} from "react-native";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import { RadioButton } from "react-native-paper";
@@ -21,7 +28,7 @@ const Settings = () => {
 
   const openSimpleBottomSheet = () => {
     showBottomSheet(
-      <ChangeNameBS />
+      <ChangeNameBS hideBottomSheet={hideBottomSheet} userName={userName} />,
     );
   };
 

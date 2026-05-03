@@ -9,14 +9,27 @@ export default function SimpleTextInput({
   placeholder = "",
   maxLength = 50,
   inputProps = {},
+  defaultValue = "",
+  compareWithDefaultValue = false,
 }) {
   const styles = useThemedStyles(createStyles);
+
+  const valuesMatchingCheck = (data: string) => {
+    if(!compareWithDefaultValue) return true;
+
+    if (defaultValue === data) {
+      return "User name is the same";
+    }
+
+    return true;
+  };
 
   return ( 
     <Controller
       name={name}
       rules={{
         required: "Required field",
+        validate: valuesMatchingCheck,
         maxLength: {
           value: maxLength,
           message: "Value is too long",
@@ -29,6 +42,7 @@ export default function SimpleTextInput({
             placeholder={placeholder}
             placeholderTextColor={styles.placeholderColor.color}
             value={value}
+            defaultValue={defaultValue}
             onChangeText={onChange}
             keyboardType="default"
             autoCapitalize="none"

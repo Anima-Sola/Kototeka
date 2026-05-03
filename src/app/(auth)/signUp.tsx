@@ -13,7 +13,6 @@ import SimpleTextInput from "../../components/TextInputs/SimpleTextInput";
 import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
 import fontSizes from "../../constants/fontSizes";
 import Header from "../../components/Header/Header";
-import LeftArrow from "../../../assets/Icons/LeftArrow";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 

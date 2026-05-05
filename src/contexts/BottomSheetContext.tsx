@@ -19,7 +19,9 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
 
   const hideBottomSheet = () => {
     setVisible(false);
-    setBottomSheetContent(null);
+    setTimeout(() => {
+      setBottomSheetContent(null);
+    }, 800); // Соответствует animationOutTiming
   };
 
   return (
@@ -30,7 +32,7 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
         animationIn={"slideInUp"}
         animationInTiming={400}
         animationOut={"slideOutDown"}
-        animationOutTiming={400}
+        animationOutTiming={800}
         swipeDirection={"down"}
         onBackdropPress={hideBottomSheet}
         onSwipeComplete={hideBottomSheet}

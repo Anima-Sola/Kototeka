@@ -34,7 +34,7 @@ const Login = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      await fetchUserData();
+      await fetchUserData(userCredential.user.uid);
       setIsSignedIn(true);
       router.replace("/(main)");
       console.log("Успешный вход:", userCredential.user);

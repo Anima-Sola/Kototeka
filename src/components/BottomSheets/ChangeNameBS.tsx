@@ -8,7 +8,7 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
 import SimpleTextInput from "../TextInputs/SimpleTextInput";
-import updateUserName from "../../FirebaseAPI/updateUserName";
+import updateUserName from "../../API/FirebaseAPI/updateUserName";
 
 type ChangeNameBSType = {
   hideBottomSheet: () => void;

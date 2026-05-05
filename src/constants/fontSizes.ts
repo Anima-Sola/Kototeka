@@ -11,6 +11,7 @@ const fontSizes = {
   FONT16: 16 / fontScale,
   FONT18: 18 / fontScale,
   FONT20: 20 / fontScale,
+  FONT25: 25 / fontScale,
   FONT30: 30 / fontScale,
   FONT32: 32 / fontScale,
   FONT50: 50 / fontScale,

@@ -7,10 +7,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Button,
+  Alert,
 } from "react-native";
+import { Button } from "react-native-paper";
+import { useForm, FormProvider } from "react-hook-form";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
+import updateUserPassword from "../../API/FirebaseAPI/updatePassword";
 import { RadioButton } from "react-native-paper";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
@@ -18,10 +21,21 @@ import fontSizes from "../../constants/fontSizes";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import ChangeNameBS from "../../components/BottomSheets/ChangeNameBS";
+import PasswordInput from "../../components/TextInputs/PasswordInput";
+import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
+
+type FormValues = {
+  currentPassword: string;
+  newPassword: string;
+  repeatNewPassword: string;
+};
 
 const Settings = () => {
   const router = useRouter();
   const styles = useThemedStyles(createStyles);
+  const { ...methods } = useForm<FormValues>({
+    mode: "onChange",
+  });
   const [theme, setTheme] = useState("system");
   const { setResolvedTheme, setMode, setIsSignedIn, userName } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
@@ -66,6 +80,41 @@ const Settings = () => {
       }
     }
   };
+
+  async function onSubmit(data: FormValues) {
+    try {
+      const currentPassword = data.currentPassword.trim();
+      const newPassword = data.newPassword.trim();
+
+      await updateUserPassword({
+        currentPassword,
+        newPassword,
+      });
+
+      Alert.alert("Success", "Your password has been changed successfully", [
+        {
+          text: "OK",
+          onPress: () => {
+            methods.reset();
+          },
+        },
+      ]);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to change password";
+
+      let displayMessage = errorMessage;
+
+      // Улучшенные сообщения об ошибках
+      if (errorMessage.includes("auth/wrong-password")) {
+        displayMessage = "Current password is incorrect";
+      } else if (errorMessage.includes("auth/weak-password")) {
+        displayMessage = "New password is too weak";
+      }
+
+      Alert.alert("Error", displayMessage);
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -113,9 +162,50 @@ const Settings = () => {
             />
           </TouchableOpacity>
         </View>
+        <Text style={styles.textHeader}>Change Password</Text>
+        <View style={styles.changePasswordFormContainer}>
+          <FormProvider {...methods}>
+            <View style={styles.inputContainer}>
+              <PasswordInput
+                name="currentPassword"
+                placeholder="Current password"
+                checkFormat={false}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <PasswordInput name="newPassword" placeholder="New password" />
+            </View>
+            <View style={styles.inputContainer}>
+              <RepeatPasswordInput
+                name="repeatNewPassword"
+                placeholder="Repeat new password"
+                passwordToCheck={methods.watch("newPassword")}
+              />
+            </View>
+          </FormProvider>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode={"contained"}
+              style={
+                methods.formState.isValid
+                  ? styles.signUpButton
+                  : styles.disabledSignUpButton
+              }
+              labelStyle={styles.singUpLabelButton}
+              disabled={!methods.formState.isValid}
+              onPress={methods.handleSubmit(onSubmit)}
+            >
+              Save changes
+            </Button>
+          </View>
+        </View>
         <TouchableOpacity style={styles.logoutContainer} onPress={logout}>
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteAccountContainer} onPress={() => {}}>
+          <Text style={styles.deleteAccountText}>Delete account</Text>
+        </TouchableOpacity>
+        <View style={styles.footer} />
       </View>
     </ScrollView>
   );
@@ -159,6 +249,7 @@ export const createStyles = (theme: ITheme) =>
       borderWidth: 1,
       borderColor: theme.colors.disabled,
       borderRadius: 5,
+      marginBottom: 15,
     },
     radioGroupItem: {
       flexDirection: "row",
@@ -168,17 +259,56 @@ export const createStyles = (theme: ITheme) =>
       marginVertical: 5,
     },
     logoutContainer: {
-      marginTop: 50,
-      marginHorizontal: 16,
+      marginTop: 30,
+      alignSelf: "center",
     },
     logoutText: {
+      color: theme.colors.accent,
+      fontSize: fontSizes.FONT25,
+      fontFamily: "ShantellRegular",
+    },
+    deleteAccountContainer: {
+      marginTop: 30,
+      marginBottom: 50,
+      alignSelf: "center",
+    },
+    deleteAccountText: {
       color: theme.colors.red,
-      fontSize: fontSizes.FONT20,
+      fontSize: fontSizes.FONT14,
       fontFamily: "ShantellRegular",
       alignSelf: "center",
     },
     iconColor: {
       color: theme.colors.accent,
+    },
+    inputContainer: {
+      height: 74,
+    },
+    changePasswordFormContainer: {
+      borderWidth: 1,
+      borderColor: theme.colors.disabled,
+      borderRadius: 5,
+      paddingHorizontal: 8,
+      paddingTop: 30,
+    },
+    buttonContainer: {
+      width: "100%",
+      paddingBottom: 30,
+    },
+    signUpButton: {
+      backgroundColor: theme.colors.accent,
+    },
+    disabledSignUpButton: {
+      backgroundColor: theme.colors.disabled,
+    },
+    singUpLabelButton: {
+      color: theme.colors.secondary,
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      lineHeight: 30,
+    },
+    footer: {
+      height: 190,
     },
   });
 

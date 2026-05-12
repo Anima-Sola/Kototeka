@@ -21,7 +21,7 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
     setVisible(false);
     setTimeout(() => {
       setBottomSheetContent(null);
-    }, 800); // Соответствует animationOutTiming
+    }, 1000);
   };
 
   return (

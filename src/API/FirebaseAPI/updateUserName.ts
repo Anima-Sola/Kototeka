@@ -1,7 +1,10 @@
 import { updateProfile } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
+import useStore from "../../store/store";
 
-const updateUserName = async (newName: string): Promise<string> => {
+const store = useStore.getState();
+
+const updateUserName = async (newName: string) => {
   try {
     const currentUser = auth.currentUser;
 
@@ -15,10 +18,8 @@ const updateUserName = async (newName: string): Promise<string> => {
 
     return newName;
   } catch (error) {
-    //TO DO - тост об ошибке
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("Error updating user name:", errorMessage);
-    throw error;
+    store.showErrorToast("Error updating user name: " + errorMessage);
   }
 };
 

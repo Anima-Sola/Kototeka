@@ -3,6 +3,7 @@ import { View, StyleSheet, KeyboardAvoidingView, Text, ScrollView } from "react-
 import { useRouter } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import useStore from "../../store/store";
 import Feather from "@expo/vector-icons/Feather";
 import { Button } from "react-native-paper";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
@@ -25,6 +26,7 @@ type FormValues = {
 
 const SignUp = () => {
   const styles = useThemedStyles(createStyles);
+  const { setIsSignedIn } = useStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { ...methods } = useForm<FormValues>({
@@ -45,6 +47,8 @@ const SignUp = () => {
       });
 
       console.log("Пользователь создан:", userCredential.user);
+      setIsSignedIn(true);
+      router.replace("/(main)");
     } catch (error: any) {
       console.error("Ошибка регистрации:", error.message);
     }

@@ -41,6 +41,14 @@ export interface ISettingsSlice {
   setResolvedTheme: (theme: 'light' | 'dark') => void;
 }
 
+export interface IToastSlice {
+  isSuccessToastVisible: boolean;
+  isErrorToastVisible: boolean;
+  toastMessage: string;
+  showSuccessToast: (message: string) => void;
+  showErrorToast: (message: string) => void;
+}
+
 export interface ITheme {
   colors: {
     statusBar: string;
@@ -59,6 +67,7 @@ export interface ITheme {
     white: string;
     black: string;
     red: string;
+    green: string,
     shadow: string;
     uploadPhotoBtn: string;
   };

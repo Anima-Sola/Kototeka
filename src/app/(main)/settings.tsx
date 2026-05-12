@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
   Alert,
 } from "react-native";
 import { Button } from "react-native-paper";
@@ -14,6 +15,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import updateUserPassword from "../../API/FirebaseAPI/updatePassword";
+import deleteUserAccount from "../../API/FirebaseAPI/deleteAccount";
 import { RadioButton } from "react-native-paper";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
@@ -37,10 +39,18 @@ const Settings = () => {
     mode: "onChange",
   });
   const [theme, setTheme] = useState("system");
-  const { setResolvedTheme, setMode, setIsSignedIn, userName } = useStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    setResolvedTheme,
+    setMode,
+    setIsSignedIn,
+    userName,
+    showSuccessToast,
+    showErrorToast,
+  } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
-  const openSimpleBottomSheet = () => {
+  const openChangeNameBottomSheet = () => {
     showBottomSheet(
       <ChangeNameBS hideBottomSheet={hideBottomSheet} userName={userName} />,
     );
@@ -52,9 +62,82 @@ const Settings = () => {
       setIsSignedIn(false);
       router.replace("/(auth)/login");
     } catch (error) {
-      console.log("Ошибка");
+      showErrorToast("An unexpected error has occurred");
     }
   };
+
+  const deleteAccount = async (password: string | undefined) => {
+    if (!password || password.trim() === "") {
+      Alert.alert("Error", "Please enter your password");
+      return;
+    }
+
+    try {
+      await deleteUserAccount({ password });
+      setIsSignedIn(false);
+      router.replace("/(auth)/login");
+    } catch (error) {
+      //throw error;
+    }
+  };
+
+  const deleteAccountPrompt = () => {
+    Alert.prompt(
+      "Confirm Password",
+      "Please enter your password to confirm account deletion:",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: deleteAccount,
+          style: "destructive",
+        },
+      ],
+      "secure-text",
+    );
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to permanently delete your account? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: deleteAccountPrompt,
+          style: "destructive",
+        },
+      ],
+    );
+  };
+
+  async function onSubmit(data: FormValues) {
+    try {
+      setIsLoading(true);
+      const currentPassword = data.currentPassword.trim();
+      const newPassword = data.newPassword.trim();
+
+      await updateUserPassword({
+        currentPassword,
+        newPassword,
+      });
+
+      methods.reset();
+    } catch (error) {
+      //throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const onThemeSwitch = (value: string) => {
     switch (value) {
@@ -81,48 +164,13 @@ const Settings = () => {
     }
   };
 
-  async function onSubmit(data: FormValues) {
-    try {
-      const currentPassword = data.currentPassword.trim();
-      const newPassword = data.newPassword.trim();
-
-      await updateUserPassword({
-        currentPassword,
-        newPassword,
-      });
-
-      Alert.alert("Success", "Your password has been changed successfully", [
-        {
-          text: "OK",
-          onPress: () => {
-            methods.reset();
-          },
-        },
-      ]);
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to change password";
-
-      let displayMessage = errorMessage;
-
-      // Улучшенные сообщения об ошибках
-      if (errorMessage.includes("auth/wrong-password")) {
-        displayMessage = "Current password is incorrect";
-      } else if (errorMessage.includes("auth/weak-password")) {
-        displayMessage = "New password is too weak";
-      }
-
-      Alert.alert("Error", displayMessage);
-    }
-  }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.textHeader}>Name</Text>
         <View style={styles.nameContainer}>
           <Text style={styles.textName}>{userName}</Text>
-          <TouchableOpacity onPress={openSimpleBottomSheet}>
+          <TouchableOpacity onPress={openChangeNameBottomSheet}>
             <Entypo name="pencil" size={24} color={styles.iconColor.color} />
           </TouchableOpacity>
         </View>
@@ -187,22 +235,29 @@ const Settings = () => {
             <Button
               mode={"contained"}
               style={
-                methods.formState.isValid
-                  ? styles.signUpButton
-                  : styles.disabledSignUpButton
+                methods.formState.isValid && !isLoading
+                  ? styles.changeButton
+                  : styles.disabledChangeButton
               }
-              labelStyle={styles.singUpLabelButton}
-              disabled={!methods.formState.isValid}
+              labelStyle={styles.changeLabelButton}
+              disabled={!methods.formState.isValid || isLoading}
               onPress={methods.handleSubmit(onSubmit)}
             >
-              Save changes
+              {isLoading ? (
+                <ActivityIndicator color={styles.activityIndicator.color} size="small" />
+              ) : (
+                "Change"
+              )}
             </Button>
           </View>
         </View>
         <TouchableOpacity style={styles.logoutContainer} onPress={logout}>
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteAccountContainer} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.deleteAccountContainer}
+          onPress={handleDeleteAccount}
+        >
           <Text style={styles.deleteAccountText}>Delete account</Text>
         </TouchableOpacity>
         <View style={styles.footer} />
@@ -210,6 +265,8 @@ const Settings = () => {
     </ScrollView>
   );
 };
+
+//To do activity full screen indicator then deleting
 
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
@@ -295,17 +352,23 @@ export const createStyles = (theme: ITheme) =>
       width: "100%",
       paddingBottom: 30,
     },
-    signUpButton: {
+    changeButton: {
       backgroundColor: theme.colors.accent,
+      height: 50,
     },
-    disabledSignUpButton: {
+    disabledChangeButton: {
       backgroundColor: theme.colors.disabled,
+      height: 50,
+      justifyContent: "center",
     },
-    singUpLabelButton: {
+    changeLabelButton: {
       color: theme.colors.secondary,
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",
       lineHeight: 30,
+    },
+    activityIndicator: {
+      color: theme.colors.accent,
     },
     footer: {
       height: 190,

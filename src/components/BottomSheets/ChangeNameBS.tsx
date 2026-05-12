@@ -21,7 +21,7 @@ type FormValues = {
 
 const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
   const styles = useThemedStyles(createStyles);
-  const { setUserName } = useStore();
+  const { setUserName, showSuccessToast } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
@@ -33,12 +33,13 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
     try {
       setIsLoading(true);
       const newName = await updateUserName(name);
-      setUserName(newName);
+      if (newName) setUserName(newName);
     } catch (error: any) {
       throw error;
     } finally {
       setIsLoading(false);
       hideBottomSheet();
+      setTimeout(() => showSuccessToast("Your name has been changed successfully"), 1000);
     }
   }
 

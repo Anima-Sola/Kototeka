@@ -2,47 +2,43 @@ import { FC, useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { useForm, FormProvider } from "react-hook-form";
 import useStore from "../../store/store";
+import { useRouter } from "expo-router";
 import { Button } from "react-native-paper";
 import { ITheme } from "../../constants/interfaces";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
-import SimpleTextInput from "../TextInputs/SimpleTextInput";
-import updateUserName from "../../API/FirebaseAPI/updateUserName";
+import PasswordInput from "../TextInputs/PasswordInput";
+import deleteUserAccount from "../../API/FirebaseAPI/deleteAccount";
 
-type ChangeNameBSType = {
+type DeleteAccountBSType = {
   hideBottomSheet: () => void;
-  userName: string;
 };
 
 type FormValues = {
-  name: string;
+  currentPassword: string;
 };
 
-const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
+const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
   const styles = useThemedStyles(createStyles);
-  const { setUserName, showSuccessToast, showErrorToast } = useStore();
+  const router = useRouter();
+  const { setIsSignedIn, showSuccessToast, showErrorToast } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
 
   async function onSubmit(data: FormValues) {
-    const name = data.name.trim();
+    setIsLoading(true);
 
     try {
-      setIsLoading(true);
-      const newName = await updateUserName(name);
-      if (newName) {
-        setUserName(newName);
-        setTimeout(
-          () => showSuccessToast("Your name has been changed successfully"),
-          1000,
-        );
-      }
-    } catch (error: any) {
+      await deleteUserAccount(data.currentPassword);
+      setIsSignedIn(false);
+      router.replace("/(auth)/login");
+      setTimeout(() => showSuccessToast("Your account has been deleted"), 1000);
+    } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      showErrorToast("Error updating user name: " + errorMessage);
+      showErrorToast("Error deleting account: " + errorMessage);
     } finally {
       setIsLoading(false);
       hideBottomSheet();
@@ -51,14 +47,13 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
 
   return (
     <View style={styles.container}>
-      <BottomSheetTopBar title={"Change Name"} />
+      <BottomSheetTopBar title={"Delete Account"} />
       <FormProvider {...methods}>
         <View style={styles.inputContainer}>
-          <SimpleTextInput
-            name="name"
-            placeholder="Your name"
-            defaultValue={userName}
-            compareWithDefaultValue={true}
+          <PasswordInput
+            name="currentPassword"
+            placeholder="Current password"
+            checkFormat={false}
           />
         </View>
         <View style={styles.buttonsContainer}>
@@ -76,7 +71,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
             {isLoading ? (
               <ActivityIndicator color={styles.activityIndicator.color} size="small" />
             ) : (
-              "Save"
+              "Delete"
             )}
           </Button>
           <View style={styles.gap} />
@@ -139,4 +134,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default ChangeNameBS;
+export default DeleteAccountBS;

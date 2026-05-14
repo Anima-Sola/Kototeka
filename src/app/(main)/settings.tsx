@@ -8,14 +8,12 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { useForm, FormProvider } from "react-hook-form";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import updateUserPassword from "../../API/FirebaseAPI/updatePassword";
-import deleteUserAccount from "../../API/FirebaseAPI/deleteAccount";
 import { RadioButton } from "react-native-paper";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
@@ -23,6 +21,7 @@ import fontSizes from "../../constants/fontSizes";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import ChangeNameBS from "../../components/BottomSheets/ChangeNameBS";
+import DeleteAccountBS from "../../components/BottomSheets/DeleteAccountBS";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
 import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
 
@@ -40,13 +39,14 @@ const Settings = () => {
   });
   const [theme, setTheme] = useState("system");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggingOut, setIsLogginOut] = useState(false);
   const {
     setResolvedTheme,
     setMode,
     setIsSignedIn,
     userName,
-    showSuccessToast,
     showErrorToast,
+    showSuccessToast,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
@@ -56,68 +56,23 @@ const Settings = () => {
     );
   };
 
+  const openDeleteAccountBottomSheet = () => {
+    showBottomSheet(<DeleteAccountBS hideBottomSheet={hideBottomSheet} />);
+  };
+
   const logout = async () => {
     try {
+      setIsLogginOut(true);
+
       await signOut(auth);
       setIsSignedIn(false);
       router.replace("/(auth)/login");
     } catch (error) {
-      showErrorToast("An unexpected error has occurred");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      showErrorToast("Error while loggin out: " + errorMessage);
+    } finally {
+      setIsLogginOut(false);
     }
-  };
-
-  const deleteAccount = async (password: string | undefined) => {
-    if (!password || password.trim() === "") {
-      Alert.alert("Error", "Please enter your password");
-      return;
-    }
-
-    try {
-      await deleteUserAccount({ password });
-      setIsSignedIn(false);
-      router.replace("/(auth)/login");
-    } catch (error) {
-      //throw error;
-    }
-  };
-
-  const deleteAccountPrompt = () => {
-    Alert.prompt(
-      "Confirm Password",
-      "Please enter your password to confirm account deletion:",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {},
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: deleteAccount,
-          style: "destructive",
-        },
-      ],
-      "secure-text",
-    );
-  };
-
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to permanently delete your account? This action cannot be undone.",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {},
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: deleteAccountPrompt,
-          style: "destructive",
-        },
-      ],
-    );
   };
 
   async function onSubmit(data: FormValues) {
@@ -132,8 +87,10 @@ const Settings = () => {
       });
 
       methods.reset();
+      showSuccessToast("Your password has been changed successfully");
     } catch (error) {
-      //throw error;
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      showErrorToast("Error updating password: " + errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -236,10 +193,10 @@ const Settings = () => {
               mode={"contained"}
               style={
                 methods.formState.isValid && !isLoading
-                  ? styles.changeButton
-                  : styles.disabledChangeButton
+                  ? styles.button
+                  : styles.disabledButton
               }
-              labelStyle={styles.changeLabelButton}
+              labelStyle={styles.labelButton}
               disabled={!methods.formState.isValid || isLoading}
               onPress={methods.handleSubmit(onSubmit)}
             >
@@ -251,12 +208,23 @@ const Settings = () => {
             </Button>
           </View>
         </View>
-        <TouchableOpacity style={styles.logoutContainer} onPress={logout}>
-          <Text style={styles.logoutText}>Log out</Text>
-        </TouchableOpacity>
+        <View style={styles.logoutButtonContainer}>
+          <Button
+            mode={"contained"}
+            style={!isLoggingOut ? styles.button : styles.disabledButton}
+            labelStyle={styles.labelButton}
+            onPress={logout}
+          >
+            {isLoggingOut ? (
+              <ActivityIndicator color={styles.activityIndicator.color} size="small" />
+            ) : (
+              "Log out"
+            )}
+          </Button>
+        </View>
         <TouchableOpacity
           style={styles.deleteAccountContainer}
-          onPress={handleDeleteAccount}
+          onPress={openDeleteAccountBottomSheet}
         >
           <Text style={styles.deleteAccountText}>Delete account</Text>
         </TouchableOpacity>
@@ -315,18 +283,8 @@ export const createStyles = (theme: ITheme) =>
       paddingHorizontal: 10,
       marginVertical: 5,
     },
-    logoutContainer: {
-      marginTop: 30,
-      alignSelf: "center",
-    },
-    logoutText: {
-      color: theme.colors.accent,
-      fontSize: fontSizes.FONT25,
-      fontFamily: "ShantellRegular",
-    },
     deleteAccountContainer: {
-      marginTop: 30,
-      marginBottom: 50,
+      marginTop: 50,
       alignSelf: "center",
     },
     deleteAccountText: {
@@ -349,19 +307,22 @@ export const createStyles = (theme: ITheme) =>
       paddingTop: 30,
     },
     buttonContainer: {
-      width: "100%",
       paddingBottom: 30,
     },
-    changeButton: {
+    logoutButtonContainer: {
+      marginTop: 30,
+      marginHorizontal: 8,
+    },
+    button: {
       backgroundColor: theme.colors.accent,
       height: 50,
     },
-    disabledChangeButton: {
+    disabledButton: {
       backgroundColor: theme.colors.disabled,
       height: 50,
       justifyContent: "center",
     },
-    changeLabelButton: {
+    labelButton: {
       color: theme.colors.secondary,
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",

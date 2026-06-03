@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ScrollView} from "react-native";
 import { useForm, FormProvider } from "react-hook-form";
 import useStore from "../../store/store";
 import { useRouter } from "expo-router";
@@ -37,7 +37,8 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
       router.replace("/(auth)/login");
       setTimeout(() => showSuccessToast("Your account has been deleted"), 1000);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       showErrorToast("Error deleting account: " + errorMessage);
     } finally {
       setIsLoading(false);
@@ -46,7 +47,7 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <BottomSheetTopBar title={"Delete Account"} />
       <FormProvider {...methods}>
         <View style={styles.inputContainer}>
@@ -59,6 +60,7 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
         <View style={styles.buttonsContainer}>
           <Button
             mode={"contained"}
+            loading={isLoading}
             style={
               methods.formState.isValid && !isLoading
                 ? styles.enabledButton
@@ -68,11 +70,7 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
             disabled={!methods.formState.isValid || isLoading}
             onPress={methods.handleSubmit(onSubmit)}
           >
-            {isLoading ? (
-              <ActivityIndicator color={styles.activityIndicator.color} size="small" />
-            ) : (
-              "Delete"
-            )}
+            {isLoading ? null : "Delete"}
           </Button>
           <View style={styles.gap} />
           <Button
@@ -86,7 +84,7 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
           </Button>
         </View>
       </FormProvider>
-    </View>
+    </ScrollView>
   );
 };
 

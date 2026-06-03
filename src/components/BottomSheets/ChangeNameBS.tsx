@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useForm, FormProvider } from "react-hook-form";
 import useStore from "../../store/store";
 import { Button } from "react-native-paper";
@@ -50,7 +50,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <BottomSheetTopBar title={"Change Name"} />
       <FormProvider {...methods}>
         <View style={styles.inputContainer}>
@@ -64,6 +64,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
         <View style={styles.buttonsContainer}>
           <Button
             mode={"contained"}
+            loading={isLoading}
             style={
               methods.formState.isValid && !isLoading
                 ? styles.enabledButton
@@ -73,11 +74,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
             disabled={!methods.formState.isValid || isLoading}
             onPress={methods.handleSubmit(onSubmit)}
           >
-            {isLoading ? (
-              <ActivityIndicator color={styles.activityIndicator.color} size="small" />
-            ) : (
-              "Save"
-            )}
+            {isLoading ? null : "Save"}
           </Button>
           <View style={styles.gap} />
           <Button
@@ -91,7 +88,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
           </Button>
         </View>
       </FormProvider>
-    </View>
+    </ScrollView>
   );
 };
 

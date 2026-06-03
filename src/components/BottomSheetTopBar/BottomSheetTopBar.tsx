@@ -36,7 +36,7 @@ export const createStyles = (theme: ITheme) =>
     },
     line: {
       marginVertical: 10,
-      width: 60,
+      width: 40,
       height: 4,
       borderRadius: 2,
       backgroundColor: theme.colors.accent,

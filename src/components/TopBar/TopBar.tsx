@@ -10,9 +10,10 @@ import { ITheme } from "../../constants/interfaces";
 type TopBarType = {
   numOfColumns: number;
   setNumOfColumns: (value: number) => void;
+  onFilterPress?: () => void;
 };
 
-const TopBar: FC<TopBarType> = ({ numOfColumns, setNumOfColumns }) => {
+const TopBar: FC<TopBarType> = ({ numOfColumns, setNumOfColumns, onFilterPress }) => {
   const styles = useThemedStyles(createStyles);
 
   return (
@@ -59,9 +60,11 @@ const TopBar: FC<TopBarType> = ({ numOfColumns, setNumOfColumns }) => {
         </View>
       </View>
       <View style={styles.filterContainer}>
-        <TouchableOpacity>
-          <Ionicons name="options" size={40} color={styles.iconColor.color} />
-        </TouchableOpacity>
+        {onFilterPress && (
+          <TouchableOpacity onPress={onFilterPress}>
+            <Ionicons name="options" size={40} color={styles.iconColor.color} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

@@ -15,8 +15,15 @@ export interface IAuthSlice {
 
 export interface ICatsSlice {
   cats: Array<CatType>;
+  filterRequestSettings: {
+    limit: number;
+    has_breeds: number;
+  };
+  isFiltersChanged: boolean;
   setCats: (value: Array<CatType>) => void;
   addCats: (value: Array<CatType>) => void;
+  setFilterRequestSettings: (value: { limit: number; has_breeds: number }) => void;
+  setIsFiltersChanged: (value: boolean) => void;
 }
 
 export interface IFavouriteCatsSlice {

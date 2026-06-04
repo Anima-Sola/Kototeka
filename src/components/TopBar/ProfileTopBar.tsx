@@ -16,6 +16,7 @@ type ProfileTopBarProps = {
   isDeleteIconEnabled?: boolean;
   onDeleteIconPress?: () => void;
   isRequestInProcess?: boolean;
+  imageUrl?: string;
 };
 
 const ProfileTopBar: FC<ProfileTopBarProps> = ({
@@ -25,6 +26,7 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
   isDeleteIconEnabled = false,
   onDeleteIconPress,
   isRequestInProcess = false,
+  imageUrl = '',
 }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
@@ -53,6 +55,10 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
     return null;
   };
 
+  const downloadImage = async () => {
+   
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.icon} onPress={() => router.back()}>
@@ -69,7 +75,7 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
         <TouchableOpacity style={styles.icon} onPress={() => {}}>
           <Feather name="share-2" size={32} color={styles.iconColor.color} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.icon} onPress={() => {}}>
+        <TouchableOpacity style={styles.icon} onPress={downloadImage}>
           <Feather name="download" size={32} color={styles.iconColor.color} />
         </TouchableOpacity>
       </View>

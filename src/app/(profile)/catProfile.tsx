@@ -104,6 +104,7 @@ const CatProfile = () => {
           isFavourite={Boolean(favouriteCat)}
           isRequestInProcess={isFavouriteToggling}
           onFavouriteIconPress={toggleFavourites}
+          imageUrl={cat.url}
         />
       </View>
       <View style={styles.buttonContainer}>

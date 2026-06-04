@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, Text, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Text,
+  ActivityIndicator,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import getCatsAPI from "../../API/getCats";
 import CatCard from "../../components/CatCard/CatCard";
 import useStore from "../../store/store";
@@ -9,43 +16,47 @@ import { CatType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
-import fetchUserData from "../../API/fetchUserData";
+import { useBottomSheet } from "../../contexts/BottomSheetContext";
+import FilterBS from "../../components/BottomSheets/FilterBS";
+import { MAX_NUMBER_OF_PHOTOS } from "../../constants/common";
 
 const Home = () => {
-  const { cats, setCats, addCats } = useStore();
+  const {
+    cats,
+    setCats,
+    addCats,
+    filterRequestSettings,
+    isFiltersChanged,
+    setIsFiltersChanged,
+  } = useStore();
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingCatsLoading, setIsAddingCatsLoading] = useState(false);
-  //const [isInitialLoading, setIsInitialLoading] = useState(false); //true
+  const [isFilteredLoading, setIsFilteredLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
+  const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
   const fetchCatsData = async () => {
-    setIsLoading(true);
-
     try {
-      const req = {
-        limit: 20,
-        //limit: 5,
-      };
-
-      const data = await getCatsAPI(req);
+      const data = await getCatsAPI(filterRequestSettings);
       setCats(data);
     } catch (error: any) {
       throw error;
     } finally {
       setIsLoading(false);
+      setIsFilteredLoading(false);
     }
   };
 
   const fetchAddedCatsData = async () => {
+    if (cats.length >= MAX_NUMBER_OF_PHOTOS) {
+      return;
+    }
+
     setIsAddingCatsLoading(true);
 
     try {
-      const req = {
-        limit: 20,
-      };
-
-      const data = await getCatsAPI(req);
+      const data = await getCatsAPI(filterRequestSettings);
       addCats(data);
     } catch (error: any) {
       throw error;
@@ -54,23 +65,20 @@ const Home = () => {
     }
   };
 
-  /*useEffect(() => {
-    setIsInitialLoading(true);
+  const refreshCatsList = () => {
+    setIsLoading(true);
+    fetchCatsData();
+  };
 
-    const fetchData = async () => {
-      try {
-        await fetchUserData();
-      } catch (error: any) {
-        throw error;
-      } finally {
-        setIsInitialLoading(false);
-      }
-    };
+  useEffect(() => {
+    if (isFiltersChanged) {
+      setIsFilteredLoading(true);
+      fetchCatsData();
+      setIsFiltersChanged(false);
+    }
+  }, [isFiltersChanged]);
 
-    fetchData();
-  }, []);
-
-  if (isInitialLoading) {
+  if (isFilteredLoading) {
     return (
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
@@ -80,7 +88,11 @@ const Home = () => {
         </View>
       </View>
     );
-  }*/
+  }
+
+  const openFilterBottomSheet = () => {
+    showBottomSheet(<FilterBS hideBottomSheet={hideBottomSheet} />);
+  };
 
   const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: CatType }) => (
@@ -88,6 +100,16 @@ const Home = () => {
   );
 
   const footerComponent = () => {
+    if (cats.length >= MAX_NUMBER_OF_PHOTOS) {
+      return (
+        <View style={styles.footer}>
+          <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
+          <Text style={styles.limitText}>You've reached the maximum</Text>
+          <Text style={styles.limitText}>number of cats!</Text>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.footer}>
         {isAddingCatsLoading && <ActivityIndicator size={"large"} />}
@@ -103,7 +125,7 @@ const Home = () => {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => fetchCatsData()}
+        onRefresh={() => refreshCatsList()}
         refreshing={isLoading}
         numColumns={numColumns}
         onEndReached={fetchAddedCatsData}
@@ -114,7 +136,11 @@ const Home = () => {
         scrollIndicatorInsets={{ top: 60 }}
       />
       <View style={styles.topBarContainer}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar
+          setNumOfColumns={setNumOfColumns}
+          numOfColumns={numColumns}
+          onFilterPress={openFilterBottomSheet}
+        />
       </View>
     </View>
   );
@@ -135,8 +161,15 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT32,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
-      alignSelf: "center",
+      textAlign: "center",
       marginTop: 10,
+    },
+    limitText: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      width: "80%",
+      textAlign: "center",
     },
     footer: {
       height: 190,
@@ -153,6 +186,9 @@ export const createStyles = (theme: ITheme) =>
     flatListContent: {
       paddingTop: 50,
       paddingBottom: 80,
+    },
+    iconColor: {
+      color: theme.colors.accent,
     },
   });
 

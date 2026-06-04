@@ -3,17 +3,18 @@ import { headers } from "../constants/api";
 import fetchAPI from "./fetchAPI";
 
 type reqParams = {
-  limit?: number;
+  limit: number;
+  has_breeds: number;
 };
 
-const getCatsAPI = async ({ limit = 10 }: reqParams) => {
-  const params = new URLSearchParams({
-    limit: limit.toString(),
-    //has_breeds: "1",
+const getCatsAPI = async (params: reqParams) => {
+  const queryParams = new URLSearchParams({
+    limit: String(params.limit),
+    has_breeds: String(params.has_breeds),
   });
 
   try {
-    const response = await fetchAPI(URLs.images + "/search?" + params, {
+    const response = await fetchAPI(URLs.images + "/search?" + queryParams, {
       headers,
     });
 

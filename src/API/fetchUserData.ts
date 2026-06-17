@@ -23,12 +23,7 @@ const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
 
 const fetchCatsData = async () => {
   try {
-    const req = {
-      limit: 20,
-      //limit: 5,
-    };
-
-    const data = await getCatsAPI(req);
+    const data = await getCatsAPI(store.filterRequestSettings);
     store.setCats(data);
   } catch (error: any) {
     throw error;

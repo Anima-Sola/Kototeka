@@ -1,13 +1,16 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { shareImage } from "../../utils/functions";
+import { downloadAndSaveImage } from "../../utils/functions";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import DownloadProgressBar from "../DownloadProgressBar/DownloadProgressBar";
+import { downloadResumable } from "../../utils/functions";
+import useStore from "../../store/store";
 
 type ProfileTopBarProps = {
   isFavourite?: boolean;
@@ -26,9 +29,11 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
   isDeleteIconEnabled = false,
   onDeleteIconPress,
   isRequestInProcess = false,
-  imageUrl = '',
+  imageUrl = "",
 }) => {
   const styles = useThemedStyles(createStyles);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const { showSuccessToast, showErrorToast } = useStore();
   const router = useRouter();
 
   const treshOrFavouriteIcon = () => {
@@ -48,16 +53,40 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
     if (isDeleteIconEnabled)
       return (
         <TouchableOpacity onPress={onDeleteIconPress}>
-          <FontAwesome name="trash-o" size={32} color={styles.iconColor.color} />
+          <FontAwesome
+            name="trash-o"
+            size={32}
+            color={styles.iconColor.color}
+          />
         </TouchableOpacity>
       );
 
     return null;
   };
 
+  const onProgress = (progress: number) => {
+    if (progress >= 0 && progress <= 1) setDownloadProgress(progress);
+  };
+
   const downloadImage = async () => {
-   
-  }
+    if (!imageUrl) return;
+
+    try {
+      await downloadAndSaveImage(imageUrl, onProgress);
+      setTimeout(() => showSuccessToast("The image has been downloaded"), 500);
+    } catch (error) {
+      setTimeout(() => showErrorToast("Error when downloading the image"), 500);
+    } finally {
+      setDownloadProgress(0);
+    }
+  };
+
+  const onCancelDownloadingImage = async () => {
+    if (downloadResumable) {
+      downloadResumable.cancelAsync();
+      setDownloadProgress(0);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -79,6 +108,9 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
           <Feather name="download" size={32} color={styles.iconColor.color} />
         </TouchableOpacity>
       </View>
+      {downloadProgress > 0 && downloadProgress < 1 && (
+        <DownloadProgressBar progress={downloadProgress} onCancel={onCancelDownloadingImage} />
+      )}
     </View>
   );
 };
@@ -101,7 +133,7 @@ export const createStyles = (theme: ITheme) =>
     },
     iconColor: {
       color: theme.colors.accent,
-    }
+    },
   });
 
 export default ProfileTopBar;

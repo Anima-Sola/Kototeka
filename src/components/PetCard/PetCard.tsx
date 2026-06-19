@@ -3,55 +3,81 @@ import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
-import deleteCatAPI from "../../API/deleteCat";
+import addFavouritePetAPI from "../../API/addFavouritePet";
+import deleteFavouritePetAPI from "../../API/deleteFavouritePet";
+import getFavouritePetByIdAPI from "../../API/getFavouritePetById";
 import useStore from "../../store/store";
-import { CatType } from "../../constants/types";
+import { isElementInArray } from "../../utils/functions";
+import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
+import { PetType } from "../../constants/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { blurhash } from "../../constants/common";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
-type CatCardProps = {
-  cat: CatType;
+type PetCardProps = {
+  pet: PetType;
   numOfColumns: number;
 };
 
-const UploadedCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
+const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { deleteUploadedCat } = useStore();
+  const { favouritePets, addFavouritePet, deleteFavouritePet, addFavoritePetBreeds, userId } =
+    useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
 
-  const hasBreeds = false; //cat.breeds.length !== 0;
+  const hasBreeds = pet.breeds[0];
   const imageWidth = Dimensions.get("screen").width * (1 / numOfColumns) - 2;
+  const favouritePet = isElementInArray(pet.id, favouritePets);
   const iconScale = 10 * numOfColumns;
 
-  const deleteCat = async () => {
-    setIsDeleting(true);
+  const addToFavourites = async () => {
+    setIsFavouriteToggling(true);
 
     try {
-      await deleteCatAPI(cat.id);
-      deleteUploadedCat(cat.id);
+      const addingFavouritePetResult = await addFavouritePetAPI(pet.id, userId);
+      const addedFavouritePet = await getFavouritePetByIdAPI(addingFavouritePetResult.id);
+      addFavouritePet(addedFavouritePet);
+      if (hasBreeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {
       throw error;
     } finally {
-      setIsDeleting(false);
+      setIsFavouriteToggling(false);
     }
+  };
+
+  const deleteFromFavourites = async () => {
+    if (!favouritePet) return;
+    setIsFavouriteToggling(true);
+
+    try {
+      const data = await deleteFavouritePetAPI(favouritePet.id);
+      deleteFavouritePet(favouritePet.id);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsFavouriteToggling(false);
+    }
+  };
+
+  const toggleFavourites = async () => {
+    if (favouritePet) deleteFromFavourites();
+    else addToFavourites();
   };
 
   return (
     <View style={{ ...styles.container }}>
       <TouchableOpacity
         onPress={() =>
-          router.push({ pathname: "/uploadedCatProfile", params: { catId: cat.id } })
+          router.push({ pathname: "/petProfile", params: { petId: pet.id } })
         }
       >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
-          source={cat.url}
+          source={pet.url}
           placeholder={{ blurhash }}
           contentFit="cover"
           cachePolicy={"memory-disk"}
@@ -63,17 +89,14 @@ const UploadedCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
           }}
         />
         <View style={styles.favouriteIconContainer}>
-          {isDeleting ? (
-            <ActivityIndicator size={45 - iconScale} color={styles.iconColor.color} />
+          {isFavouriteToggling ? (
+            <ActivityIndicator size={45 - iconScale} color={styles.activityIndicator.color} />
           ) : (
-            <TouchableOpacity onPress={deleteCat}>
-              <FontAwesome
-                name="trash-o"
-                size={45 - iconScale}
-                color={styles.iconColor.color}
-                style={styles.iconStyle}
-              />
-            </TouchableOpacity>
+            <FavouriteIcon
+              isFavourite={Boolean(favouritePet)}
+              onPress={toggleFavourites}
+              size={45 - iconScale}
+            />
           )}
         </View>
         {hasBreeds && (
@@ -132,13 +155,12 @@ export const createStyles = (theme: ITheme) =>
       top: 6,
       left: 6,
     },
-    iconStyle: {
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowColor: theme.colors.shadow,
-    },
     iconColor: {
-      color: theme.colors.white,
+      color: theme.colors.white
     },
+    activityIndicator: {
+      color: theme.colors.white,
+    }
   });
 
-export default UploadedCatCard;
+export default PetCard;

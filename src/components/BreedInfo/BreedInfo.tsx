@@ -15,6 +15,7 @@ const BreedInfo: FC<BreedInfoProps> = ({ breeds }) => {
       <TextItem name={`Name: ${breeds.name}`} text={breeds.description} />
       <TextItem name={"Alternative names"} text={breeds.alt_names} />
       <TextItem name={"Temperament"} text={breeds.temperament} />
+      <TextItem name={"History"} text={breeds.history} />
       <MarkItem name={"Adaptability"} mark={breeds.adaptability} />
       <MarkItem name={"Affection level"} mark={breeds.affection_level} />
       <MarkItem name={"Energy level"} mark={breeds.energy_level} />
@@ -28,22 +29,22 @@ const BreedInfo: FC<BreedInfoProps> = ({ breeds }) => {
       <MarkItem name={"Intelligence"} mark={breeds.intelligence} />
       <MarkItem name={"Vocalisation"} mark={breeds.vocalisation} />
       <SingleParamItem name={"Origin"} param={breeds.origin} />
-      <SingleParamItem name={"Weight, kg."} param={breeds.weight.metric} />
+      <SingleParamItem name={"Breed group"} param={breeds.breed_group} />
+      <SingleParamItem name={"Weight, kg."} param={breeds.weight?.metric} />
       <SingleParamItem name={"Life span, years"} param={breeds.life_span} />
-      <SingleParamItem name={"Experimental"} param={breeds.experimental ? "Yes" : "No"} />
-      <SingleParamItem name={"Hairless"} param={breeds.hairless ? "Yes" : "No"} />
-      <SingleParamItem
-        name={"Hypoallergenic"}
-        param={breeds.hypoallergenic ? "Yes" : "No"}
-      />
-      <SingleParamItem name={"Indoor"} param={breeds.indoor ? "Yes" : "No"} />
-      <SingleParamItem name={"Natural"} param={breeds.natural ? "Yes" : "No"} />
-      <SingleParamItem name={"Rare"} param={breeds.rare ? "Yes" : "No"} />
-      <SingleParamItem name={"Rex"} param={breeds.rex ? "Yes" : "No"} />
-      <SingleParamItem name={"Short legs"} param={breeds.short_legs ? "Yes" : "No"} />
+      <SingleParamItem name={"Experimental"} param={breeds.experimental} />
+      <SingleParamItem name={"Bred for"} param={breeds.bred_for} />
+      <SingleParamItem name={"Perfect for"} param={breeds.perfect_for} />
+      <SingleParamItem name={"Hairless"} param={breeds.hairless} />
+      <SingleParamItem name={"Hypoallergenic"} param={breeds.hypoallergenic} />
+      <SingleParamItem name={"Indoor"} param={breeds.indoor} />
+      <SingleParamItem name={"Natural"} param={breeds.natural} />
+      <SingleParamItem name={"Rare"} param={breeds.rare} />
+      <SingleParamItem name={"Rex"} param={breeds.rex} />
+      <SingleParamItem name={"Short legs"} param={breeds.short_legs} />
       <SingleParamItem
         name={"Suppressed tail"}
-        param={breeds.suppressed_tail ? "Yes" : "No"}
+        param={breeds.suppressed_tail}
       />
       <LinkItem name={"Cfa page"} link={breeds.cfa_url} />
       <LinkItem name={"Vcahospitals  page"} link={breeds.vcahospitals_url} />

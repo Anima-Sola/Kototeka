@@ -8,7 +8,7 @@ import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
 import Slider from "@react-native-community/slider";
 import { Checkbox } from "react-native-paper";
-import {MIN_LIMIT_PHOTOS, MAX_LIMIT_PHOTOS} from "../../constants/common";
+import { MIN_LIMIT_PHOTOS, MAX_LIMIT_PHOTOS } from "../../constants/common";
 
 type ChangeNameBSType = {
   hideBottomSheet: () => void;
@@ -62,13 +62,18 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
       <View style={styles.checkBoxContainer}>
         <Checkbox.Android
           status={hasBreeds ? "checked" : "unchecked"}
-          onPress={() => setHasBreeds(hasBreeds ? 0 : 1)}
+          onPress={() => setHasBreeds(!hasBreeds)}
           color={styles.chekedColor.color}
           uncheckedColor={styles.uncheckedColor.color}
         />
         <Text style={styles.queryParamText}>Only with breed info</Text>
       </View>
-      <View style={styles.buttonsContainer}>
+      <View
+        style={{
+          ...styles.buttonsContainer,
+          paddingBottom: Platform.OS === "ios" ? 0 : 30,
+        }}
+      >
         <Button
           mode={"contained"}
           style={

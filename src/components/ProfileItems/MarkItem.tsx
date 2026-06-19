@@ -12,7 +12,7 @@ type MarkItemType = {
 };
 
 const MarkItem: FC<MarkItemType> = ({ name, mark }) => {
-  if (!mark) return null;
+  if (mark === undefined || mark === null) return null;
   const styles = useThemedStyles(createStyles);
 
   return (

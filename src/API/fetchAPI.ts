@@ -1,10 +1,10 @@
 import useStore from "../store/store";
 
-const store = useStore.getState();
-
 const fetchAPI = async (url: string, options: any, returnData: boolean = true) => {
+  const store = useStore.getState();
+  options.headers['x-api-key'] = store.apiKey;
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(store.baseUrl + url, options);
     if (!returnData) return;
 
     if (!response.ok) {
@@ -14,7 +14,7 @@ const fetchAPI = async (url: string, options: any, returnData: boolean = true) =
     const data = await response.json();
     return data;
   } catch (error: any) {
-    store.showErrorToast(" Error while receiving data");
+    store.showErrorToast("Error while receiving data");
   }
 };
 

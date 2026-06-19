@@ -1,33 +1,45 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList } from "react-native";
+import { useState, useCallback, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  FlatList,
+} from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import { useFocusEffect } from "expo-router";
 import useStore from "../../store/store";
 import * as ImagePicker from "expo-image-picker";
 import TopBar from "../../components/TopBar/TopBar";
 import fontSizes from "../../constants/fontSizes";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import uploadCatAPI from "../../API/uploadCat";
-import UploadedCatCard from "../../components/CatCard/UploadedCatCard";
-import { CatType } from "../../constants/types";
-import getUploadedCatsAPI from "../../API/getUploadedCats";
+import uploadPetAPI from "../../API/uploadPet";
+import UploadedPetCard from "../../components/PetCard/UploadedPetCard";
+import { PetType } from "../../constants/types";
+import getUploadedPetsAPI from "../../API/getUploadedPets";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
-  const { uploadedCats, setUploadedCats, addUploadedCat, userId } = useStore();
+  const { uploadedPets, setUploadedPets, addUploadedPet, userId, petsType } =
+    useStore();
+  const prevPetsTypeRef = useRef(petsType);
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
-  const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] = useState(false);
+  const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] =
+    useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isFilteredLoading, setIsFilteredLoading] = useState(false);
 
-  const uploadCat = async (image: string) => {
+  const uploadPet = async (image: string) => {
     setIsUploading(true);
 
     try {
-      const uploadCatResult = await uploadCatAPI(image, userId);
-      if (uploadCatResult) addUploadedCat(uploadCatResult);
+      const uploadPetResult = await uploadPetAPI(image, userId);
+      if (uploadPetResult) addUploadedPet(uploadPetResult);
     } catch (error: any) {
       throw error;
     } finally {
@@ -35,21 +47,24 @@ const Upload = () => {
     }
   };
 
-  const fetchUploadedCatsData = async () => {
+  const fetchUploadedPetsData = async () => {
     setIsLoading(true);
 
     try {
-      const data = await getUploadedCatsAPI(1000, userId);
-      setUploadedCats(data);
+      const data = await getUploadedPetsAPI(1000, userId);
+      if(data) setUploadedPets(data);
+      else setUploadedPets([]);
     } catch (error: any) {
       throw error;
     } finally {
       setIsLoading(false);
+      setIsFilteredLoading(false);
     }
   };
 
   const pickImageFromGallary = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
       Alert.alert(
@@ -67,12 +82,13 @@ const Upload = () => {
     });
 
     if (!result.canceled) {
-      uploadCat(result.assets[0].uri);
+      uploadPet(result.assets[0].uri);
     }
   };
 
   const pickImageFromCamera = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
       Alert.alert(
@@ -90,7 +106,7 @@ const Upload = () => {
     });
 
     if (!result.canceled) {
-      uploadCat(result.assets[0].uri);
+      uploadPet(result.assets[0].uri);
     }
   };
 
@@ -99,16 +115,24 @@ const Upload = () => {
       <>
         <TouchableOpacity
           style={styles.plusButton}
-          onPress={() => setIsCameraGallaryBtnsVisible(!isCameraGallaryBtnsVisible)}
+          onPress={() =>
+            setIsCameraGallaryBtnsVisible(!isCameraGallaryBtnsVisible)
+          }
         >
           <Text style={styles.text}>+</Text>
         </TouchableOpacity>
         {isCameraGallaryBtnsVisible && (
           <View>
-            <TouchableOpacity style={styles.cameraButton} onPress={pickImageFromCamera}>
+            <TouchableOpacity
+              style={styles.cameraButton}
+              onPress={pickImageFromCamera}
+            >
               <Feather name="camera" size={24} color={styles.iconColor.color} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.gallaryButton} onPress={pickImageFromGallary}>
+            <TouchableOpacity
+              style={styles.gallaryButton}
+              onPress={pickImageFromGallary}
+            >
               <Feather name="image" size={24} color={styles.iconColor.color} />
             </TouchableOpacity>
           </View>
@@ -125,13 +149,40 @@ const Upload = () => {
     );
   };
 
-  if (uploadedCats.length === 0) {
+  const keyExtractor = (item: PetType, index: number) => `${item.id}_${index}`;
+  const renderItem = ({ item }: { item: PetType }) => (
+    <UploadedPetCard pet={item} numOfColumns={numColumns} />
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (prevPetsTypeRef.current !== petsType) {
+        setIsFilteredLoading(true);
+        fetchUploadedPetsData();
+        prevPetsTypeRef.current = petsType;
+      }
+    }, [petsType]),
+  );
+
+  if (isFilteredLoading) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns}/>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size={"large"} />
+          <Text style={styles.loadingText}>Pets are coming!</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (uploadedPets.length === 0) {
+    return (
+      <View style={styles.container}>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
-          <Text style={styles.emptyText}>No uploaded cats</Text>
+          <Text style={styles.emptyText}>No uploaded pets</Text>
           <Text style={styles.emptyText}>Please, add them from </Text>
           <Text style={styles.emptyText}>the device gallery or camera</Text>
         </View>
@@ -141,20 +192,15 @@ const Upload = () => {
     );
   }
 
-  const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
-  const renderItem = ({ item }: { item: CatType }) => (
-    <UploadedCatCard cat={item} numOfColumns={numColumns} />
-  );
-
   return (
     <View style={styles.container}>
       <FlatList
         key={numColumns}
-        data={uploadedCats}
+        data={uploadedPets}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => fetchUploadedCatsData()}
+        onRefresh={() => fetchUploadedPetsData()}
         refreshing={isLoading}
         numColumns={numColumns}
         maxToRenderPerBatch={20}
@@ -173,6 +219,11 @@ const Upload = () => {
 
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
+    loadingContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      paddingTop: 200,
+    },
     container: {
       flex: 1,
       backgroundColor: theme.colors.main,
@@ -218,6 +269,13 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.accent,
     },
     emptyText: {
+      fontSize: fontSizes.FONT32,
+      color: theme.colors.mainText,
+      fontFamily: "AmaticBold",
+      alignSelf: "center",
+      marginTop: 10,
+    },
+    loadingText: {
       fontSize: fontSizes.FONT32,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",

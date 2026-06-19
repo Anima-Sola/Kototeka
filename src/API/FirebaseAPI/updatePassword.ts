@@ -11,23 +11,19 @@ interface UpdatePasswordParams {
 }
 
 const updateUserPassword = async (params: UpdatePasswordParams) => {
-  try {
-    const currentUser = auth.currentUser;
+  const currentUser = auth.currentUser;
 
-    if (!currentUser || !currentUser.email) {
-      throw new Error("User is not authenticated");
-    }
-
-    const credential = EmailAuthProvider.credential(
-      currentUser.email,
-      params.currentPassword,
-    );
-    await reauthenticateWithCredential(currentUser, credential);
-
-    await updatePassword(currentUser, params.newPassword);
-  } catch (error) {
-    throw error;
+  if (!currentUser || !currentUser.email) {
+    throw new Error("User is not authenticated");
   }
+
+  const credential = EmailAuthProvider.credential(
+    currentUser.email,
+    params.currentPassword,
+  );
+  await reauthenticateWithCredential(currentUser, credential);
+
+  await updatePassword(currentUser, params.newPassword);
 };
 
 export default updateUserPassword;

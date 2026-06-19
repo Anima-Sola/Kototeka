@@ -1,47 +1,40 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
-import addFavouriteCatAPI from "../../API/addFavouriteCat";
-import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
-import getFavouriteCatByIdAPI from "../../API/getFavouriteCatById";
+import { Image } from "expo-image";
 import useStore from "../../store/store";
-import { isElementInArray } from "../../utils/functions";
-import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
-import { CatType } from "../../constants/types";
+import { favouritePetType } from "../../constants/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import deleteFavouritePetAPI from "../../API/deleteFavouritePet";
+import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 import { blurhash } from "../../constants/common";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
-type CatCardProps = {
-  cat: CatType;
+type PetCardProps = {
+  pet: favouritePetType;
   numOfColumns: number;
 };
 
-const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
+const FavouritePetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { favouriteCats, addFavouriteCat, deleteFavouriteCat, addFavoriteCatBreeds, userId } =
-    useStore();
+  const { deleteFavouritePet } = useStore();
+  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
-  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
 
-  const hasBreeds = cat.breeds[0];
   const imageWidth = Dimensions.get("screen").width * (1 / numOfColumns) - 2;
-  const favouriteCat = isElementInArray(cat.id, favouriteCats);
   const iconScale = 10 * numOfColumns;
+  const hasBreeds = pet.breeds;
 
-  const addToFavourites = async () => {
+  const deleteFromFavourites = async () => {
     setIsFavouriteToggling(true);
 
     try {
-      const addingFavouriteCatResult = await addFavouriteCatAPI(cat.id, userId);
-      const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
-      addFavouriteCat(addedFavouriteCat);
-      if (hasBreeds) addFavoriteCatBreeds(addedFavouriteCat.id, cat.breeds[0]);
+      await deleteFavouritePetAPI(pet.id);
+      deleteFavouritePet(pet.id);
     } catch (error: any) {
       throw error;
     } finally {
@@ -49,35 +42,16 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
     }
   };
 
-  const deleteFromFavourites = async () => {
-    if (!favouriteCat) return;
-    setIsFavouriteToggling(true);
-
-    try {
-      const data = await deleteFavouriteCatAPI(favouriteCat.id);
-      deleteFavouriteCat(favouriteCat.id);
-    } catch (error: any) {
-      console.log("Ошибка: ", error);
-    } finally {
-      setIsFavouriteToggling(false);
-    }
-  };
-
-  const toggleFavourites = async () => {
-    if (favouriteCat) deleteFromFavourites();
-    else addToFavourites();
-  };
-
   return (
-    <View style={{ ...styles.container }}>
+    <View style={styles.container}>
       <TouchableOpacity
         onPress={() =>
-          router.push({ pathname: "/catProfile", params: { catId: cat.id } })
+          router.push({ pathname: "/favouritePetProfile", params: { petId: pet.id } })
         }
       >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
-          source={cat.url}
+          source={pet.image.url}
           placeholder={{ blurhash }}
           contentFit="cover"
           cachePolicy={"memory-disk"}
@@ -90,29 +64,31 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
         />
         <View style={styles.favouriteIconContainer}>
           {isFavouriteToggling ? (
-            <ActivityIndicator size={45 - iconScale} color={styles.activityIndicator.color} />
+            <ActivityIndicator size={45 - iconScale} color={styles.iconColor.color} />
           ) : (
             <FavouriteIcon
-              isFavourite={Boolean(favouriteCat)}
-              onPress={toggleFavourites}
+              isFavourite={true}
+              onPress={deleteFromFavourites}
               size={45 - iconScale}
             />
           )}
         </View>
         {hasBreeds && (
           <View style={styles.infoIconContainer}>
-            <Ionicons
-              name="documents-outline"
-              size={50 - iconScale}
-              color={styles.iconColor.color}
-              style={styles.icon}
-            />
+            <TouchableOpacity>
+              <Ionicons
+                name="documents-outline"
+                size={50 - iconScale}
+                color={styles.iconColor.color}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
           </View>
         )}
       </TouchableOpacity>
       {isImageLoading && (
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size={numOfColumns === 3 ? "small" : "large"} />
+          <ActivityIndicator size={"large"} />
         </View>
       )}
     </View>
@@ -122,9 +98,10 @@ const CatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: theme.colors.secondary,
+      backgroundColor: theme.colors.main,
+      alignItems: "center",
+      justifyContent: "center",
       margin: 1,
-      alignSelf: "center",
       borderRadius: 5,
     },
     loaderContainer: {
@@ -133,11 +110,15 @@ export const createStyles = (theme: ITheme) =>
       left: 0,
       right: 0,
       bottom: 0,
-      alignItems: "center",
       justifyContent: "center",
+      alignItems: "center",
     },
     image: {
       borderRadius: 5,
+    },
+    icon: {
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowColor: theme.colors.shadow,
     },
     favouriteIconContainer: {
       position: "absolute",
@@ -146,10 +127,6 @@ export const createStyles = (theme: ITheme) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    icon: {
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowColor: theme.colors.shadow,
-    },
     infoIconContainer: {
       position: "absolute",
       top: 6,
@@ -157,10 +134,7 @@ export const createStyles = (theme: ITheme) =>
     },
     iconColor: {
       color: theme.colors.white
-    },
-    activityIndicator: {
-      color: theme.colors.white,
     }
   });
 
-export default CatCard;
+export default FavouritePetCard;

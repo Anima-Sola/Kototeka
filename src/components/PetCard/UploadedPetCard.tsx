@@ -1,57 +1,57 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { ActivityIndicator } from "react-native-paper";
 import { Image } from "expo-image";
+import { ActivityIndicator } from "react-native-paper";
+import deletePetAPI from "../../API/deletePet";
 import useStore from "../../store/store";
-import { favouriteCatType } from "../../constants/types";
+import { PetType } from "../../constants/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
-import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 import { blurhash } from "../../constants/common";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
-type CatCardProps = {
-  cat: favouriteCatType;
+type PetCardProps = {
+  pet: PetType;
   numOfColumns: number;
 };
 
-const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
+const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { deleteFavouriteCat } = useStore();
-  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
+  const { deleteUploadedPet } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
+  const hasBreeds = false; //pet.breeds.length !== 0;
   const imageWidth = Dimensions.get("screen").width * (1 / numOfColumns) - 2;
   const iconScale = 10 * numOfColumns;
-  const hasBreeds = cat.breeds;
 
-  const deleteFromFavourites = async () => {
-    setIsFavouriteToggling(true);
+  const deletePet = async () => {
+    setIsDeleting(true);
 
     try {
-      await deleteFavouriteCatAPI(cat.id);
-      deleteFavouriteCat(cat.id);
+      await deletePetAPI(pet.id);
+      deleteUploadedPet(pet.id);
     } catch (error: any) {
       throw error;
     } finally {
-      setIsFavouriteToggling(false);
+      setIsDeleting(false);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container }}>
       <TouchableOpacity
         onPress={() =>
-          router.push({ pathname: "/favouriteCatProfile", params: { catId: cat.id } })
+          router.push({ pathname: "/uploadedPetProfile", params: { petId: pet.id } })
         }
       >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}
-          source={cat.image.url}
+          source={pet.url}
           placeholder={{ blurhash }}
           contentFit="cover"
           cachePolicy={"memory-disk"}
@@ -63,32 +63,33 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
           }}
         />
         <View style={styles.favouriteIconContainer}>
-          {isFavouriteToggling ? (
+          {isDeleting ? (
             <ActivityIndicator size={45 - iconScale} color={styles.iconColor.color} />
           ) : (
-            <FavouriteIcon
-              isFavourite={true}
-              onPress={deleteFromFavourites}
-              size={45 - iconScale}
-            />
+            <TouchableOpacity onPress={deletePet}>
+              <FontAwesome
+                name="trash-o"
+                size={45 - iconScale}
+                color={styles.iconColor.color}
+                style={styles.iconStyle}
+              />
+            </TouchableOpacity>
           )}
         </View>
         {hasBreeds && (
           <View style={styles.infoIconContainer}>
-            <TouchableOpacity>
-              <Ionicons
-                name="documents-outline"
-                size={50 - iconScale}
-                color={styles.iconColor.color}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
+            <Ionicons
+              name="documents-outline"
+              size={50 - iconScale}
+              color={styles.iconColor.color}
+              style={styles.icon}
+            />
           </View>
         )}
       </TouchableOpacity>
       {isImageLoading && (
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size={"large"} />
+          <ActivityIndicator size={numOfColumns === 3 ? "small" : "large"} />
         </View>
       )}
     </View>
@@ -98,10 +99,9 @@ const FavouriteCatCard: FC<CatCardProps> = ({ cat, numOfColumns }) => {
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: theme.colors.main,
-      alignItems: "center",
-      justifyContent: "center",
+      backgroundColor: theme.colors.secondary,
       margin: 1,
+      alignSelf: "center",
       borderRadius: 5,
     },
     loaderContainer: {
@@ -110,15 +110,11 @@ export const createStyles = (theme: ITheme) =>
       left: 0,
       right: 0,
       bottom: 0,
-      justifyContent: "center",
       alignItems: "center",
+      justifyContent: "center",
     },
     image: {
       borderRadius: 5,
-    },
-    icon: {
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowColor: theme.colors.shadow,
     },
     favouriteIconContainer: {
       position: "absolute",
@@ -127,14 +123,22 @@ export const createStyles = (theme: ITheme) =>
       alignItems: "center",
       justifyContent: "center",
     },
+    icon: {
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowColor: theme.colors.shadow,
+    },
     infoIconContainer: {
       position: "absolute",
       top: 6,
       left: 6,
     },
+    iconStyle: {
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowColor: theme.colors.shadow,
+    },
     iconColor: {
-      color: theme.colors.white
-    }
+      color: theme.colors.white,
+    },
   });
 
-export default FavouriteCatCard;
+export default UploadedPetCard;

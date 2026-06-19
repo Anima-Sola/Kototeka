@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -7,12 +7,13 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import getCatsAPI from "../../API/getCats";
-import CatCard from "../../components/CatCard/CatCard";
+import { useFocusEffect } from "expo-router";
+import getPetsAPI from "../../API/getPets";
+import PetCard from "../../components/PetCard/PetCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
 import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
-import { CatType } from "../../constants/types";
+import { PetType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
@@ -22,24 +23,26 @@ import { MAX_NUMBER_OF_PHOTOS } from "../../constants/common";
 
 const Home = () => {
   const {
-    cats,
-    setCats,
-    addCats,
+    pets,
+    setPets,
+    addPets,
     filterRequestSettings,
     isFiltersChanged,
     setIsFiltersChanged,
+    petsType,
   } = useStore();
   const styles = useThemedStyles(createStyles);
+  const prevPetsTypeRef = useRef(petsType);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAddingCatsLoading, setIsAddingCatsLoading] = useState(false);
+  const [isAddingPetsLoading, setIsAddingPetsLoading] = useState(false);
   const [isFilteredLoading, setIsFilteredLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
-  const fetchCatsData = async () => {
+  const fetchPetsData = async () => {
     try {
-      const data = await getCatsAPI(filterRequestSettings);
-      setCats(data);
+      const data = await getPetsAPI(filterRequestSettings);
+      setPets(data);
     } catch (error: any) {
       throw error;
     } finally {
@@ -48,32 +51,42 @@ const Home = () => {
     }
   };
 
-  const fetchAddedCatsData = async () => {
-    if (cats.length >= MAX_NUMBER_OF_PHOTOS) {
+  const fetchAddedPetsData = async () => {
+    if (pets.length >= MAX_NUMBER_OF_PHOTOS) {
       return;
     }
 
-    setIsAddingCatsLoading(true);
+    setIsAddingPetsLoading(true);
 
     try {
-      const data = await getCatsAPI(filterRequestSettings);
-      addCats(data);
+      const data = await getPetsAPI(filterRequestSettings);
+      addPets(data);
     } catch (error: any) {
       throw error;
     } finally {
-      setIsAddingCatsLoading(false);
+      setIsAddingPetsLoading(false);
     }
   };
 
-  const refreshCatsList = () => {
+  const refreshPetsList = () => {
     setIsLoading(true);
-    fetchCatsData();
+    fetchPetsData();
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (prevPetsTypeRef.current !== petsType) {
+        setIsFilteredLoading(true);
+        fetchPetsData();
+        prevPetsTypeRef.current = petsType;
+      }
+    }, [petsType])
+  );
 
   useEffect(() => {
     if (isFiltersChanged) {
       setIsFilteredLoading(true);
-      fetchCatsData();
+      fetchPetsData();
       setIsFiltersChanged(false);
     }
   }, [isFiltersChanged]);
@@ -84,7 +97,7 @@ const Home = () => {
         <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
         <View style={styles.loadingContainer}>
           <PaperActivityIndicator size={"large"} />
-          <Text style={styles.text}>Cats are coming!</Text>
+          <Text style={styles.text}>Pets are coming!</Text>
         </View>
       </View>
     );
@@ -94,25 +107,25 @@ const Home = () => {
     showBottomSheet(<FilterBS hideBottomSheet={hideBottomSheet} />);
   };
 
-  const keyExtractor = (item: CatType, index: number) => `${item.id}_${index}`;
-  const renderItem = ({ item }: { item: CatType }) => (
-    <CatCard cat={item} numOfColumns={numColumns} />
+  const keyExtractor = (item: PetType, index: number) => `${item.id}_${index}`;
+  const renderItem = ({ item }: { item: PetType }) => (
+    <PetCard pet={item} numOfColumns={numColumns} />
   );
 
   const footerComponent = () => {
-    if (cats.length >= MAX_NUMBER_OF_PHOTOS) {
+    if (pets.length >= MAX_NUMBER_OF_PHOTOS) {
       return (
         <View style={styles.footer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.limitText}>You've reached the maximum</Text>
-          <Text style={styles.limitText}>number of cats!</Text>
+          <Text style={styles.limitText}>number of pets!</Text>
         </View>
       );
     }
 
     return (
       <View style={styles.footer}>
-        {isAddingCatsLoading && <ActivityIndicator size={"large"} />}
+        {isAddingPetsLoading && <ActivityIndicator size={"large"} />}
       </View>
     );
   };
@@ -121,14 +134,14 @@ const Home = () => {
     <View style={styles.container}>
       <FlatList
         key={numColumns}
-        data={cats}
+        data={pets}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => refreshCatsList()}
+        onRefresh={refreshPetsList}
         refreshing={isLoading}
         numColumns={numColumns}
-        onEndReached={fetchAddedCatsData}
+        onEndReached={fetchAddedPetsData}
         onEndReachedThreshold={0.3}
         ListFooterComponent={footerComponent}
         maxToRenderPerBatch={20}

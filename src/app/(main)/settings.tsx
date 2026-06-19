@@ -14,7 +14,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import updateUserPassword from "../../API/FirebaseAPI/updatePassword";
-import { RadioButton } from "react-native-paper";
+import { RadioButton, SegmentedButtons } from "react-native-paper";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
@@ -47,6 +47,8 @@ const Settings = () => {
     userName,
     showErrorToast,
     showSuccessToast,
+    petsType,
+    setApi,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
@@ -68,7 +70,8 @@ const Settings = () => {
       setIsSignedIn(false);
       router.replace("/(auth)/login");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       showErrorToast("Error while loggin out: " + errorMessage);
     } finally {
       setIsLogginOut(false);
@@ -89,7 +92,8 @@ const Settings = () => {
       methods.reset();
       showSuccessToast("Your password has been changed successfully");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       showErrorToast("Error updating password: " + errorMessage);
     } finally {
       setIsLoading(false);
@@ -121,6 +125,11 @@ const Settings = () => {
     }
   };
 
+  const changePets = () => {
+    if (petsType === "cats") setApi("dogs");
+    else setApi("cats");
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -130,6 +139,40 @@ const Settings = () => {
           <TouchableOpacity onPress={openChangeNameBottomSheet}>
             <Entypo name="pencil" size={24} color={styles.iconColor.color} />
           </TouchableOpacity>
+        </View>
+        <Text style={styles.textHeader}>Pets selection</Text>
+        <View style={styles.segmentedButtionsContainer}>
+          <SegmentedButtons
+            value={petsType}
+            onValueChange={changePets}
+            density={"regular"}
+            buttons={[
+              {
+                value: "cats",
+                label: "Cats",
+                labelStyle:
+                  petsType === "cats"
+                    ? styles.segmentedButtonLabel
+                    : styles.segmentedButtonLabelSelected,
+                style: [
+                  styles.segmentedButtonItem,
+                  petsType === "cats" && styles.segmentedButtonSelected,
+                ],
+              },
+              {
+                value: "dogs",
+                label: "Dogs",
+                labelStyle:
+                  petsType === "dogs"
+                    ? styles.segmentedButtonLabel
+                    : styles.segmentedButtonLabelSelected,
+                style: [
+                  styles.segmentedButtonItem,
+                  petsType === "dogs" && styles.segmentedButtonSelected,
+                ],
+              },
+            ]}
+          />
         </View>
         <Text style={styles.textHeader}>Theme</Text>
         <View style={styles.radioGroupContainer}>
@@ -192,7 +235,7 @@ const Settings = () => {
             <Button
               mode={"contained"}
               style={
-                methods.formState.isValid && !isLoading
+                methods.formState.isValid
                   ? styles.button
                   : styles.disabledButton
               }
@@ -201,7 +244,10 @@ const Settings = () => {
               onPress={methods.handleSubmit(onSubmit)}
             >
               {isLoading ? (
-                <ActivityIndicator color={styles.activityIndicator.color} size="small" />
+                <ActivityIndicator
+                  color={styles.activityIndicator.color}
+                  size="small"
+                />
               ) : (
                 "Change"
               )}
@@ -216,7 +262,10 @@ const Settings = () => {
             onPress={logout}
           >
             {isLoggingOut ? (
-              <ActivityIndicator color={styles.activityIndicator.color} size="small" />
+              <ActivityIndicator
+                color={styles.activityIndicator.color}
+                size="small"
+              />
             ) : (
               "Log out"
             )}
@@ -246,6 +295,9 @@ export const createStyles = (theme: ITheme) =>
       flex: 1,
       marginHorizontal: 16,
       marginTop: 10,
+    },
+    segmentedButtionsContainer: {
+      marginBottom: 10,
     },
     text: {
       color: theme.colors.mainText,
@@ -316,6 +368,7 @@ export const createStyles = (theme: ITheme) =>
     button: {
       backgroundColor: theme.colors.accent,
       height: 50,
+      justifyContent: "center",
     },
     disabledButton: {
       backgroundColor: theme.colors.disabled,
@@ -330,6 +383,24 @@ export const createStyles = (theme: ITheme) =>
     },
     activityIndicator: {
       color: theme.colors.accent,
+    },
+    segmentedButtonLabel: {
+      fontSize: fontSizes.FONT16,
+      fontFamily: "ShantellBold",
+      color: theme.colors.secondary,
+    },
+    segmentedButtonLabelSelected: {
+      fontSize: fontSizes.FONT16,
+      fontFamily: "ShantellBold",
+      color: theme.colors.mainText,
+    },
+    segmentedButtonItem: {
+      borderRadius: 20,
+      height: 40,
+      borderColor: theme.colors.disabled,
+    },
+    segmentedButtonSelected: {
+      backgroundColor: theme.colors.accent,
     },
     footer: {
       height: 190,

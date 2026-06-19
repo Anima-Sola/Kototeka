@@ -3,7 +3,7 @@ export type IconType = {
   color: string;
 };
 
-export type CatType = {
+export type PetType = {
   breeds: any[];
   height: number;
   id: string;
@@ -14,7 +14,7 @@ export type CatType = {
   }
 };
 
-export type favouriteCatType = {
+export type favouritePetType = {
   created_at: string,
   id: string,
   breeds: any;

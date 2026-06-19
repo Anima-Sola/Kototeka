@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Platform } from "react-native";
 import { useForm, FormProvider } from "react-hook-form";
 import useStore from "../../store/store";
 import { Button } from "react-native-paper";
@@ -41,7 +41,8 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
         );
       }
     } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       showErrorToast("Error updating user name: " + errorMessage);
     } finally {
       setIsLoading(false);
@@ -61,12 +62,17 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
             compareWithDefaultValue={true}
           />
         </View>
-        <View style={styles.buttonsContainer}>
+        <View
+          style={{
+            ...styles.buttonsContainer,
+            paddingBottom: Platform.OS === "ios" ? 0 : 30,
+          }}
+        >
           <Button
             mode={"contained"}
             loading={isLoading}
             style={
-              methods.formState.isValid && !isLoading
+              methods.formState.isValid
                 ? styles.enabledButton
                 : styles.disabledButton
             }
@@ -116,6 +122,7 @@ export const createStyles = (theme: ITheme) =>
     enabledButton: {
       backgroundColor: theme.colors.accent,
       height: 50,
+      justifyContent: "center",
     },
     disabledButton: {
       backgroundColor: theme.colors.disabled,

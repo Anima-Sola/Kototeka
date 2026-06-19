@@ -10,7 +10,7 @@ type LinkItemType = {
 };
 
 const LinkItem: FC<LinkItemType> = ({ name, link }) => {
-  if (!link) return null;
+  if (link === undefined || link === null) return null;
   const styles = useThemedStyles(createStyles);
 
   const handleLink = async () => {

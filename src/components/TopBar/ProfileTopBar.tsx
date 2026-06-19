@@ -1,5 +1,11 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Share,
+  Platform,
+} from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
@@ -88,6 +94,23 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
     }
   };
 
+  const shareImage = async () => {
+    if (!imageUrl) return;
+
+    try {
+      const result = await Share.share({
+        message: Platform.select({
+          ios: `Hi! Look at this pretty pet:)`,
+          android: `Hi! Look at this pretty pet:) ${imageUrl}`,
+        }),
+        url: imageUrl,
+        title: "Share an image",
+      });
+    } catch (error) {
+      showErrorToast("Error when sharing the image");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.icon} onPress={() => router.back()}>
@@ -101,7 +124,7 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
             treshOrFavouriteIcon()
           )}
         </View>
-        <TouchableOpacity style={styles.icon} onPress={() => {}}>
+        <TouchableOpacity style={styles.icon} onPress={shareImage}>
           <Feather name="share-2" size={32} color={styles.iconColor.color} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon} onPress={downloadImage}>
@@ -109,7 +132,10 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
         </TouchableOpacity>
       </View>
       {downloadProgress > 0 && downloadProgress < 1 && (
-        <DownloadProgressBar progress={downloadProgress} onCancel={onCancelDownloadingImage} />
+        <DownloadProgressBar
+          progress={downloadProgress}
+          onCancel={onCancelDownloadingImage}
+        />
       )}
     </View>
   );

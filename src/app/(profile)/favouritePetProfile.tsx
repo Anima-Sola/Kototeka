@@ -8,39 +8,39 @@ import fontSizes from "../../constants/fontSizes";
 import { Image } from "expo-image";
 import { blurhash } from "../../constants/common";
 import BreedInfo from "../../components/BreedInfo/BreedInfo";
-import addFavouriteCatAPI from "../../API/addFavouriteCat";
-import getFavouriteCatByIdAPI from "../../API/getFavouriteCatById";
-import deleteFavouriteCatAPI from "../../API/deleteFavouriteCat";
+import addFavouritePetAPI from "../../API/addFavouritePet";
+import getFavouritePetByIdAPI from "../../API/getFavouritePetById";
+import deleteFavouritePetAPI from "../../API/deleteFavouritePet";
 import NoBreedInfo from "../../components/BreedInfo/NoBreedInfo";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
 const imageWidth = Dimensions.get("screen").width;
 
-const FavouriteCatProfile = () => {
+const FavouritePetProfile = () => {
   const styles = useThemedStyles(createStyles);
-  const { favouriteCats, addFavouriteCat, deleteFavouriteCat, userId } = useStore();
-  const { catId } = useLocalSearchParams<{ catId: string }>();
-  const favouriteCat = favouriteCats.find(
-    (cat) => cat.id.toString() === catId.toString(),
+  const { favouritePets, addFavouritePet, deleteFavouritePet, userId } = useStore();
+  const { petId } = useLocalSearchParams<{ petId: string }>();
+  const favouritePet = favouritePets.find(
+    (pet) => pet.id.toString() === petId.toString(),
   );
 
-  if (!favouriteCat) return null;
+  if (!favouritePet) return null;
 
   const router = useRouter();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
 
-  const breeds = favouriteCat.breeds;
+  const breeds = favouritePet.breeds;
 
   const addToFavourites = async () => {
     setIsFavouriteToggling(true);
 
     try {
-      const addingFavouriteCatResult = await addFavouriteCatAPI(favouriteCat.id, userId);
-      const addedFavouriteCat = await getFavouriteCatByIdAPI(addingFavouriteCatResult.id);
-      addFavouriteCat(addedFavouriteCat);
+      const addingFavouritePetResult = await addFavouritePetAPI(favouritePet.id, userId);
+      const addedFavouritePet = await getFavouritePetByIdAPI(addingFavouritePetResult.id);
+      addFavouritePet(addedFavouritePet);
     } catch (error: any) {
       throw error;
     } finally {
@@ -52,8 +52,8 @@ const FavouriteCatProfile = () => {
     setIsFavouriteToggling(true);
 
     try {
-      await deleteFavouriteCatAPI(favouriteCat.id);
-      setTimeout(() => deleteFavouriteCat(favouriteCat.id), 500);
+      await deleteFavouritePetAPI(favouritePet.id);
+      setTimeout(() => deleteFavouritePet(favouritePet.id), 500);
       router.back();
     } catch (error: any) {
       throw error;
@@ -63,7 +63,7 @@ const FavouriteCatProfile = () => {
   };
 
   const toggleFavourites = async () => {
-    if (favouriteCat) deleteFromFavourites();
+    if (favouritePet) deleteFromFavourites();
     else addToFavourites();
   };
 
@@ -72,7 +72,7 @@ const FavouriteCatProfile = () => {
       <ScrollView style={styles.content}>
         <Image
           style={{ width: imageWidth, height: imageWidth }}
-          source={favouriteCat?.image.url}
+          source={favouritePet?.image.url}
           placeholder={{ blurhash }}
           contentFit="cover"
           cachePolicy={"memory-disk"}
@@ -93,9 +93,10 @@ const FavouriteCatProfile = () => {
       <View style={styles.topBarContainer}>
         <ProfileTopBar
           isFavouriteIconEnabled={true}
-          isFavourite={Boolean(favouriteCat)}
+          isFavourite={Boolean(favouritePet)}
           isRequestInProcess={isFavouriteToggling}
           onFavouriteIconPress={toggleFavourites}
+          imageUrl={favouritePet.image.url}
         />
       </View>
       <View style={styles.buttonContainer}>
@@ -154,4 +155,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default FavouriteCatProfile;
+export default FavouritePetProfile;

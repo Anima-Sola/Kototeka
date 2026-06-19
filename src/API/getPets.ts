@@ -4,24 +4,20 @@ import fetchAPI from "./fetchAPI";
 
 type reqParams = {
   limit: number;
-  has_breeds: number;
+  has_breeds: boolean;
 };
 
-const getCatsAPI = async (params: reqParams) => {
+const getPetsAPI = async (params: reqParams) => {
   const queryParams = new URLSearchParams({
     limit: String(params.limit),
     has_breeds: String(params.has_breeds),
   });
 
-  try {
-    const response = await fetchAPI(URLs.images + "/search?" + queryParams, {
-      headers,
-    });
+  const response = await fetchAPI(URLs.images + "/search?" + queryParams, {
+    headers,
+  });
 
-    return response;
-  } catch (error: any) {
-    throw error;
-  }
+  return response;
 };
 
-export default getCatsAPI;
+export default getPetsAPI;

@@ -1,12 +1,12 @@
 import { File, Directory, Paths } from "expo-file-system";
 import * as FileSystemLegacy from "expo-file-system/legacy";
 import * as MediaLibrary from "expo-media-library";
-import { favouriteCatType } from "../constants/types";
+import { favouritePetType } from "../constants/types";
 
 export const isElementInArray = (
   element: string,
-  array: Array<favouriteCatType>,
-): favouriteCatType | undefined => {
+  array: Array<favouritePetType>,
+): favouritePetType | undefined => {
   return array.find((item) => element === item.image.id);
 };
 

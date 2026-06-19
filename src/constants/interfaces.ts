@@ -1,4 +1,4 @@
-import { CatType, favouriteCatType } from "./types";
+import { PetType, favouritePetType } from "./types";
 
 export interface IAuthSlice {
   isSignedIn: boolean | null;
@@ -13,32 +13,32 @@ export interface IAuthSlice {
   setUserId: (value: string) => void;
 }
 
-export interface ICatsSlice {
-  cats: Array<CatType>;
+export interface IPetsSlice {
+  pets: Array<PetType>;
   filterRequestSettings: {
     limit: number;
-    has_breeds: number;
+    has_breeds: boolean;
   };
   isFiltersChanged: boolean;
-  setCats: (value: Array<CatType>) => void;
-  addCats: (value: Array<CatType>) => void;
-  setFilterRequestSettings: (value: { limit: number; has_breeds: number }) => void;
+  setPets: (value: Array<PetType>) => void;
+  addPets: (value: Array<PetType>) => void;
+  setFilterRequestSettings: (value: { limit: number; has_breeds: boolean }) => void;
   setIsFiltersChanged: (value: boolean) => void;
 }
 
-export interface IFavouriteCatsSlice {
-  favouriteCats: Array<favouriteCatType>;
-  setFavouriteCats: (value: Array<favouriteCatType>) => void;
-  addFavouriteCat: (value: favouriteCatType) => void;
-  deleteFavouriteCat: (value: string) => void;
-  addFavoriteCatBreeds: (id: string, value: any[]) => void;
+export interface IFavouritePetsSlice {
+  favouritePets: Array<favouritePetType>;
+  setFavouritePets: (value: Array<favouritePetType>) => void;
+  addFavouritePet: (value: favouritePetType) => void;
+  deleteFavouritePet: (value: string) => void;
+  addFavoritePetBreeds: (id: string, value: any[]) => void;
 }
 
-export interface IUploadedCatsSlice {
-  uploadedCats: Array<CatType>;
-  setUploadedCats: (value: Array<CatType>) => void;
-  addUploadedCat: (value: CatType) => void;
-  deleteUploadedCat: (value: string) => void;
+export interface IUploadedPetsSlice {
+  uploadedPets: Array<PetType>;
+  setUploadedPets: (value: Array<PetType>) => void;
+  addUploadedPet: (value: PetType) => void;
+  deleteUploadedPet: (value: string) => void;
 }
 
 export interface ISettingsSlice {
@@ -54,6 +54,13 @@ export interface IToastSlice {
   toastMessage: string;
   showSuccessToast: (message: string) => void;
   showErrorToast: (message: string) => void;
+}
+
+export interface IApiSlice {
+  petsType: 'cats' | 'dogs',
+  apiKey: string,
+  baseUrl: string,
+  setApi: (value: 'cats' | 'dogs') => void;
 }
 
 export interface ITheme {

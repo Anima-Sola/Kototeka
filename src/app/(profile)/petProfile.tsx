@@ -8,40 +8,71 @@ import fontSizes from "../../constants/fontSizes";
 import { Image } from "expo-image";
 import { blurhash } from "../../constants/common";
 import BreedInfo from "../../components/BreedInfo/BreedInfo";
-import deleteCatAPI from "../../API/deleteCat";
-import UploadNoBreedInfo from "../../components/BreedInfo/UploadNoBreedInfo";
+import NoBreedInfo from "../../components/BreedInfo/NoBreedInfo";
+import { isElementInArray } from "../../utils/functions";
+import addFavouritePetAPI from "../../API/addFavouritePet";
+import getFavouritePetByIdAPI from "../../API/getFavouritePetById";
+import deleteFavouritePetAPI from "../../API/deleteFavouritePet";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
 const imageWidth = Dimensions.get("screen").width;
 
-const UploadedCatProfile = () => {
+const PetProfile = () => {
+  const {
+    pets,
+    userId,
+    favouritePets,
+    addFavouritePet,
+    deleteFavouritePet,
+    addFavoritePetBreeds,
+  } = useStore();
   const styles = useThemedStyles(createStyles);
-  const { uploadedCats, deleteUploadedCat } = useStore();
-  const { catId } = useLocalSearchParams<{ catId: string }>();
-  const uploadedCat = uploadedCats.find((cat) => cat.id.toString() === catId.toString());
+  const { petId } = useLocalSearchParams<{ petId: string }>();
+  const pet = pets.find((pet) => pet.id === petId);
 
-  if (!uploadedCat) return null;
+  if (!pet) return null;
 
   const router = useRouter();
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
+  const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
 
-  const breeds = false; //uploadedCat?.breeds;
+  const favouritePet = isElementInArray(pet.id, favouritePets);
+  const breeds = pet.breeds[0];
 
-  const deleteCat = async () => {
-    setIsDeleting(true);
+  const addToFavourites = async () => {
+    setIsFavouriteToggling(true);
 
     try {
-      await deleteCatAPI(uploadedCat.id);
-      setTimeout(() => deleteUploadedCat(uploadedCat.id), 500);
-      router.back();
+      const addingFavouritePetResult = await addFavouritePetAPI(pet.id, userId);
+      const addedFavouritePet = await getFavouritePetByIdAPI(addingFavouritePetResult.id);
+      addFavouritePet(addedFavouritePet);
+      if (breeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {
       throw error;
     } finally {
-      setIsDeleting(false);
+      setIsFavouriteToggling(false);
     }
+  };
+
+  const deleteFromFavourites = async () => {
+    if (!favouritePet) return;
+    setIsFavouriteToggling(true);
+
+    try {
+      const data = await deleteFavouritePetAPI(favouritePet.id);
+      deleteFavouritePet(favouritePet.id);
+    } catch (error: any) {
+      console.log("Ошибка: ", error);
+    } finally {
+      setIsFavouriteToggling(false);
+    }
+  };
+
+  const toggleFavourites = async () => {
+    if (favouritePet) deleteFromFavourites();
+    else addToFavourites();
   };
 
   return (
@@ -49,7 +80,7 @@ const UploadedCatProfile = () => {
       <ScrollView style={styles.content}>
         <Image
           style={{ width: imageWidth, height: imageWidth }}
-          source={uploadedCat.url}
+          source={pet?.url}
           placeholder={{ blurhash }}
           contentFit="cover"
           cachePolicy={"memory-disk"}
@@ -60,7 +91,7 @@ const UploadedCatProfile = () => {
             setIsImageLoadingError(true);
           }}
         />
-        {breeds ? <BreedInfo breeds={breeds} /> : <UploadNoBreedInfo />}
+        {breeds ? <BreedInfo breeds={breeds} /> : <NoBreedInfo />}
         {isImageLoading && (
           <View style={styles.loaderContainer}>
             <ActivityIndicator size={"large"} />
@@ -69,9 +100,11 @@ const UploadedCatProfile = () => {
       </ScrollView>
       <View style={styles.topBarContainer}>
         <ProfileTopBar
-          isDeleteIconEnabled={true}
-          isRequestInProcess={isDeleting}
-          onDeleteIconPress={deleteCat}
+          isFavouriteIconEnabled={true}
+          isFavourite={Boolean(favouritePet)}
+          isRequestInProcess={isFavouriteToggling}
+          onFavouriteIconPress={toggleFavourites}
+          imageUrl={pet.url}
         />
       </View>
       <View style={styles.buttonContainer}>
@@ -130,4 +163,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default UploadedCatProfile;
+export default PetProfile;

@@ -11,7 +11,7 @@ type TextItemType = {
 };
 
 const TextItem: FC<TextItemType> = ({ name, text }) => {
-  if (!text) return null;
+  if (text === undefined || text === null) return null;
   const styles = useThemedStyles(createStyles);
 
   return (

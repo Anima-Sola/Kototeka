@@ -1,46 +1,34 @@
 import useStore from "../store/store";
-import getCatByIdAPI from "./getCatById";
-import getCatsAPI from "./getCats";
-import getFavouriteCatsAPI from "./getFavouriteCats";
-import getUploadedCatsAPI from "./getUploadedCats";
-import { favouriteCatType } from "../constants/types";
+import getPetByIdAPI from "./getPetById";
+import getPetsAPI from "./getPets";
+import getFavouritePetsAPI from "./getFavouritePets";
+import getUploadedPetsAPI from "./getUploadedPets";
+import { favouritePetType } from "../constants/types";
 
 const store = useStore.getState();
 
-const getFavouriteCatsBreeds = async (favouriteCats: favouriteCatType[]) => {
-  const promises = favouriteCats.map(async (favouriteCat) => {
-    try {
-      const response = await getCatByIdAPI(favouriteCat.image.id);
-      if (response.breeds)
-        store.addFavoriteCatBreeds(favouriteCat.id, response.breeds[0]);
-    } catch (error: any) {
-      throw error;
-    }
+const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
+  const promises = favouritePets.map(async (favouritePet) => {
+    const response = await getPetByIdAPI(favouritePet.image.id);
+    if (response.breeds)
+      store.addFavoritePetBreeds(favouritePet.id, response.breeds[0]);
   });
 
   return await Promise.all(promises);
 };
 
-const fetchCatsData = async () => {
-  try {
-    const data = await getCatsAPI(store.filterRequestSettings);
-    store.setCats(data);
-  } catch (error: any) {
-    throw error;
-  }
+const fetchPetsData = async () => {
+  const data = await getPetsAPI(store.filterRequestSettings);
+  store.setPets(data);
 };
 
 const fetchUserData = async (userId: string) => {
-  try {
-    const favouriteCats = await getFavouriteCatsAPI(userId);
-    store.setFavouriteCats(favouriteCats);
-    await getFavouriteCatsBreeds(favouriteCats);
-    const uploadedCats = await getUploadedCatsAPI(1000, userId);
-    store.setUploadedCats(uploadedCats);
-    await fetchCatsData();
-  } catch (error: any) {
-    throw error;
-  }
+  const favouritePets = await getFavouritePetsAPI(userId);
+  store.setFavouritePets(favouritePets);
+  await getFavouritePetsBreeds(favouritePets);
+  const uploadedPets = await getUploadedPetsAPI(1000, userId);
+  store.setUploadedPets(uploadedPets);
+  await fetchPetsData();
 };
 
 export default fetchUserData;

@@ -161,7 +161,6 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
                 { translateY: slideAnim },
                 { translateY: -keyboardHeight },
               ],
-              paddingBottom: Platform.OS === "ios" ? 0 : 30,
             },
           ]}
           onLayout={handleContentLayout}

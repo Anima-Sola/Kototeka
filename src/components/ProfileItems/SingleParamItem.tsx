@@ -6,11 +6,15 @@ import { ITheme } from "../../constants/interfaces";
 
 type TextItemType = {
   name: string;
-  param: string;
+  param: string | number;
 };
 
 const SingleParamItem: FC<TextItemType> = ({ name, param }) => {
-  if(!param) return null;
+  if(param === undefined || param === null) return null;
+
+  if(param === 1) param = "Yes";
+  if(param === 0) param = "No";
+
   const styles = useThemedStyles(createStyles);
 
   return (

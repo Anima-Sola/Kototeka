@@ -4,6 +4,7 @@ import getPetsAPI from "./getPets";
 import getFavouritePetsAPI from "./getFavouritePets";
 import getUploadedPetsAPI from "./getUploadedPets";
 import { favouritePetType } from "../constants/types";
+import { MAX_NUMBER_OF_UPLOADED } from "../constants/common";
 
 const store = useStore.getState();
 
@@ -26,7 +27,7 @@ const fetchUserData = async (userId: string) => {
   const favouritePets = await getFavouritePetsAPI(userId);
   store.setFavouritePets(favouritePets);
   await getFavouritePetsBreeds(favouritePets);
-  const uploadedPets = await getUploadedPetsAPI(1000, userId);
+  const uploadedPets = await getUploadedPetsAPI(MAX_NUMBER_OF_UPLOADED, userId);
   store.setUploadedPets(uploadedPets);
   await fetchPetsData();
 };

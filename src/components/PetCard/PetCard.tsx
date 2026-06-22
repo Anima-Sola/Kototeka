@@ -1,5 +1,11 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
@@ -14,6 +20,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { blurhash } from "../../constants/common";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
 
 type PetCardProps = {
   pet: PetType;
@@ -23,8 +30,13 @@ type PetCardProps = {
 const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { favouritePets, addFavouritePet, deleteFavouritePet, addFavoritePetBreeds, userId } =
-    useStore();
+  const {
+    favouritePets,
+    addFavouritePet,
+    deleteFavouritePet,
+    addFavoritePetBreeds,
+    userId,
+  } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
@@ -35,11 +47,20 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
   const iconScale = 10 * numOfColumns;
 
   const addToFavourites = async () => {
+    if (favouritePets.length + 1 > MAX_NUMBER_OF_FAVOURITES) {
+      Alert.alert(
+        "Maximum number of favourites reached",
+        "You have reached the maximum number of favourite pets",
+      );
+      return;
+    }
     setIsFavouriteToggling(true);
 
     try {
       const addingFavouritePetResult = await addFavouritePetAPI(pet.id, userId);
-      const addedFavouritePet = await getFavouritePetByIdAPI(addingFavouritePetResult.id);
+      const addedFavouritePet = await getFavouritePetByIdAPI(
+        addingFavouritePetResult.id,
+      );
       addFavouritePet(addedFavouritePet);
       if (hasBreeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {
@@ -90,7 +111,10 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
         />
         <View style={styles.favouriteIconContainer}>
           {isFavouriteToggling ? (
-            <ActivityIndicator size={45 - iconScale} color={styles.activityIndicator.color} />
+            <ActivityIndicator
+              size={45 - iconScale}
+              color={styles.activityIndicator.color}
+            />
           ) : (
             <FavouriteIcon
               isFavourite={Boolean(favouritePet)}
@@ -156,11 +180,11 @@ export const createStyles = (theme: ITheme) =>
       left: 6,
     },
     iconColor: {
-      color: theme.colors.white
+      color: theme.colors.white,
     },
     activityIndicator: {
       color: theme.colors.white,
-    }
+    },
   });
 
 export default PetCard;

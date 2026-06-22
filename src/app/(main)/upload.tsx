@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,6 @@ import {
   Alert,
   FlatList,
 } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
-import { useFocusEffect } from "expo-router";
 import useStore from "../../store/store";
 import * as ImagePicker from "expo-image-picker";
 import TopBar from "../../components/TopBar/TopBar";
@@ -21,18 +19,17 @@ import { PetType } from "../../constants/types";
 import getUploadedPetsAPI from "../../API/getUploadedPets";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import FullScreenLoadingIndicator from "../../components/FullScreenLoadingIndicator/FullScreenLoadingIndicator";
+import { MAX_NUMBER_OF_UPLOADED } from "../../constants/common";
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
-  const { uploadedPets, setUploadedPets, addUploadedPet, userId, petsType } =
-    useStore();
-  const prevPetsTypeRef = useRef(petsType);
+  const { uploadedPets, setUploadedPets, addUploadedPet, userId } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] =
     useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [isFilteredLoading, setIsFilteredLoading] = useState(false);
 
   const uploadPet = async (image: string) => {
     setIsUploading(true);
@@ -51,18 +48,25 @@ const Upload = () => {
     setIsLoading(true);
 
     try {
-      const data = await getUploadedPetsAPI(1000, userId);
-      if(data) setUploadedPets(data);
+      const data = await getUploadedPetsAPI(MAX_NUMBER_OF_UPLOADED, userId);
+      if (data) setUploadedPets(data);
       else setUploadedPets([]);
     } catch (error: any) {
       throw error;
     } finally {
       setIsLoading(false);
-      setIsFilteredLoading(false);
     }
   };
 
   const pickImageFromGallary = async () => {
+    if (uploadedPets.length + 1 > 100) {
+      Alert.alert(
+        "Maximum number of downloads reached",
+        "You have reached the maximum number of uploaded pets",
+      );
+      return;
+    }
+
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -87,6 +91,14 @@ const Upload = () => {
   };
 
   const pickImageFromCamera = async () => {
+    if (uploadedPets.length + 1 > 100) {
+      Alert.alert(
+        "Maximum number of downloads reached",
+        "You have reached the maximum number of uploaded pets",
+      );
+      return;
+    }
+
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -141,40 +153,10 @@ const Upload = () => {
     );
   };
 
-  const UploadingActivityIndicator = () => {
-    return (
-      <View style={styles.uploadingAvtivityIndicatorContainer}>
-        <ActivityIndicator size={"large"} />
-      </View>
-    );
-  };
-
   const keyExtractor = (item: PetType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: PetType }) => (
     <UploadedPetCard pet={item} numOfColumns={numColumns} />
   );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (prevPetsTypeRef.current !== petsType) {
-        setIsFilteredLoading(true);
-        fetchUploadedPetsData();
-        prevPetsTypeRef.current = petsType;
-      }
-    }, [petsType]),
-  );
-
-  if (isFilteredLoading) {
-    return (
-      <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size={"large"} />
-          <Text style={styles.loadingText}>Pets are coming!</Text>
-        </View>
-      </View>
-    );
-  }
 
   if (uploadedPets.length === 0) {
     return (
@@ -187,7 +169,7 @@ const Upload = () => {
           <Text style={styles.emptyText}>the device gallery or camera</Text>
         </View>
         {addImageButtons()}
-        {isUploading && UploadingActivityIndicator()}
+        {isUploading && <FullScreenLoadingIndicator />}
       </View>
     );
   }
@@ -212,18 +194,13 @@ const Upload = () => {
         <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
       </View>
       {addImageButtons()}
-      {isUploading && UploadingActivityIndicator()}
+      {isUploading && <FullScreenLoadingIndicator />}
     </View>
   );
 };
 
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
-    loadingContainer: {
-      flex: 1,
-      backgroundColor: theme.colors.main,
-      paddingTop: 200,
-    },
     container: {
       flex: 1,
       backgroundColor: theme.colors.main,
@@ -234,16 +211,6 @@ export const createStyles = (theme: ITheme) =>
       paddingTop: 200,
       alignItems: "center",
       alignSelf: "center",
-    },
-    uploadingAvtivityIndicatorContainer: {
-      position: "absolute",
-      zIndex: 100,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      justifyContent: "center",
-      alignItems: "center",
     },
     plusButton: {
       position: "absolute",

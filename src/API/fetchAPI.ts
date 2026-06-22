@@ -14,6 +14,7 @@ const fetchAPI = async (url: string, options: any, returnData: boolean = true) =
     const data = await response.json();
     return data;
   } catch (error: any) {
+    console.log(error)
     store.showErrorToast("Error while receiving data");
   }
 };

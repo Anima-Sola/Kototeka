@@ -80,6 +80,7 @@ export interface ITheme {
     disabled: string;
     white: string;
     black: string;
+    blackTransluscent: string;
     red: string;
     green: string,
     shadow: string;

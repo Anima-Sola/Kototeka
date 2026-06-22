@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useFocusEffect } from "expo-router";
 import getPetsAPI from "../../API/getPets";
 import PetCard from "../../components/PetCard/PetCard";
 import useStore from "../../store/store";
@@ -29,10 +28,8 @@ const Home = () => {
     filterRequestSettings,
     isFiltersChanged,
     setIsFiltersChanged,
-    petsType,
   } = useStore();
   const styles = useThemedStyles(createStyles);
-  const prevPetsTypeRef = useRef(petsType);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingPetsLoading, setIsAddingPetsLoading] = useState(false);
   const [isFilteredLoading, setIsFilteredLoading] = useState(false);
@@ -72,16 +69,6 @@ const Home = () => {
     setIsLoading(true);
     fetchPetsData();
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      if (prevPetsTypeRef.current !== petsType) {
-        setIsFilteredLoading(true);
-        fetchPetsData();
-        prevPetsTypeRef.current = petsType;
-      }
-    }, [petsType])
-  );
 
   useEffect(() => {
     if (isFiltersChanged) {

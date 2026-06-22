@@ -57,7 +57,12 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
             checkFormat={false}
           />
         </View>
-        <View style={{...styles.buttonsContainer, paddingBottom: Platform.OS === "ios" ? 0 : 30,}}>
+        <View
+          style={{
+            ...styles.buttonsContainer,
+            paddingBottom: Platform.OS === "ios" ? 0 : 30,
+          }}
+        >
           <Button
             mode={"contained"}
             loading={isLoading}
@@ -70,7 +75,7 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
             disabled={!methods.formState.isValid || isLoading}
             onPress={methods.handleSubmit(onSubmit)}
           >
-            {isLoading ? null : "Delete"}
+            Delete
           </Button>
           <View style={styles.gap} />
           <Button

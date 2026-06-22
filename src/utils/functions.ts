@@ -16,6 +16,10 @@ export async function downloadAndSaveImage(
   url: string,
   onProgress?: (progress: number) => void,
 ) {
+const { status } = await MediaLibrary.getPermissionsAsync();
+
+console.log(status);
+
   const { granted } = await MediaLibrary.requestPermissionsAsync();
 
   if (!granted) {

@@ -6,3 +6,5 @@ export const MAX_LIMIT_PHOTOS = 100;
 export const DEFAULT_LIMIT_PHOTOS = MIN_LIMIT_PHOTOS;
 
 export const MAX_NUMBER_OF_PHOTOS = 500;
+export const MAX_NUMBER_OF_UPLOADED = 100;
+export const MAX_NUMBER_OF_FAVOURITES = 200;

@@ -7,7 +7,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { useForm, FormProvider } from "react-hook-form";
@@ -24,6 +23,8 @@ import ChangeNameBS from "../../components/BottomSheets/ChangeNameBS";
 import DeleteAccountBS from "../../components/BottomSheets/DeleteAccountBS";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
 import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
+import fetchUserData from "../../API/fetchUserData";
+import FullScreenLoadingIndicator from "../../components/FullScreenLoadingIndicator/FullScreenLoadingIndicator";
 
 type FormValues = {
   currentPassword: string;
@@ -38,8 +39,9 @@ const Settings = () => {
     mode: "onChange",
   });
   const [theme, setTheme] = useState("system");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPasswordChanging, setIsPasswordChanging] = useState(false);
   const [isLoggingOut, setIsLogginOut] = useState(false);
+  const [isPetsSelecting, setIsPetsSelecting] = useState(false);
   const {
     setResolvedTheme,
     setMode,
@@ -49,6 +51,7 @@ const Settings = () => {
     showSuccessToast,
     petsType,
     setApi,
+    userId,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
@@ -80,7 +83,7 @@ const Settings = () => {
 
   async function onSubmit(data: FormValues) {
     try {
-      setIsLoading(true);
+      setIsPasswordChanging(true);
       const currentPassword = data.currentPassword.trim();
       const newPassword = data.newPassword.trim();
 
@@ -96,7 +99,7 @@ const Settings = () => {
         error instanceof Error ? error.message : "Unknown error";
       showErrorToast("Error updating password: " + errorMessage);
     } finally {
-      setIsLoading(false);
+      setIsPasswordChanging(false);
     }
   }
 
@@ -125,161 +128,164 @@ const Settings = () => {
     }
   };
 
-  const changePets = () => {
-    if (petsType === "cats") setApi("dogs");
-    else setApi("cats");
+  const changePets = async (value: "cats" | "dogs") => {
+    if (value === petsType) return;
+    setIsPetsSelecting(true);
+
+    try {
+      if (petsType === "cats") setApi("dogs");
+      else setApi("cats");
+      await fetchUserData(userId);
+      showSuccessToast(`You've chosen ${value}`);
+    } catch (error: any) {
+      showErrorToast("Pets selection error");
+    } finally {
+      setIsPetsSelecting(false);
+    }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.textHeader}>Name</Text>
-        <View style={styles.nameContainer}>
-          <Text style={styles.textName}>{userName}</Text>
-          <TouchableOpacity onPress={openChangeNameBottomSheet}>
-            <Entypo name="pencil" size={24} color={styles.iconColor.color} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.textHeader}>Pets selection</Text>
-        <View style={styles.segmentedButtionsContainer}>
-          <SegmentedButtons
-            value={petsType}
-            onValueChange={changePets}
-            density={"regular"}
-            buttons={[
-              {
-                value: "cats",
-                label: "Cats",
-                labelStyle:
-                  petsType === "cats"
-                    ? styles.segmentedButtonLabel
-                    : styles.segmentedButtonLabelSelected,
-                style: [
-                  styles.segmentedButtonItem,
-                  petsType === "cats" && styles.segmentedButtonSelected,
-                ],
-              },
-              {
-                value: "dogs",
-                label: "Dogs",
-                labelStyle:
-                  petsType === "dogs"
-                    ? styles.segmentedButtonLabel
-                    : styles.segmentedButtonLabelSelected,
-                style: [
-                  styles.segmentedButtonItem,
-                  petsType === "dogs" && styles.segmentedButtonSelected,
-                ],
-              },
-            ]}
-          />
-        </View>
-        <Text style={styles.textHeader}>Theme</Text>
-        <View style={styles.radioGroupContainer}>
-          <TouchableOpacity
-            style={styles.radioGroupItem}
-            onPress={() => onThemeSwitch("system")}
-          >
-            <Text style={styles.text}>System</Text>
-            <RadioButton
+    <>
+      <ScrollView style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.textHeader}>Name</Text>
+          <View style={styles.nameContainer}>
+            <Text style={styles.textName}>{userName}</Text>
+            <TouchableOpacity onPress={openChangeNameBottomSheet}>
+              <Entypo name="pencil" size={24} color={styles.iconColor.color} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.textHeader}>Pets selection</Text>
+          <View style={styles.segmentedButtionsContainer}>
+            <SegmentedButtons
+              value={petsType}
+              onValueChange={changePets}
+              density={"regular"}
+              buttons={[
+                {
+                  value: "cats",
+                  label: "Cats",
+                  labelStyle:
+                    petsType === "cats"
+                      ? styles.segmentedButtonLabel
+                      : styles.segmentedButtonLabelSelected,
+                  style: [
+                    styles.segmentedButtonItem,
+                    petsType === "cats" && styles.segmentedButtonSelected,
+                  ],
+                },
+                {
+                  value: "dogs",
+                  label: "Dogs",
+                  labelStyle:
+                    petsType === "dogs"
+                      ? styles.segmentedButtonLabel
+                      : styles.segmentedButtonLabelSelected,
+                  style: [
+                    styles.segmentedButtonItem,
+                    petsType === "dogs" && styles.segmentedButtonSelected,
+                  ],
+                },
+              ]}
+            />
+          </View>
+          <Text style={styles.textHeader}>Theme</Text>
+          <View style={styles.radioGroupContainer}>
+            <TouchableOpacity
+              style={styles.radioGroupItem}
               onPress={() => onThemeSwitch("system")}
-              value="system"
-              status={theme === "system" ? "checked" : "unchecked"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.radioGroupItem}
-            onPress={() => onThemeSwitch("light")}
-          >
-            <Text style={styles.text}>Light</Text>
-            <RadioButton
+            >
+              <Text style={styles.text}>System</Text>
+              <RadioButton
+                onPress={() => onThemeSwitch("system")}
+                value="system"
+                status={theme === "system" ? "checked" : "unchecked"}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.radioGroupItem}
               onPress={() => onThemeSwitch("light")}
-              value="light"
-              status={theme === "light" ? "checked" : "unchecked"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.radioGroupItem}
-            onPress={() => onThemeSwitch("dark")}
-          >
-            <Text style={styles.text}>Dark</Text>
-            <RadioButton
+            >
+              <Text style={styles.text}>Light</Text>
+              <RadioButton
+                onPress={() => onThemeSwitch("light")}
+                value="light"
+                status={theme === "light" ? "checked" : "unchecked"}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.radioGroupItem}
               onPress={() => onThemeSwitch("dark")}
-              value="dark"
-              status={theme === "dark" ? "checked" : "unchecked"}
-            />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.textHeader}>Change Password</Text>
-        <View style={styles.changePasswordFormContainer}>
-          <FormProvider {...methods}>
-            <View style={styles.inputContainer}>
-              <PasswordInput
-                name="currentPassword"
-                placeholder="Current password"
-                checkFormat={false}
+            >
+              <Text style={styles.text}>Dark</Text>
+              <RadioButton
+                onPress={() => onThemeSwitch("dark")}
+                value="dark"
+                status={theme === "dark" ? "checked" : "unchecked"}
               />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.textHeader}>Change Password</Text>
+          <View style={styles.changePasswordFormContainer}>
+            <FormProvider {...methods}>
+              <View style={styles.inputContainer}>
+                <PasswordInput
+                  name="currentPassword"
+                  placeholder="Current password"
+                  checkFormat={false}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <PasswordInput name="newPassword" placeholder="New password" />
+              </View>
+              <View style={styles.inputContainer}>
+                <RepeatPasswordInput
+                  name="repeatNewPassword"
+                  placeholder="Repeat new password"
+                  passwordToCheck={methods.watch("newPassword")}
+                />
+              </View>
+            </FormProvider>
+            <View style={styles.buttonContainer}>
+              <Button
+                mode={"contained"}
+                style={
+                  methods.formState.isValid
+                    ? styles.button
+                    : styles.disabledButton
+                }
+                labelStyle={styles.labelButton}
+                loading={isPasswordChanging}
+                disabled={!methods.formState.isValid || isPasswordChanging}
+                onPress={methods.handleSubmit(onSubmit)}
+              >
+                Change
+              </Button>
             </View>
-            <View style={styles.inputContainer}>
-              <PasswordInput name="newPassword" placeholder="New password" />
-            </View>
-            <View style={styles.inputContainer}>
-              <RepeatPasswordInput
-                name="repeatNewPassword"
-                placeholder="Repeat new password"
-                passwordToCheck={methods.watch("newPassword")}
-              />
-            </View>
-          </FormProvider>
-          <View style={styles.buttonContainer}>
+          </View>
+          <View style={styles.logoutButtonContainer}>
             <Button
               mode={"contained"}
-              style={
-                methods.formState.isValid
-                  ? styles.button
-                  : styles.disabledButton
-              }
+              style={!isLoggingOut ? styles.button : styles.disabledButton}
               labelStyle={styles.labelButton}
-              disabled={!methods.formState.isValid || isLoading}
-              onPress={methods.handleSubmit(onSubmit)}
+              onPress={logout}
+              loading={isLoggingOut}
             >
-              {isLoading ? (
-                <ActivityIndicator
-                  color={styles.activityIndicator.color}
-                  size="small"
-                />
-              ) : (
-                "Change"
-              )}
+              Log out
             </Button>
           </View>
-        </View>
-        <View style={styles.logoutButtonContainer}>
-          <Button
-            mode={"contained"}
-            style={!isLoggingOut ? styles.button : styles.disabledButton}
-            labelStyle={styles.labelButton}
-            onPress={logout}
+          <TouchableOpacity
+            style={styles.deleteAccountContainer}
+            onPress={openDeleteAccountBottomSheet}
           >
-            {isLoggingOut ? (
-              <ActivityIndicator
-                color={styles.activityIndicator.color}
-                size="small"
-              />
-            ) : (
-              "Log out"
-            )}
-          </Button>
+            <Text style={styles.deleteAccountText}>Delete account</Text>
+          </TouchableOpacity>
+
+          <View style={styles.footer} />
         </View>
-        <TouchableOpacity
-          style={styles.deleteAccountContainer}
-          onPress={openDeleteAccountBottomSheet}
-        >
-          <Text style={styles.deleteAccountText}>Delete account</Text>
-        </TouchableOpacity>
-        <View style={styles.footer} />
-      </View>
-    </ScrollView>
+      </ScrollView>
+      {isPetsSelecting && <FullScreenLoadingIndicator />}
+    </>
   );
 };
 

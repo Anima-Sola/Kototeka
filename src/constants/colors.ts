@@ -1,5 +1,3 @@
-import { shadow } from "react-native-paper";
-
 export const lightTheme = {
   colors: {
     statusBar: "#E5E7EB",
@@ -17,6 +15,7 @@ export const lightTheme = {
     disabled: "#D1D5DB",
     white: "#FFFFFF",
     black: "#000000",
+    blackTransluscent: "rgba(0, 0, 0, 0.3)",
     red: "#FF3B30",
     green: "#008000",
     shadow: "#000000",
@@ -41,6 +40,7 @@ export const darkTheme = {
     disabled: "#374151",
     white: "#FFFFFF",
     black: "#000000",
+    blackTransluscent: "rgba(0, 0, 0, 0.3)",
     red: "#FF453A",
     green: "#008000",
     shadow: "#000000",

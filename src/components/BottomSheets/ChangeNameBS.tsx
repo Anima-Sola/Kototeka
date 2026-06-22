@@ -80,7 +80,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
             disabled={!methods.formState.isValid || isLoading}
             onPress={methods.handleSubmit(onSubmit)}
           >
-            {isLoading ? null : "Save"}
+            Save
           </Button>
           <View style={styles.gap} />
           <Button

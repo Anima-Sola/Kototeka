@@ -1,7 +1,5 @@
-import { useState, useCallback, useRef } from "react";
+import { useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
-import { useFocusEffect } from "expo-router";
-import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
 import getFavouritePetsAPI from "../../API/getFavouritePets";
 import FavouritePetCard from "../../components/PetCard/FavouritePetCard";
 import useStore from "../../store/store";
@@ -20,12 +18,9 @@ const Favourites = () => {
     setFavouritePets,
     addFavoritePetBreeds,
     userId,
-    petsType,
   } = useStore();
-  const prevPetsTypeRef = useRef(petsType);
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
-  const [isFilteredLoading, setIsFilteredLoading] = useState(false);
 
   const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
     const promises = favouritePets.map(async (favouritePet) => {
@@ -46,43 +41,20 @@ const Favourites = () => {
 
     try {
       const favouritePets = await getFavouritePetsAPI(userId);
-      setFavouritePets(favouritePets);
       await getFavouritePetsBreeds(favouritePets);
+      setFavouritePets(favouritePets);
     } catch (error: any) {
       throw error;
     } finally {
       setIsLoading(false);
-      setIsFilteredLoading(false);
     }
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      if (prevPetsTypeRef.current !== petsType) {
-        setIsFilteredLoading(true);
-        fetchFavouritePetsData();
-        prevPetsTypeRef.current = petsType;
-      }
-    }, [petsType]),
-  );
 
   const keyExtractor = (item: favouritePetType, index: number) =>
     `${item.id}_${index}`;
   const renderItem = ({ item }: { item: favouritePetType }) => (
     <FavouritePetCard pet={item} numOfColumns={numColumns} />
   );
-
-  if (isFilteredLoading) {
-    return (
-      <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
-        <View style={styles.loadingContainer}>
-          <PaperActivityIndicator size={"large"} />
-          <Text style={styles.text}>Pets are coming!</Text>
-        </View>
-      </View>
-    );
-  }
 
   if (favouritePets.length === 0)
     return (
@@ -120,11 +92,6 @@ const Favourites = () => {
 };
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
-    loadingContainer: {
-      flex: 1,
-      backgroundColor: theme.colors.main,
-      paddingTop: 200,
-    },
     emptyContainer: {
       flex: 1,
       backgroundColor: theme.colors.main,

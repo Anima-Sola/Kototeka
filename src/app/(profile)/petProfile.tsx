@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { View, StyleSheet, Dimensions, ScrollView, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Platform,
+  Alert,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ActivityIndicator, Button } from "react-native-paper";
 import useStore from "../../store/store";
@@ -15,6 +22,7 @@ import getFavouritePetByIdAPI from "../../API/getFavouritePetById";
 import deleteFavouritePetAPI from "../../API/deleteFavouritePet";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
 
 const imageWidth = Dimensions.get("screen").width;
 
@@ -42,11 +50,20 @@ const PetProfile = () => {
   const breeds = pet.breeds[0];
 
   const addToFavourites = async () => {
+    if (favouritePets.length + 1 > MAX_NUMBER_OF_FAVOURITES) {
+      Alert.alert(
+        "Maximum number of favourites reached",
+        "You have reached the maximum number of favourite pets",
+      );
+      return;
+    }
     setIsFavouriteToggling(true);
 
     try {
       const addingFavouritePetResult = await addFavouritePetAPI(pet.id, userId);
-      const addedFavouritePet = await getFavouritePetByIdAPI(addingFavouritePetResult.id);
+      const addedFavouritePet = await getFavouritePetByIdAPI(
+        addingFavouritePetResult.id,
+      );
       addFavouritePet(addedFavouritePet);
       if (breeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {

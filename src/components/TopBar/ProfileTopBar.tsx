@@ -78,10 +78,9 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
     if (!imageUrl) return;
 
     try {
-      await downloadAndSaveImage(imageUrl, onProgress);
-      setTimeout(() => showSuccessToast("The image has been downloaded"), 500);
+      const result = await downloadAndSaveImage(imageUrl, onProgress);
+      if(result) setTimeout(() => showSuccessToast("The image has been downloaded"), 500);
     } catch (error) {
-      console.log(error);
       setTimeout(() => showErrorToast("Error when downloading the image"), 500);
     } finally {
       setDownloadProgress(0);

@@ -12,7 +12,8 @@
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "Приложение сохраняет изображения в фотопленку",
         "NSPhotoLibraryUsageDescription": "Приложение получает доступ к фотопленке для сохранения изображений"
-      }
+      },
+      "bundleIdentifier": "com.anonymous.Kototeka"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,8 +27,13 @@
         "READ_MEDIA_IMAGES",
         "READ_MEDIA_VIDEO",
         "RECORD_AUDIO",
-        "READ_MEDIA_AUDIO"
-      ]
+        "READ_MEDIA_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "android.permission.READ_MEDIA_IMAGES"
+      ],
+      "package": "com.anonymous.Kototeka"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -46,7 +52,9 @@
       [
         "expo-media-library",
         {
-          "granularPermissions": ["photo"]
+          "granularPermissions": [
+            "photo"
+          ]
         }
       ]
     ]

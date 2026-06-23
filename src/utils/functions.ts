@@ -1,7 +1,8 @@
 import { File, Directory, Paths } from "expo-file-system";
 import * as FileSystemLegacy from "expo-file-system/legacy";
-import * as MediaLibrary from "expo-media-library";
+//import * as MediaLibrary from "expo-media-library";
 import { favouritePetType } from "../constants/types";
+//import { Asset } from 'expo-media-library';
 
 export const isElementInArray = (
   element: string,
@@ -16,11 +17,7 @@ export async function downloadAndSaveImage(
   url: string,
   onProgress?: (progress: number) => void,
 ) {
-const { status } = await MediaLibrary.getPermissionsAsync();
-
-console.log(status);
-
-  const { granted } = await MediaLibrary.requestPermissionsAsync();
+  /*const { granted } = await MediaLibrary.requestPermissionsAsync();
 
   if (!granted) {
     throw new Error("Media Library permission denied");
@@ -33,7 +30,7 @@ console.log(status);
   }
 
   const fileName =
-    `image_${Date.now()}.` + url.substring(url.lastIndexOf(".") + 1);
+    `image_${Date.now()}.` + url.substring(url.lastIndexOf(".") + 1, 3);
   const file = new File(downloadDir, fileName);
 
   downloadResumable = FileSystemLegacy.createDownloadResumable(
@@ -63,5 +60,5 @@ console.log(status);
     return;
   }
 
-  return await MediaLibrary.saveToLibraryAsync(file.uri);
+  return await Asset.create(file.uri);*/
 }

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import * as Font from "expo-font";
+import { NavigationBar } from "expo-navigation-bar";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fetchUserData from "../../API/fetchUserData";
@@ -12,7 +13,8 @@ const backgroundImage = require("../../../assets/Images/splash.jpeg");
 
 const SplashScreen = () => {
   const styles = useThemedStyles(createStyles);
-  const { isSignedIn, setIsAppReady, isFontsLoaded, setIsFontsLoaded, userId } = useStore();
+  const { isSignedIn, setIsAppReady, isFontsLoaded, setIsFontsLoaded, userId } =
+    useStore();
 
   useEffect(() => {
     const prepare = async () => {
@@ -42,13 +44,21 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
+      <ImageBackground
+        source={backgroundImage}
+        resizeMode="cover"
+        style={styles.image}
+      >
         <Text style={styles.logo}>Pet a pet</Text>
         <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator size={50} color={styles.activityIndicatorColor.color} />
+          <ActivityIndicator
+            size={50}
+            color={styles.activityIndicatorColor.color}
+          />
         </View>
         <Text style={styles.text}>Loading</Text>
       </ImageBackground>
+      <NavigationBar style="light" hidden={false} />
     </View>
   );
 };
@@ -62,7 +72,7 @@ export const createStyles = (theme: ITheme) =>
     image: {
       flex: 1,
       paddingVertical: 120,
-      alignItems: 'center',
+      alignItems: "center",
     },
     logo: {
       fontSize: fontSizes.FONT70,

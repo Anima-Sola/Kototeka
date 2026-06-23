@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { View, StyleSheet, Platform, StatusBar } from "react-native";
 import useStore from "../../store/store";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
+import { NavigationBar } from 'expo-navigation-bar';
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import { BottomSheetProvider } from "../../contexts/BottomSheetContext";
@@ -25,6 +26,7 @@ export default function Wrapper({ children }: WrapperProps) {
         {isSuccessToastVisible && <SuccessToast message={toastMessage} />}
         {isErrorToastVisible && <ErrorToast message={toastMessage} />}
         {children}
+        <NavigationBar style="light" hidden={false} />
       </SafeAreaProvider>
     </BottomSheetProvider>
   );

@@ -24,7 +24,7 @@ export default function RootLayout() {
   //Listening system theme changing
   useEffect(() => {
     const updateTheme = () => {
-      const systemTheme = Appearance.getColorScheme() || "light";
+      const systemTheme = Appearance.getColorScheme() === "dark" ? "dark" : "light";
       setResolvedTheme(systemTheme);
     };
 

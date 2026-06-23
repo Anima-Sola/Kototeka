@@ -130,15 +130,17 @@ const Settings = () => {
 
   const changePets = async (value: "cats" | "dogs") => {
     if (value === petsType) return;
+    
+    const currentApi = petsType;
     setIsPetsSelecting(true);
 
     try {
-      if (petsType === "cats") setApi("dogs");
-      else setApi("cats");
+      setApi(value);
       await fetchUserData(userId);
       showSuccessToast(`You've chosen ${value}`);
     } catch (error: any) {
       showErrorToast("Pets selection error");
+      setApi(currentApi);
     } finally {
       setIsPetsSelecting(false);
     }

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { useForm, FormProvider } from "react-hook-form";
@@ -81,6 +82,16 @@ const Settings = () => {
     }
   };
 
+  const logoutAlert = () => {
+    Alert.alert("Log out", "Do you really want to log out?", [
+      {
+        text: "No",
+        style: "cancel",
+      },
+      { text: "Yes", onPress: logout },
+    ]);
+  };
+
   async function onSubmit(data: FormValues) {
     try {
       setIsPasswordChanging(true);
@@ -130,7 +141,7 @@ const Settings = () => {
 
   const changePets = async (value: "cats" | "dogs") => {
     if (value === petsType) return;
-    
+
     const currentApi = petsType;
     setIsPetsSelecting(true);
 
@@ -270,7 +281,7 @@ const Settings = () => {
               mode={"contained"}
               style={!isLoggingOut ? styles.button : styles.disabledButton}
               labelStyle={styles.labelButton}
-              onPress={logout}
+              onPress={logoutAlert}
               loading={isLoggingOut}
             >
               Log out

@@ -1,5 +1,11 @@
-import React from "react";
-import { View, StyleSheet, KeyboardAvoidingView, Text, ScrollView } from "react-native";
+import { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Text,
+  ScrollView,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -26,9 +32,10 @@ type FormValues = {
 
 const SignUp = () => {
   const styles = useThemedStyles(createStyles);
-  const { setIsSignedIn } = useStore();
+  const { setIsSignedIn, showErrorToast } = useStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const [isRegistering, setIsRegistering] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
@@ -38,8 +45,14 @@ const SignUp = () => {
     const email = data.email.trim();
     const password = data.password.trim();
 
+    setIsRegistering(true);
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       const user = userCredential.user;
 
       await updateProfile(user, {
@@ -50,14 +63,20 @@ const SignUp = () => {
       setIsSignedIn(true);
       router.replace("/(main)");
     } catch (error: any) {
-      console.error("Ошибка регистрации:", error.message);
+      showErrorToast("Error during registration");
+    } finally {
+      setIsRegistering(false);
     }
   }
 
   return (
-    <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { paddingBottom: insets.bottom }]}
+    >
       <Header
-        leftIcon={<Feather name="arrow-left" size={32} color={styles.iconColor.color} />}
+        leftIcon={
+          <Feather name="arrow-left" size={32} color={styles.iconColor.color} />
+        }
         onLeftIconPress={() => router.back()}
       />
       <Text style={styles.textHeader}>Sign Up</Text>
@@ -84,10 +103,13 @@ const SignUp = () => {
         <Button
           mode={"contained"}
           style={
-            methods.formState.isValid ? styles.signUpButton : styles.disabledSignUpButton
+            methods.formState.isValid
+              ? styles.signUpButton
+              : styles.disabledSignUpButton
           }
           labelStyle={styles.singUpLabelButton}
-          disabled={!methods.formState.isValid}
+          disabled={!methods.formState.isValid || isRegistering}
+          loading={isRegistering}
           onPress={methods.handleSubmit(onSubmit)}
         >
           Sign Up
@@ -143,7 +165,7 @@ export const createStyles = (theme: ITheme) =>
     },
     iconColor: {
       color: theme.colors.accent,
-    }
+    },
   });
 
 export default SignUp;

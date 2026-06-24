@@ -52,9 +52,10 @@
       [
         "expo-media-library",
         {
-          "granularPermissions": [
-            "photo"
-          ]
+          "photosPermission": "Разрешить доступ к фото",
+          "savePhotosPermission": "Разрешить сохранение фото",
+          "isAccessMediaLocationEnabled": true,
+          "granularPermissions": ["photo"]
         }
       ]
     ]

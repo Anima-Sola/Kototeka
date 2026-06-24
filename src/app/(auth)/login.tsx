@@ -1,5 +1,11 @@
-import React from "react";
-import { View, StyleSheet, KeyboardAvoidingView, Text, ScrollView } from "react-native";
+import { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Text,
+  ScrollView,
+} from "react-native";
 import { useRouter, Link } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,7 +29,8 @@ const Login = () => {
   const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { setIsSignedIn } = useStore();
+  const { setIsSignedIn, showErrorToast } = useStore();
+  const [isLogging, setIsLogging] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
@@ -32,19 +39,29 @@ const Login = () => {
     const email = data.email.trim();
     const password = data.password.trim();
 
+    setIsLogging(true);
+
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       await fetchUserData(userCredential.user.uid);
       setIsSignedIn(true);
       router.replace("/(main)");
-      console.log("Успешный вход:", userCredential.user);
+      console.log("Success:", userCredential.user);
     } catch (error: any) {
-      console.error("Ошибка входа:", error.message);
+      showErrorToast('Incorrect email address or/and password')
+    } finally {
+      setIsLogging(false);
     }
   }
 
   return (
-    <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { paddingBottom: insets.bottom }]}
+    >
       <Text style={styles.textHeader}>Sign In</Text>
       <ScrollView style={styles.formContainer}>
         <FormProvider {...methods}>
@@ -62,11 +79,14 @@ const Login = () => {
       <View style={styles.buttonContainer}>
         <Button
           mode={"contained"}
+          loading={isLogging}
           style={
-            methods.formState.isValid ? styles.signInButton : styles.disabledSignInButton
+            methods.formState.isValid
+              ? styles.signInButton
+              : styles.disabledSignInButton
           }
           labelStyle={styles.singInLabelButton}
-          disabled={!methods.formState.isValid}
+          disabled={!methods.formState.isValid || isLogging}
           onPress={methods.handleSubmit(onSubmit)}
         >
           Sing In

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import fontSizes from "../../constants/fontSizes";
 import Header from "../../components/Header/Header";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import useStore from "../../store/store";
 
 type FormValues = {
   email: string;
@@ -28,24 +29,37 @@ const SignUp = () => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const [isEmailSending, setIsEmailSending] = useState(false);
+  const { showErrorToast } = useStore();
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
 
   async function onSubmit(data: FormValues) {
     const email = data.email.trim();
+    setIsEmailSending(true);
+
     try {
       await sendPasswordResetEmail(auth, email);
-      Alert.alert("The letter has been sent", "Check your email to reset your password.");
+      Alert.alert(
+        "The letter has been sent",
+        "Check your email to reset your password.",
+      );
     } catch (error: any) {
-      console.error("Ошибка регистрации:", error.message);
+      showErrorToast("Error sending a message");
+    } finally {
+      setIsEmailSending(false);
     }
   }
 
   return (
-    <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { paddingBottom: insets.bottom }]}
+    >
       <Header
-        leftIcon={<Feather name="arrow-left" size={32} color={styles.iconColor.color} />}
+        leftIcon={
+          <Feather name="arrow-left" size={32} color={styles.iconColor.color} />
+        }
         onLeftIconPress={() => router.back()}
       />
       <Text style={styles.textHeader}>Enter email</Text>
@@ -63,10 +77,13 @@ const SignUp = () => {
         <Button
           mode={"contained"}
           style={
-            methods.formState.isValid ? styles.signUpButton : styles.disabledSignUpButton
+            methods.formState.isValid
+              ? styles.signUpButton
+              : styles.disabledSignUpButton
           }
+          loading={isEmailSending}
           labelStyle={styles.singUpLabelButton}
-          disabled={!methods.formState.isValid}
+          disabled={!methods.formState.isValid || isEmailSending}
           onPress={methods.handleSubmit(onSubmit)}
         >
           Next

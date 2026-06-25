@@ -19,7 +19,7 @@ const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
 };
 
 const fetchPetsData = async () => {
-  const data = await getPetsAPI(store.filterRequestSettings);
+  const data = await getPetsAPI(useStore.getState().filterRequestSettings);
   store.setPets(data);
 };
 

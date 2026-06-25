@@ -53,6 +53,7 @@ const Settings = () => {
     petsType,
     setApi,
     userId,
+    filterRequestSettings,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 

@@ -1,8 +1,11 @@
 import { ReactNode } from "react";
 import { View, StyleSheet, Platform, StatusBar } from "react-native";
 import useStore from "../../store/store";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import { NavigationBar } from 'expo-navigation-bar';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { NavigationBar } from "expo-navigation-bar";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import { BottomSheetProvider } from "../../contexts/BottomSheetContext";
@@ -15,9 +18,14 @@ type WrapperProps = {
 
 export default function Wrapper({ children }: WrapperProps) {
   const styles = useThemedStyles(createStyles);
-  const { toastMessage, isErrorToastVisible, isSuccessToastVisible } = useStore();
+  const {
+    toastMessage,
+    isErrorToastVisible,
+    isSuccessToastVisible,
+  } = useStore();
   const insets = useSafeAreaInsets();
-  const statusBarHeight = Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
+  const statusBarHeight =
+    Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
 
   return (
     <BottomSheetProvider>

@@ -31,7 +31,7 @@ export async function downloadAndSaveImage(
   url: string,
   onProgress?: (progress: number) => void,
 ) {
-  const { granted } = await MediaLibrary.requestPermissionsAsync(false, [
+  /*const { granted } = await MediaLibrary.requestPermissionsAsync(false, [
     "photo",
   ]);
 
@@ -75,5 +75,5 @@ export async function downloadAndSaveImage(
     return;
   }
 
-  return await MediaLibrary.createAssetAsync(file.uri); //Asset.create(file.uri);
+  return await MediaLibrary.createAssetAsync(file.uri);*/ //Asset.create(file.uri);
 }

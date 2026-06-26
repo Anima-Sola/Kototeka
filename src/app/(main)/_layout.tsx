@@ -24,7 +24,7 @@ const IOsTabs = () => {
       tintColor={styles.active.color}
     >
       <NativeTabs.Trigger name="home">
-        <NativeTabs.Trigger.Label>Gallary</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Gallery</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{
             default: "square.split.2x2",
@@ -82,7 +82,7 @@ const AndroidTabs = () => {
       <Tabs.Screen
         name="home"
         options={{
-          tabBarLabel: "Gallary",
+          tabBarLabel: "Gallery",
           tabBarIcon: ({ focused }) => (
             <Ionicons
               name="paw-sharp"

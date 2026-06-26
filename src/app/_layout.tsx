@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";
+import OnboardingWrapper from "../components/Wrapper/OnboardingWrapper";
 import * as ExpoSplashScreen from "expo-splash-screen";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
 
@@ -19,12 +20,14 @@ export default function RootLayout() {
     setResolvedTheme,
     setUserName,
     setUserId,
+    isOnboarding,
   } = useStore();
 
   //Listening system theme changing
   useEffect(() => {
     const updateTheme = () => {
-      const systemTheme = Appearance.getColorScheme() === "dark" ? "dark" : "light";
+      const systemTheme =
+        Appearance.getColorScheme() === "dark" ? "dark" : "light";
       setResolvedTheme(systemTheme);
     };
 
@@ -37,8 +40,13 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        console.log("User is logged in:", currentUser.email, "User id: ", currentUser.uid);
-        if(currentUser.displayName) setUserName(currentUser.displayName);
+        console.log(
+          "User is logged in:",
+          currentUser.email,
+          "User id: ",
+          currentUser.uid,
+        );
+        if (currentUser.displayName) setUserName(currentUser.displayName);
         setUserId(currentUser.uid);
         setIsSignedIn(true);
       } else {
@@ -53,6 +61,15 @@ export default function RootLayout() {
   if (!isAppReady) {
     return <SplashScreen />;
   }
+
+  if (isOnboarding && !isSignedIn)
+    return (
+      <OnboardingWrapper>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(onboarding)" />
+        </Stack>
+      </OnboardingWrapper>
+    );
 
   if (isSignedIn === null) return null;
 

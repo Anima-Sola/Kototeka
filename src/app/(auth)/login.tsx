@@ -115,7 +115,7 @@ export const createStyles = (theme: ITheme) =>
       paddingHorizontal: 16,
     },
     textHeader: {
-      paddingTop: 78,
+      paddingTop: 88,
       paddingBottom: 20,
       fontSize: fontSizes.FONT50,
       color: theme.colors.mainText,

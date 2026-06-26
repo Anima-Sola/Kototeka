@@ -6,11 +6,13 @@ export interface IAuthSlice {
   isFontsLoaded: boolean;
   userName: string;
   userId: string;
+  isOnboarding: boolean;
   setIsSignedIn: (value: boolean) => void;
   setIsAppReady: (value: boolean) => void; 
   setIsFontsLoaded: (value: boolean) => void;
   setUserName: (value: string) => void;
   setUserId: (value: string) => void;
+  setIsOnBoarding: (value: boolean) => void;
 }
 
 export interface IPetsSlice {

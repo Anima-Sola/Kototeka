@@ -1,19 +1,18 @@
-import { View, StyleSheet, Image, StatusBar, Platform } from "react-native";
+import { View, StyleSheet, Image, Platform } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
 
 const OnboardingSwiper = () => {
   const styles = useThemedStyles(createStyles);
+  const { setIsOnBoarding } = useStore()
   const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const statusBarHeight =
-    Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
 
   const finishOnBoarding = () => {
+    setIsOnBoarding(false);
     router.replace("/login");
   };
 
@@ -71,7 +70,7 @@ export const createStyles = (theme: ITheme) =>
     pageContainer: {
       flex: 1,
       justifyContent: "center",
-      marginTop: -100,
+      marginTop: -50,
     },
     title: {
       fontSize: fontSizes.FONT50,
@@ -79,7 +78,7 @@ export const createStyles = (theme: ITheme) =>
       fontFamily: "AmaticBold",
     },
     subTitle: {
-      fontSize: fontSizes.FONT20,
+      fontSize: fontSizes.FONT30,
       fontFamily: "ShantellBold",
       color: theme.colors.white,
     },

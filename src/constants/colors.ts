@@ -23,6 +23,7 @@ export const lightTheme = {
     white: "#FFFFFF",
     black: "#000000",
     blackTransluscent: "rgba(0, 0, 0, 0.32)",
+    whiteTransluscent: "rgba(255, 255, 255, 0.45)",
 
     red: "#FF3B30",
     green: "#22C55E",
@@ -30,6 +31,13 @@ export const lightTheme = {
     shadow: "#0F172A",
 
     uploadPhotoBtn: "#FFFFFF",
+
+    onboarding1: "#8cb369",
+    onboarding2: "#bc4b51",
+    onboarding3: "#f4a259",
+    onboarding4: "#5b8e7d",
+
+    spashScreenBackground: "#93a0b4",
   },
 };
 
@@ -58,6 +66,7 @@ export const darkTheme = {
     white: "#FFFFFF",
     black: "#000000",
     blackTransluscent: "rgba(0, 0, 0, 0.45)",
+    whiteTransluscent: "rgba(255, 255, 255, 0.45)",
 
     red: "#FF453A",
     green: "#22C55E",
@@ -65,5 +74,12 @@ export const darkTheme = {
     shadow: "#000000",
 
     uploadPhotoBtn: "#1A2333",
+
+    onboarding1: "#8cb369",
+    onboarding2: "#bc4b51",
+    onboarding3: "#f4a259",
+    onboarding4: "#5b8e7d",
+
+    spashScreenBackground: "#93a0b4",
   },
 };

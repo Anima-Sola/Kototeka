@@ -1,4 +1,12 @@
-import { View, StyleSheet, Image, Platform } from "react-native";
+import { useRef } from "react";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Platform,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
 import { useRouter } from "expo-router";
 import useStore from "../../store/store";
@@ -8,23 +16,68 @@ import fontSizes from "../../constants/fontSizes";
 
 const OnboardingSwiper = () => {
   const styles = useThemedStyles(createStyles);
-  const { setIsOnBoarding } = useStore()
+  const { setIsOnBoarding } = useStore();
   const router = useRouter();
+  const onboardingRef = useRef<Onboarding>(null);
 
   const finishOnBoarding = () => {
     setIsOnBoarding(false);
     router.replace("/login");
   };
 
+  const skipButton = () => {
+    return (
+      <TouchableOpacity onPress={finishOnBoarding}>
+        <Text style={styles.skipButton}>Skip</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const nextButton = () => {
+    return (
+      <TouchableOpacity onPress={() => onboardingRef?.current?.goNext()}>
+        <Text style={styles.nextButton}>Next</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const doneButton = () => {
+    return (
+      <TouchableOpacity onPress={finishOnBoarding}>
+        <Text style={styles.doneButton}>Done</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const dots = ({ selected }: { selected: boolean }) => {
+    return (
+      <View
+        style={{
+          ...styles.dots,
+          width: selected ? 10 : 6,
+          height: selected ? 10 : 6,
+          backgroundColor: selected
+            ? styles.selectedDot.backgroundColor
+            : styles.unselectedDot.backgroundColor,
+        }}
+      />
+    );
+  };
+
   return (
     <Onboarding
+      ref={onboardingRef}
       onDone={finishOnBoarding}
       onSkip={finishOnBoarding}
+      SkipButtonComponent={skipButton}
+      NextButtonComponent={nextButton}
+      DoneButtonComponent={doneButton}
+      DotComponent={dots}
       titleStyles={styles.title}
       subTitleStyles={styles.subTitle}
       controlStatusBar={true}
       containerStyles={styles.pageContainer}
-      bottomBarHeight={Platform.OS==='ios' ? 60 : 100}
+      bottomBarHeight={Platform.OS === "ios" ? 60 : 100}
       pages={[
         {
           backgroundColor: styles.firstPage.backgroundColor,
@@ -35,30 +88,40 @@ const OnboardingSwiper = () => {
             />
           ),
           title: "Welcome!",
-          subtitle: "To the cats and dogs gallery",
+          subtitle: "To the cats and dogs gallery.",
         },
         {
-          backgroundColor: "#fe6e58",
+          backgroundColor: styles.secondPage.backgroundColor,
           image: (
             <Image
               style={styles.image}
               source={require("./../../../assets/Images/onBoarding/2.png")}
             />
           ),
-          title: "Cats",
-          subtitle: "Thousands of cute kittens are waiting for you to pet them",
+          title: "Discover",
+          subtitle: "Explore adorable cats and dogs from our collection.",
         },
         {
-          backgroundColor: "#999",
+          backgroundColor: styles.thirdPage.backgroundColor,
           image: (
             <Image
               style={styles.image}
               source={require("./../../../assets/Images/onBoarding/3.png")}
             />
           ),
-          title: "Dogs",
-          subtitle:
-            "Hundreds of adorable dogs are waiting for you to give them a bone",
+          title: "Save favourites",
+          subtitle: "Save your favourite pets and view them anytime.",
+        },
+        {
+          backgroundColor: styles.fourthPage.backgroundColor,
+          image: (
+            <Image
+              style={styles.image}
+              source={require("./../../../assets/Images/onBoarding/4.png")}
+            />
+          ),
+          title: "Enjoy together",
+          subtitle: "Join our community and share the love.",
         },
       ]}
     />
@@ -73,13 +136,12 @@ export const createStyles = (theme: ITheme) =>
       marginTop: -50,
     },
     title: {
-      fontSize: fontSizes.FONT50,
+      fontSize: fontSizes.FONT40,
       color: theme.colors.white,
-      fontFamily: "AmaticBold",
     },
     subTitle: {
-      fontSize: fontSizes.FONT30,
-      fontFamily: "ShantellBold",
+      fontSize: fontSizes.FONT25,
+      fontFamily: "ShantellLight",
       color: theme.colors.white,
     },
     image: {
@@ -87,7 +149,48 @@ export const createStyles = (theme: ITheme) =>
       height: 300,
     },
     firstPage: {
-      backgroundColor: theme.colors.placeholder,
+      backgroundColor: theme.colors.onboarding1,
+    },
+    secondPage: {
+      backgroundColor: theme.colors.onboarding2,
+    },
+    thirdPage: {
+      backgroundColor: theme.colors.onboarding3,
+    },
+    fourthPage: {
+      backgroundColor: theme.colors.onboarding4,
+    },
+    skipButton: {
+      fontSize: fontSizes.FONT20,
+      color: theme.colors.white,
+      marginLeft: 25,
+      marginBottom: Platform.OS === "ios" ? 0 : 40,
+      fontFamily: "ShantellLight",
+    },
+    nextButton: {
+      fontSize: fontSizes.FONT20,
+      color: theme.colors.white,
+      marginRight: 25,
+      marginBottom: Platform.OS === "ios" ? 0 : 40,
+      fontFamily: "ShantellLight",
+    },
+    doneButton: {
+      fontSize: fontSizes.FONT20,
+      color: theme.colors.white,
+      marginRight: 25,
+      marginBottom: Platform.OS === "ios" ? 0 : 40,
+      fontFamily: "ShantellLight",
+    },
+    dots: {
+      borderRadius: 5,
+      marginHorizontal: 3,
+      marginBottom: Platform.OS === "ios" ? -3 : 40,
+    },
+    selectedDot: {
+      backgroundColor: theme.colors.white,
+    },
+    unselectedDot: {
+      backgroundColor: theme.colors.whiteTransluscent,
     },
   });
 

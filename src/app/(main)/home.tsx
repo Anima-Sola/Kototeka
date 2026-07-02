@@ -106,6 +106,8 @@ const Home = () => {
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.limitText}>You've reached the maximum</Text>
           <Text style={styles.limitText}>number of pets!</Text>
+          <Text style={styles.limitText}>Pull down top of the list</Text>
+          <Text style={styles.limitText}>to get new pets.</Text>
         </View>
       );
     }
@@ -172,7 +174,7 @@ export const createStyles = (theme: ITheme) =>
       textAlign: "center",
     },
     footer: {
-      height: 190,
+      height: 290,
       alignItems: "center",
       marginVertical: 20,
     },

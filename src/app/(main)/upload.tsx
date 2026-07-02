@@ -21,6 +21,10 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import FullScreenLoadingIndicator from "../../components/FullScreenLoadingIndicator/FullScreenLoadingIndicator";
 import { MAX_NUMBER_OF_UPLOADED } from "../../constants/common";
+import {
+  requestMediaLibraryPermission,
+  requestCameraPermission,
+} from "../../utils/functions";
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
@@ -59,7 +63,7 @@ const Upload = () => {
   };
 
   const pickImageFromGallary = async () => {
-    if (uploadedPets.length + 1 > 100) {
+    if (uploadedPets.length + 1 > MAX_NUMBER_OF_UPLOADED) {
       Alert.alert(
         "Maximum number of downloads reached",
         "You have reached the maximum number of uploaded pets",
@@ -67,14 +71,9 @@ const Upload = () => {
       return;
     }
 
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const hasPermission = await requestMediaLibraryPermission();
 
-    if (!permissionResult.granted) {
-      Alert.alert(
-        "Permission required",
-        "Permission to access the media library is required.",
-      );
+    if (!hasPermission) {
       return;
     }
 
@@ -91,7 +90,7 @@ const Upload = () => {
   };
 
   const pickImageFromCamera = async () => {
-    if (uploadedPets.length + 1 > 100) {
+    if (uploadedPets.length + 1 > MAX_NUMBER_OF_UPLOADED) {
       Alert.alert(
         "Maximum number of downloads reached",
         "You have reached the maximum number of uploaded pets",
@@ -99,14 +98,9 @@ const Upload = () => {
       return;
     }
 
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const hasPermission = await requestCameraPermission();
 
-    if (!permissionResult.granted) {
-      Alert.alert(
-        "Permission required",
-        "Permission to access the media library is required.",
-      );
+    if (!hasPermission) {
       return;
     }
 

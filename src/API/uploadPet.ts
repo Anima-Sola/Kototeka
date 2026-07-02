@@ -1,25 +1,28 @@
+import { File } from "expo-file-system";
+import { fetch } from "expo/fetch";
 import URLs from "../constants/urls";
-import { formHeaders } from "../constants/api";
-import fetchAPI from "./fetchAPI";
+import useStore from "../store/store";
 
 const uploadPetAPI = async (imageUri: string, userId: string) => {
+  const store = useStore.getState();
   const formData = new FormData();
-  const fileName = imageUri.split(/[\\/]/).pop();
+  const fileToUpload = new File(imageUri);
 
-  formData.append("file", {
-    uri: imageUri,
-    name: fileName,
-    type: "image/jpeg",
-  } as any);
+  formData.append("file", fileToUpload);
   formData.append("sub_id", userId);
 
-  const response = await fetchAPI(URLs.upload, {
+  const response = await fetch(store.baseUrl + URLs.upload, {
     method: "POST",
-    headers: formHeaders,
     body: formData,
+
+    headers: {
+      Accept: "application/json",
+      "x-api-key": store.apiKey,
+    },
   });
 
-  return response;
+  const responseData = await response.json();
+  return responseData;
 };
 
 export default uploadPetAPI;

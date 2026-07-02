@@ -1,7 +1,9 @@
+import { Alert, Linking } from "react-native";
 import { File, Directory, Paths } from "expo-file-system";
 import * as FileSystemLegacy from "expo-file-system/legacy";
-import * as MediaLibrary from "expo-media-library";
+import * as ImagePicker from "expo-image-picker";
 import { favouritePetType } from "../constants/types";
+import { Asset } from "expo-media-library";
 
 export const isElementInArray = (
   element: string,
@@ -27,16 +29,59 @@ const getFileExtension = (pathOrUrl: string) => {
   return fileName.slice(fileName.lastIndexOf(".") + 1).toLowerCase();
 };
 
+export const requestMediaLibraryPermission = async () => {
+  const permissionResult =
+    await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (permissionResult.granted && permissionResult.accessPrivileges === "all") {
+    return true;
+  }
+
+  Alert.alert(
+    "Permission required",
+    "Gallery access is disabled. Please enable it in Settings to continue.",
+    [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Open Settings",
+        onPress: () => Linking.openSettings(),
+      },
+    ],
+  );
+
+  return false;
+};
+
+export const requestCameraPermission = async () => {
+  const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+  if (permissionResult.granted) {
+    return true;
+  }
+
+  Alert.alert(
+    "Permission required",
+    "Camera access is disabled. Please enable it in Settings to continue.",
+    [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Open Settings",
+        onPress: () => Linking.openSettings(),
+      },
+    ],
+  );
+
+  return false;
+};
+
 export async function downloadAndSaveImage(
   url: string,
   onProgress?: (progress: number) => void,
 ) {
-  /*const { granted } = await MediaLibrary.requestPermissionsAsync(false, [
-    "photo",
-  ]);
+  /*const hasPermission = await requestMediaLibraryPermission();
 
-  if (!granted) {
-    throw new Error("Media Library permission denied");
+  if (!hasPermission) {
+    return;
   }
 
   const downloadDir = new Directory(Paths.cache, "downloads");
@@ -75,5 +120,5 @@ export async function downloadAndSaveImage(
     return;
   }
 
-  return await MediaLibrary.createAssetAsync(file.uri);*/ //Asset.create(file.uri);
+  return await Asset.create(file.uri);*/
 }

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Pet a pet",
+    "name": "Paws&Love",
     "slug": "Kototeka",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -25,9 +25,6 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "READ_MEDIA_IMAGES",
-        "READ_MEDIA_VIDEO",
-        "RECORD_AUDIO",
-        "READ_MEDIA_AUDIO",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import * as Font from "expo-font";
 import { NavigationBar } from "expo-navigation-bar";
@@ -9,7 +9,7 @@ import fetchUserData from "../../API/fetchUserData";
 import useStore from "../../store/store";
 import fontSizes from "../../constants/fontSizes";
 
-const backgroundImage = require("../../../assets/Images/splash.jpeg");
+const backgroundImage = require("../../../assets/Images/splashImage.png");
 
 const SplashScreen = () => {
   const styles = useThemedStyles(createStyles);
@@ -22,10 +22,10 @@ const SplashScreen = () => {
         if (!isFontsLoaded) {
           await Font.loadAsync({
             AmaticBold: require("../../../assets/fonts/AmaticSC-Bold.ttf"),
-            AmaticRegular: require("../../../assets/fonts/AmaticSC-Regular.ttf"),
             ShantellRegular: require("../../../assets/fonts/ShantellSans-Regular.ttf"),
             ShantellBold: require("../../../assets/fonts/ShantellSans-Bold.ttf"),
             ShantellLightItalic: require("../../../assets/fonts/ShantellSans-LightItalic.ttf"),
+            ShantellLight: require("../../../assets/fonts/ShantellSans-Light.ttf"),
           });
           setIsFontsLoaded(true);
         }
@@ -44,20 +44,15 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={backgroundImage}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        <Text style={styles.logo}>Pet a pet</Text>
-        <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator
-            size={50}
-            color={styles.activityIndicatorColor.color}
-          />
-        </View>
-        <Text style={styles.text}>Loading</Text>
-      </ImageBackground>
+      <Text style={styles.logo}>Paws&Love</Text>
+      <Image source={backgroundImage} resizeMode="cover" style={styles.image} />
+      <View style={styles.activityIndicatorContainer}>
+        <ActivityIndicator
+          size={50}
+          color={styles.activityIndicatorColor.color}
+        />
+      </View>
+      <Text style={styles.text}>Loading</Text>
       <NavigationBar style="light" hidden={false} />
     </View>
   );
@@ -67,12 +62,14 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.main,
+      backgroundColor: theme.colors.spashScreenBackground,
+      alignItems: "center",
+      justifyContent: "space-around",
+      paddingVertical: 50,
     },
     image: {
-      flex: 1,
-      paddingVertical: 120,
-      alignItems: "center",
+      width: 300,
+      height: 300,
     },
     logo: {
       fontSize: fontSizes.FONT70,
@@ -80,7 +77,6 @@ export const createStyles = (theme: ITheme) =>
       fontFamily: "AmaticBold",
     },
     activityIndicatorContainer: {
-      flex: 1,
       justifyContent: "center",
     },
     activityIndicatorColor: {

@@ -128,7 +128,7 @@ export const createStyles = (theme: ITheme) =>
     },
     restorePasswordLink: {
       fontSize: fontSizes.FONT14,
-      fontFamily: "ShantellBold",
+      fontFamily: "ShantellRegular",
       color: theme.colors.accent,
       alignSelf: "flex-end",
       marginTop: -24,

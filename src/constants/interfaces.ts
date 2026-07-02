@@ -83,10 +83,18 @@ export interface ITheme {
     white: string;
     black: string;
     blackTransluscent: string;
+    whiteTransluscent: string;
     red: string;
     green: string,
     shadow: string;
     uploadPhotoBtn: string;
+    onboarding1: string;
+    onboarding2: string;
+    onboarding3: string;
+    onboarding4: string;
+    spashScreenBackground: string;
+  };
+}
   };
 }
 

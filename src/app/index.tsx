@@ -4,8 +4,6 @@ import useStore from "../store/store";
 export default function Index() {
   const { isSignedIn, isOnboarding } = useStore();
 
-  console.log(isSignedIn);
-
   if (isOnboarding && !isSignedIn) {
     return <Redirect href="/(onboarding)/onboarding" />;
   }

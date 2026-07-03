@@ -54,6 +54,16 @@
           "isAccessMediaLocationEnabled": true,
           "granularPermissions": ["photo"]
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/Images/notification.png",
+          "color": "#000000",
+          "sounds": [
+            "./assets/sounds/notification.mp3"
+          ]
+        }
       ]
     ]
   }

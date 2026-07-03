@@ -133,7 +133,6 @@ export const createStyles = (theme: ITheme) =>
     pageContainer: {
       flex: 1,
       justifyContent: "center",
-      marginTop: -50,
     },
     title: {
       fontSize: fontSizes.FONT40,

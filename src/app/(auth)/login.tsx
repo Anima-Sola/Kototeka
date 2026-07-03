@@ -29,7 +29,7 @@ const Login = () => {
   const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { setIsSignedIn, showErrorToast } = useStore();
+  const { setIsSignedIn, showErrorToast, setUserId, setUserName } = useStore();
   const [isLogging, setIsLogging] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
@@ -47,12 +47,17 @@ const Login = () => {
         email,
         password,
       );
+      
       await fetchUserData(userCredential.user.uid);
+      
+      if (userCredential.user.displayName)
+        setUserName(userCredential.user.displayName);
+      setUserId(userCredential.user.uid);
       setIsSignedIn(true);
+      
       router.replace("/(main)");
-      console.log("Success:", userCredential.user);
     } catch (error: any) {
-      showErrorToast('Incorrect email address or/and password')
+      showErrorToast("Incorrect email address or/and password");
     } finally {
       setIsLogging(false);
     }

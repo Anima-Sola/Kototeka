@@ -32,7 +32,7 @@ type FormValues = {
 
 const SignUp = () => {
   const styles = useThemedStyles(createStyles);
-  const { setIsSignedIn, showErrorToast } = useStore();
+  const { setIsSignedIn, showErrorToast, setUserId, setUserName } = useStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [isRegistering, setIsRegistering] = useState(false);
@@ -59,8 +59,11 @@ const SignUp = () => {
         displayName: name,
       });
 
-      console.log("Пользователь создан:", userCredential.user);
+      if (userCredential.user.displayName)
+        setUserName(userCredential.user.displayName);
+      setUserId(userCredential.user.uid);
       setIsSignedIn(true);
+      
       router.replace("/(main)");
     } catch (error: any) {
       showErrorToast("Error during registration");

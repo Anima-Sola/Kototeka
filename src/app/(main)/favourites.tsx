@@ -62,7 +62,7 @@ const Favourites = () => {
         <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
-          <Text style={styles.text}>No favourite cats</Text>
+          <Text style={styles.text}>No favourite pets</Text>
           <Text style={styles.text}>Please, add them from the gallery</Text>
         </View>
       </View>

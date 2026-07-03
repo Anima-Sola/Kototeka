@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../../firebaseConfig";
 import * as Font from "expo-font";
 import { NavigationBar } from "expo-navigation-bar";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
@@ -8,39 +10,86 @@ import { ITheme } from "../../constants/interfaces";
 import fetchUserData from "../../API/fetchUserData";
 import useStore from "../../store/store";
 import fontSizes from "../../constants/fontSizes";
+import SplashErrorScreen from "./SplashErrorScreen";
 
 const backgroundImage = require("../../../assets/Images/splashImage.png");
 
 const SplashScreen = () => {
   const styles = useThemedStyles(createStyles);
-  const { isSignedIn, setIsAppReady, isFontsLoaded, setIsFontsLoaded, userId } =
-    useStore();
+  const [loadingError, setLoadingError] = useState(false);
+  const {
+    isSignedIn,
+    setIsAppReady,
+    isFontsLoaded,
+    setIsFontsLoaded,
+    userId,
+    setUserName,
+    setUserId,
+    setIsSignedIn,
+  } = useStore();
+
+  //Google authentication state listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log(
+          "User is logged in:",
+          currentUser.email,
+          "User id: ",
+          currentUser.uid,
+        );
+        if (currentUser.displayName) setUserName(currentUser.displayName);
+        setUserId(currentUser.uid);
+        setIsSignedIn(true);
+      } else {
+        console.log("User is logged out");
+        setIsSignedIn(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const loadFonts = async () => {
+    try {
+      if (!isFontsLoaded) {
+        await Font.loadAsync({
+          AmaticBold: require("../../../assets/fonts/AmaticSC-Bold.ttf"),
+          ShantellRegular: require("../../../assets/fonts/ShantellSans-Regular.ttf"),
+          ShantellBold: require("../../../assets/fonts/ShantellSans-Bold.ttf"),
+          ShantellLightItalic: require("../../../assets/fonts/ShantellSans-LightItalic.ttf"),
+          ShantellLight: require("../../../assets/fonts/ShantellSans-Light.ttf"),
+        });
+        setIsFontsLoaded(true);
+      }
+    } catch (error: any) {
+      throw error;
+    }
+  };
+
+  const prepare = async () => {
+    setLoadingError(false);
+
+    try {
+      await loadFonts();
+      if (isSignedIn) {
+        await fetchUserData(userId);
+      }
+    } catch (error: any) {
+      setLoadingError(true);
+    } finally {
+      if (isSignedIn !== null && !loadingError)
+        setTimeout(() => setIsAppReady(true), 2000);
+    }
+  };
 
   useEffect(() => {
-    const prepare = async () => {
-      try {
-        if (!isFontsLoaded) {
-          await Font.loadAsync({
-            AmaticBold: require("../../../assets/fonts/AmaticSC-Bold.ttf"),
-            ShantellRegular: require("../../../assets/fonts/ShantellSans-Regular.ttf"),
-            ShantellBold: require("../../../assets/fonts/ShantellSans-Bold.ttf"),
-            ShantellLightItalic: require("../../../assets/fonts/ShantellSans-LightItalic.ttf"),
-            ShantellLight: require("../../../assets/fonts/ShantellSans-Light.ttf"),
-          });
-          setIsFontsLoaded(true);
-        }
-        if (isSignedIn) {
-          await fetchUserData(userId);
-        }
-      } catch (error: any) {
-        throw error;
-      } finally {
-        if (isSignedIn !== null) setTimeout(() => setIsAppReady(true), 2000);
-      }
-    };
-
     prepare();
   }, [isSignedIn]);
+
+  if (loadingError) {
+    return <SplashErrorScreen onRetry={prepare} />;
+  }
 
   return (
     <View style={styles.container}>
@@ -68,6 +117,7 @@ export const createStyles = (theme: ITheme) =>
       paddingVertical: 50,
     },
     image: {
+      marginTop: -50,
       width: 300,
       height: 300,
     },

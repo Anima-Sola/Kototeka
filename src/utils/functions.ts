@@ -101,7 +101,7 @@ export async function downloadAndSaveImage(
       if (totalBytesExpectedToWrite <= 0) {
         return;
       }
-
+fhfghf
       const progress = totalBytesWritten / totalBytesExpectedToWrite;
 
       onProgress?.(progress);

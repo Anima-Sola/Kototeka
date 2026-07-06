@@ -13,7 +13,7 @@ import addFavouritePetAPI from "../../API/addFavouritePet";
 import deleteFavouritePetAPI from "../../API/deleteFavouritePet";
 import getFavouritePetByIdAPI from "../../API/getFavouritePetById";
 import useStore from "../../store/store";
-import { isElementInArray } from "../../utils/functions";
+import { isElementInArray } from "../../functions/common";
 import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 import { PetType } from "../../constants/types";
 import Ionicons from "@expo/vector-icons/Ionicons";

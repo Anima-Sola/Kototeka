@@ -11,11 +11,13 @@ import { useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { downloadAndSaveImage } from "../../utils/functions";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import DownloadProgressBar from "../DownloadProgressBar/DownloadProgressBar";
-import { downloadResumable } from "../../utils/functions";
+import {
+  downloadAndSaveImage,
+  downloadResumable,
+} from "../../functions/downloadImage";
 import useStore from "../../store/store";
 
 type ProfileTopBarProps = {
@@ -79,7 +81,11 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
 
     try {
       const result = await downloadAndSaveImage(imageUrl, onProgress);
-      if(result) setTimeout(() => showSuccessToast("The image has been downloaded"), 500);
+      if (result)
+        setTimeout(
+          () => showSuccessToast("The image has been downloaded"),
+          500,
+        );
     } catch (error) {
       console.error("Error when downloading the image:", error);
       setTimeout(() => showErrorToast("Error when downloading the image"), 500);

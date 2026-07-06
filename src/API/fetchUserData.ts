@@ -8,7 +8,7 @@ import { MAX_NUMBER_OF_UPLOADED } from "../constants/common";
 
 const store = useStore.getState();
 
-const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
+export const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
   const promises = favouritePets.map(async (favouritePet) => {
     const response = await getPetByIdAPI(favouritePet.image.id);
     if (response.breeds)
@@ -18,7 +18,7 @@ const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
   return await Promise.all(promises);
 };
 
-const fetchPetsData = async () => {
+export const fetchPetsData = async () => {
   const data = await getPetsAPI(useStore.getState().filterRequestSettings);
   store.setPets(data);
 };

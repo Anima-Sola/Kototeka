@@ -142,6 +142,7 @@ export const createStyles = (theme: ITheme) =>
     subTitle: {
       fontSize: fontSizes.FONT18,
       fontFamily: "Georgia",
+      fontStyle: 'italic',
       color: theme.colors.onboardingSubtitleText,
     },
     image: {

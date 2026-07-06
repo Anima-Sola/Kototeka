@@ -19,11 +19,11 @@ import { ITheme } from "../../constants/interfaces";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import FilterBS from "../../components/BottomSheets/FilterBS";
 import { MAX_NUMBER_OF_PHOTOS } from "../../constants/common";
+import { fetchPetsData } from "../../API/fetchUserData";
 
 const Home = () => {
   const {
     pets,
-    setPets,
     addPets,
     filterRequestSettings,
     isFiltersChanged,
@@ -35,18 +35,6 @@ const Home = () => {
   const [isFilteredLoading, setIsFilteredLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
-
-  const fetchPetsData = async () => {
-    try {
-      const data = await getPetsAPI(filterRequestSettings);
-      setPets(data);
-    } catch (error: any) {
-      throw error;
-    } finally {
-      setIsLoading(false);
-      setIsFilteredLoading(false);
-    }
-  };
 
   const fetchAddedPetsData = async () => {
     if (pets.length >= MAX_NUMBER_OF_PHOTOS) {
@@ -65,15 +53,23 @@ const Home = () => {
     }
   };
 
-  const refreshPetsList = () => {
+  const refreshPetsList = async () => {
     setIsLoading(true);
-    fetchPetsData();
+
+    try {
+      await fetchPetsData();
+    } catch (error: any) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+      setIsFilteredLoading(false);
+    }
   };
 
   useEffect(() => {
     if (isFiltersChanged) {
       setIsFilteredLoading(true);
-      fetchPetsData();
+      refreshPetsList();
       setIsFiltersChanged(false);
     }
   }, [isFiltersChanged]);

@@ -93,15 +93,16 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Paws&Love</Text>
+      
       <Image source={backgroundImage} resizeMode="cover" style={styles.image} />
+      <Text style={styles.logo}>Paws&Love</Text>
       <View style={styles.activityIndicatorContainer}>
         <ActivityIndicator
           size={50}
           color={styles.activityIndicatorColor.color}
         />
       </View>
-      <Text style={styles.text}>Loading</Text>
+      <Text style={styles.text}>Loading...</Text>
       <NavigationBar style="light" hidden={false} />
     </View>
   );
@@ -117,14 +118,13 @@ export const createStyles = (theme: ITheme) =>
       paddingVertical: 50,
     },
     image: {
-      marginTop: -50,
       width: 300,
       height: 300,
     },
     logo: {
       fontSize: fontSizes.FONT50,
       color: theme.colors.black,
-      fontFamily: "Georgia",
+      fontFamily: "Courier",
     },
     activityIndicatorContainer: {
       justifyContent: "center",
@@ -134,7 +134,7 @@ export const createStyles = (theme: ITheme) =>
     },
     text: {
       fontSize: fontSizes.FONT20,
-      fontFamily: "Courier",
+      fontFamily: "Georgia",
       color: theme.colors.black,
     },
   });

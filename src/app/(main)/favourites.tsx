@@ -4,45 +4,26 @@ import getFavouritePetsAPI from "../../API/getFavouritePets";
 import FavouritePetCard from "../../components/PetCard/FavouritePetCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
-import getPetByIdAPI from "../../API/getPetById";
 import { favouritePetType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { getFavouritePetsBreeds } from "../../API/fetchUserData";
 
 const Favourites = () => {
   const styles = useThemedStyles(createStyles);
-  const {
-    favouritePets,
-    setFavouritePets,
-    addFavoritePetBreeds,
-    userId,
-  } = useStore();
+  const { favouritePets, setFavouritePets, userId } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
-
-  const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
-    const promises = favouritePets.map(async (favouritePet) => {
-      try {
-        const response = await getPetByIdAPI(favouritePet.image.id);
-        if (response.breeds)
-          addFavoritePetBreeds(favouritePet.id, response.breeds[0]);
-      } catch (error: any) {
-        throw error;
-      }
-    });
-
-    return await Promise.all(promises);
-  };
 
   const fetchFavouritePetsData = async () => {
     setIsLoading(true);
 
     try {
       const favouritePets = await getFavouritePetsAPI(userId);
-      await getFavouritePetsBreeds(favouritePets);
       setFavouritePets(favouritePets);
+      await getFavouritePetsBreeds(favouritePets);
     } catch (error: any) {
       throw error;
     } finally {

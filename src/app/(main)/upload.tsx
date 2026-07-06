@@ -24,7 +24,7 @@ import { MAX_NUMBER_OF_UPLOADED } from "../../constants/common";
 import {
   requestMediaLibraryPermission,
   requestCameraPermission,
-} from "../../utils/functions";
+} from "../../functions/permissionsReqFuncs";
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);

@@ -16,7 +16,7 @@ import { Image } from "expo-image";
 import { blurhash } from "../../constants/common";
 import BreedInfo from "../../components/BreedInfo/BreedInfo";
 import NoBreedInfo from "../../components/BreedInfo/NoBreedInfo";
-import { isElementInArray } from "../../utils/functions";
+import { isElementInArray } from "../../functions/common";
 import addFavouritePetAPI from "../../API/addFavouritePet";
 import getFavouritePetByIdAPI from "../../API/getFavouritePetById";
 import deleteFavouritePetAPI from "../../API/deleteFavouritePet";

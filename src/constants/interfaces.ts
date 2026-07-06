@@ -92,6 +92,7 @@ export interface ITheme {
     onboarding2: string;
     onboarding3: string;
     onboarding4: string;
+    onboardingSubtitleText: string;
     spashScreenBackground: string;
   };
 }

@@ -32,12 +32,13 @@ export const lightTheme = {
 
     uploadPhotoBtn: "#FFFFFF",
 
-    onboarding1: "#8cb369",
-    onboarding2: "#bc4b51",
-    onboarding3: "#f4a259",
-    onboarding4: "#5b8e7d",
+    onboarding1: "#eae0d9",
+    onboarding2: "#eae0d9",
+    onboarding3: "#eae0d9",
+    onboarding4: "#eae0d9",
+    onboardingSubtitleText: "#595959",
 
-    spashScreenBackground: "#93a0b4",
+    spashScreenBackground: "#eae0d9",
   },
 };
 
@@ -75,11 +76,12 @@ export const darkTheme = {
 
     uploadPhotoBtn: "#1A2333",
 
-    onboarding1: "#8cb369",
-    onboarding2: "#bc4b51",
-    onboarding3: "#f4a259",
-    onboarding4: "#5b8e7d",
+    onboarding1: "#eae0d9",
+    onboarding2: "#eae0d9",
+    onboarding3: "#eae0d9",
+    onboarding4: "#eae0d9",
+    onboardingSubtitleText: "#595959",
 
-    spashScreenBackground: "#93a0b4",
+    spashScreenBackground: "#eae0d9",
   },
 };

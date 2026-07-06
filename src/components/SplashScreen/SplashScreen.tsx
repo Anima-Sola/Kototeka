@@ -122,20 +122,20 @@ export const createStyles = (theme: ITheme) =>
       height: 300,
     },
     logo: {
-      fontSize: fontSizes.FONT70,
-      color: theme.colors.white,
-      fontFamily: "AmaticBold",
+      fontSize: fontSizes.FONT50,
+      color: theme.colors.black,
+      fontFamily: "Georgia",
     },
     activityIndicatorContainer: {
       justifyContent: "center",
     },
     activityIndicatorColor: {
-      color: theme.colors.white,
+      color: theme.colors.black,
     },
     text: {
       fontSize: fontSizes.FONT20,
-      fontFamily: "ShantellRegular",
-      color: theme.colors.white,
+      fontFamily: "Courier",
+      color: theme.colors.black,
     },
   });
 

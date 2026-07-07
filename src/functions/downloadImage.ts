@@ -1,6 +1,7 @@
 import { File, Directory, Paths } from "expo-file-system";
 import * as FileSystemLegacy from "expo-file-system/legacy";
 import { Asset } from "expo-media-library";
+import { requestMediaLibraryPermission } from "./permissionsReqFuncs";
 
 export let downloadResumable: FileSystemLegacy.DownloadResumable | null = null;
 
@@ -23,7 +24,7 @@ export async function downloadAndSaveImage(
   url: string,
   onProgress?: (progress: number) => void,
 ) {
-  /*const hasPermission = await requestMediaLibraryPermission();
+  const hasPermission = await requestMediaLibraryPermission();
 
   if (!hasPermission) {
     return;
@@ -46,7 +47,7 @@ export async function downloadAndSaveImage(
       if (totalBytesExpectedToWrite <= 0) {
         return;
       }
-fhfghf
+
       const progress = totalBytesWritten / totalBytesExpectedToWrite;
 
       onProgress?.(progress);
@@ -65,5 +66,5 @@ fhfghf
     return;
   }
 
-  return await Asset.create(file.uri);*/
+  return await Asset.create(file.uri);
 }

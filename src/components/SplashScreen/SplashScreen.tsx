@@ -112,7 +112,7 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.spashScreenBackground,
+      backgroundColor: theme.colors.main,
       alignItems: "center",
       justifyContent: "space-around",
       paddingVertical: 50,
@@ -130,12 +130,13 @@ export const createStyles = (theme: ITheme) =>
       justifyContent: "center",
     },
     activityIndicatorColor: {
-      color: theme.colors.black,
+      color: theme.colors.accent,
     },
     text: {
       fontSize: fontSizes.FONT20,
       fontFamily: "Georgia",
-      color: theme.colors.black,
+      color: theme.colors.accent,
+      fontStyle: 'italic',
     },
   });
 

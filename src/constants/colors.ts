@@ -31,14 +31,6 @@ export const lightTheme = {
     shadow: "#0F172A",
 
     uploadPhotoBtn: "#FFFFFF",
-
-    onboarding1: "#eae0d9",
-    onboarding2: "#eae0d9",
-    onboarding3: "#eae0d9",
-    onboarding4: "#eae0d9",
-    onboardingSubtitleText: "#595959",
-
-    spashScreenBackground: "#eae0d9",
   },
 };
 
@@ -75,13 +67,5 @@ export const darkTheme = {
     shadow: "#000000",
 
     uploadPhotoBtn: "#1A2333",
-
-    onboarding1: "#eae0d9",
-    onboarding2: "#eae0d9",
-    onboarding3: "#eae0d9",
-    onboarding4: "#eae0d9",
-    onboardingSubtitleText: "#595959",
-
-    spashScreenBackground: "#eae0d9",
   },
 };

@@ -143,23 +143,23 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT18,
       fontFamily: "Georgia",
       fontStyle: 'italic',
-      color: theme.colors.onboardingSubtitleText,
+      color: theme.colors.accent,
     },
     image: {
       width: 300,
       height: 300,
     },
     firstPage: {
-      backgroundColor: theme.colors.onboarding1,
+      backgroundColor: theme.colors.main,
     },
     secondPage: {
-      backgroundColor: theme.colors.onboarding2,
+      backgroundColor: theme.colors.main,
     },
     thirdPage: {
-      backgroundColor: theme.colors.onboarding3,
+      backgroundColor: theme.colors.main,
     },
     fourthPage: {
-      backgroundColor: theme.colors.onboarding4,
+      backgroundColor: theme.colors.main,
     },
     skipButton: {
       fontSize: fontSizes.FONT20,

@@ -19,6 +19,7 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import useStore from "../../store/store";
 import fetchUserData from "../../API/fetchUserData";
+import { usePushNotifications } from "../../functions/notifications";
 
 type FormValues = {
   email: string;
@@ -27,6 +28,7 @@ type FormValues = {
 
 const Login = () => {
   const styles = useThemedStyles(createStyles);
+  const { expoPushToken, notification } = usePushNotifications();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { setIsSignedIn, showErrorToast, setUserId, setUserName } = useStore();
@@ -34,6 +36,8 @@ const Login = () => {
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
+
+  console.log(expoPushToken, notification);
 
   async function onSubmit(data: FormValues) {
     const email = data.email.trim();

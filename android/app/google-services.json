@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "14279691744",
+    "project_id": "kototeka-f958e",
+    "storage_bucket": "kototeka-f958e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14279691744:android:84846178bba7f2a31c2f85",
+        "android_client_info": {
+          "package_name": "com.anonymous.Kototeka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3vE1QxUV5B3_CVipvuHbWw2M4kHRCr8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

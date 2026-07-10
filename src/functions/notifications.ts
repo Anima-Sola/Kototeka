@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform, Alert } from "react-native";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 
@@ -94,7 +94,7 @@ async function registerForPushNotificationsAsync() {
     finalStatus = status;
   }
   if (finalStatus !== "granted") {
-    alert("Failed to get push token for push notification!");
+    Alert.alert("Failed to get push token for push notification!");
     return;
   }
   // Learn more about projectId:

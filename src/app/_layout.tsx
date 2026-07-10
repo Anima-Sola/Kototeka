@@ -4,13 +4,10 @@ import { Stack } from "expo-router";
 import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";
 import OnboardingWrapper from "../components/Wrapper/OnboardingWrapper";
-import * as ExpoSplashScreen from "expo-splash-screen";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
 
-//ExpoSplashScreen.hideAsync();
-
 export default function RootLayout() {
-  const { isAppReady, isSignedIn, isOnboarding, setResolvedTheme, mode } =
+  const { isAppReady, isSignedIn, isOnboarding, setResolvedTheme, setMode, mode } =
     useStore();
 
   //Listening system theme changing
@@ -18,6 +15,7 @@ export default function RootLayout() {
     const updateTheme = () => {
       const systemTheme =
         Appearance.getColorScheme() === "dark" ? "dark" : "light";
+        console.log(Appearance.getColorScheme());
       setResolvedTheme(systemTheme);
     };
 

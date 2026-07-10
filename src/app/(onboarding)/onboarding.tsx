@@ -13,12 +13,16 @@ import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
+import { usePushNotifications } from "../../functions/notifications";
 
 const OnboardingSwiper = () => {
   const styles = useThemedStyles(createStyles);
+  const { expoPushToken, notification } = usePushNotifications();
   const { setIsOnBoarding } = useStore();
   const router = useRouter();
   const onboardingRef = useRef<Onboarding>(null);
+
+  console.log(expoPushToken, notification);
 
   const finishOnBoarding = () => {
     setIsOnBoarding(false);
@@ -148,6 +152,7 @@ export const createStyles = (theme: ITheme) =>
     image: {
       width: 300,
       height: 300,
+      marginTop: -80,
     },
     firstPage: {
       backgroundColor: theme.colors.main,

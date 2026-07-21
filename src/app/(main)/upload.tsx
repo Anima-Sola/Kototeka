@@ -17,7 +17,6 @@ import uploadPetAPI from "../../API/uploadPet";
 import UploadedPetCard from "../../components/PetCard/UploadedPetCard";
 import { PetType } from "../../constants/types";
 import getUploadedPetsAPI from "../../API/getUploadedPets";
-import getPetByIdAPI from "../../API/getPetById";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import FullScreenLoadingIndicator from "../../components/FullScreenLoadingIndicator/FullScreenLoadingIndicator";
@@ -29,8 +28,7 @@ import {
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
-  const { uploadedPets, setUploadedPets, addUploadedPet, userId, petsType } =
-    useStore();
+  const { uploadedPets, setUploadedPets, addUploadedPet, userId } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] =
@@ -42,9 +40,6 @@ const Upload = () => {
 
     try {
       let uploadPetResult = await uploadPetAPI(image, userId);
-      if (petsType === "dogs")
-        uploadPetResult = await getPetByIdAPI(uploadPetResult.id);
-      0;
       if (uploadPetResult) addUploadedPet(uploadPetResult);
     } catch (error: any) {
       throw error;

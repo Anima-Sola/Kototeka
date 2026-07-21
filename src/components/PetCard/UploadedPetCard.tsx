@@ -1,5 +1,11 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
@@ -11,6 +17,7 @@ import { blurhash } from "../../constants/common";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import fontSizes from "../../constants/fontSizes";
 
 type PetCardProps = {
   pet: PetType;
@@ -42,11 +49,29 @@ const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
     }
   };
 
+  if (!pet.url) {
+    return (
+      <View style={styles.container}>
+        <Image
+          style={{ ...styles.image, width: imageWidth, height: imageWidth }}
+          placeholder={{ blurhash }}
+        />
+        <View style={styles.noImageTextContainer}>
+          <Text style={styles.noImageText}>To be reviewed,</Text>
+          <Text style={styles.noImageText}>pull to refresh</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
-    <View style={{ ...styles.container }}>
+    <View style={styles.container}>
       <TouchableOpacity
         onPress={() =>
-          router.push({ pathname: "/uploadedPetProfile", params: { petId: pet.id } })
+          router.push({
+            pathname: "/uploadedPetProfile",
+            params: { petId: pet.id },
+          })
         }
       >
         <Image
@@ -64,7 +89,10 @@ const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
         />
         <View style={styles.favouriteIconContainer}>
           {isDeleting ? (
-            <ActivityIndicator size={45 - iconScale} color={styles.iconColor.color} />
+            <ActivityIndicator
+              size={45 - iconScale}
+              color={styles.iconColor.color}
+            />
           ) : (
             <TouchableOpacity onPress={deletePet}>
               <FontAwesome
@@ -139,6 +167,19 @@ export const createStyles = (theme: ITheme) =>
     iconColor: {
       color: theme.colors.white,
     },
+    noImageTextContainer: {
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    noImageText: {
+      color: theme.colors.white,
+      fontSize: fontSizes.FONT20,
+      fontFamily: "ShantellRegular",
+      //alignSelf: "center",
+    }
   });
 
 export default UploadedPetCard;

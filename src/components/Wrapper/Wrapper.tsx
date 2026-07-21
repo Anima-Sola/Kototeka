@@ -34,7 +34,7 @@ export default function Wrapper({ children }: WrapperProps) {
         {isSuccessToastVisible && <SuccessToast message={toastMessage} />}
         {isErrorToastVisible && <ErrorToast message={toastMessage} />}
         {children}
-        <NavigationBar style="light" hidden={false} />
+        <NavigationBar style="auto" hidden={false} />
       </SafeAreaProvider>
     </BottomSheetProvider>
   );

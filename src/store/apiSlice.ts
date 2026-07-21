@@ -1,14 +1,6 @@
 import { IApiSlice } from "../constants/interfaces";
-
-const CATS_API_KEY =
-  "live_IvPY1SEgkw5n5dGvsNFeFKyy0vqejrhKUDO0r6BZVYUPEbKi0WbGnu2iOQX6qNsd";
-
-const DOGS_API_KEY =
-  "live_fs8aD7icmENZYqKVbpReT1JeeOc4q0mM04KFaW2cYcdP847OEhzM1IkbYYe99HOj";
-
-const CATS_BASE_URL = "https://api.thecatapi.com";
-
-const DOGS_BASE_URL = "https://api.thedogapi.com";
+import { CATS_BASE_URL, DOGS_BASE_URL } from "../constants/urls";
+import { CATS_API_KEY, DOGS_API_KEY } from "../constants/api";
 
 export const createApiSlice = (set: any, get: any, api: any): IApiSlice => ({
   petsType: "cats",

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Appearance } from "react-native";
+import { AppState, Appearance, useColorScheme } from "react-native";
 import { Stack } from "expo-router";
 import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";
@@ -7,23 +7,39 @@ import OnboardingWrapper from "../components/Wrapper/OnboardingWrapper";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
 
 export default function RootLayout() {
-  const { isAppReady, isSignedIn, isOnboarding, setResolvedTheme, setMode, mode } =
-    useStore();
+  const {
+    isAppReady,
+    isSignedIn,
+    isOnboarding,
+    setResolvedTheme,
+    mode,
+  } = useStore();
+  const colorScheme = useColorScheme();
 
-  //Listening system theme changing
   useEffect(() => {
     const updateTheme = () => {
-      const systemTheme =
-        Appearance.getColorScheme() === "dark" ? "dark" : "light";
-        console.log(Appearance.getColorScheme());
+      const systemTheme = colorScheme === "dark" ? "dark" : "light";
       setResolvedTheme(systemTheme);
     };
 
     updateTheme();
 
-    const sub = Appearance.addChangeListener(updateTheme);
-    return () => sub.remove();
-  }, [mode]);
+    const appearanceSub = Appearance.addChangeListener(() => {
+      console.log('changed');
+      updateTheme();
+    });
+
+    const appStateSub = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
+        updateTheme();
+      }
+    });
+
+    return () => {
+      appearanceSub.remove();
+      appStateSub.remove();
+    };
+  }, [colorScheme, setResolvedTheme, mode]);
 
   if (!isAppReady) {
     return <SplashScreen />;

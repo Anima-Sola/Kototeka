@@ -3,9 +3,9 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  TouchableOpacity,
   Alert,
 } from "react-native";
+import { PressableScale } from 'pressto';
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
@@ -91,7 +91,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
 
   return (
     <View style={{ ...styles.container }}>
-      <TouchableOpacity
+      <PressableScale
         onPress={() =>
           router.push({ pathname: "/petProfile", params: { petId: pet.id } })
         }
@@ -133,7 +133,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
             />
           </View>
         )}
-      </TouchableOpacity>
+      </PressableScale>
       {isImageLoading && (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size={numOfColumns === 3 ? "small" : "large"} />

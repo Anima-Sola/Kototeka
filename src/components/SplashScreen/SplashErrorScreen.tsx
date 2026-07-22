@@ -58,7 +58,7 @@ export const createStyles = (theme: ITheme) =>
       height: 250,
     },
     title: {
-      fontSize: fontSizes.FONT70,
+      fontSize: fontSizes.FONT50,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
       marginBottom: 8,
@@ -66,8 +66,10 @@ export const createStyles = (theme: ITheme) =>
     message: {
       fontSize: fontSizes.FONT20,
       color: theme.colors.mainText,
+      fontFamily: "ShantellRegular",
       marginBottom: 16,
       textAlign: "center",
+      width: "80%",
     },
     button: {
       backgroundColor: theme.colors.accent,

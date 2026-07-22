@@ -4,6 +4,7 @@ export const lightTheme = {
     statusBarTransluscent: "rgba(243, 244, 246, 0.7)",
 
     main: "#F8FAFC",
+    mainSplash: "#F8FAFC",
     secondary: "#FFFFFF",
     secondaryTransluscent: "rgba(255, 255, 255, 0.82)",
 
@@ -40,6 +41,7 @@ export const darkTheme = {
     statusBarTransluscent: "rgba(9, 13, 22, 0.7)",
 
     main: "#090D16",
+    mainSplash: "#F8FAFC",
     secondary: "#121826",
     secondaryTransluscent: "rgba(18, 24, 38, 0.82)",
 

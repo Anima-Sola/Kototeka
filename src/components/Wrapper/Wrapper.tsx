@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 import { View, StyleSheet, Platform, StatusBar } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { PressablesConfig } from "pressto";
 import useStore from "../../store/store";
 import {
   SafeAreaProvider,
@@ -18,25 +20,30 @@ type WrapperProps = {
 
 export default function Wrapper({ children }: WrapperProps) {
   const styles = useThemedStyles(createStyles);
-  const {
-    toastMessage,
-    isErrorToastVisible,
-    isSuccessToastVisible,
-  } = useStore();
+  const { toastMessage, isErrorToastVisible, isSuccessToastVisible } =
+    useStore();
   const insets = useSafeAreaInsets();
   const statusBarHeight =
     Platform.OS === "ios" ? insets.top : StatusBar.currentHeight;
 
   return (
-    <BottomSheetProvider>
-      <SafeAreaProvider style={styles.container}>
-        <View style={{ ...styles.statusBar, height: statusBarHeight }} />
-        {isSuccessToastVisible && <SuccessToast message={toastMessage} />}
-        {isErrorToastVisible && <ErrorToast message={toastMessage} />}
-        {children}
-        <NavigationBar style="auto" hidden={false} />
-      </SafeAreaProvider>
-    </BottomSheetProvider>
+    <GestureHandlerRootView>
+      <PressablesConfig
+        animationType="spring"
+        animationConfig={{ damping: 10, stiffness: 200 }}
+        config={{ minScale: 0.9, activeOpacity: 0.6 }}
+      >
+        <BottomSheetProvider>
+          <SafeAreaProvider style={styles.container}>
+            <View style={{ ...styles.statusBar, height: statusBarHeight }} />
+            {isSuccessToastVisible && <SuccessToast message={toastMessage} />}
+            {isErrorToastVisible && <ErrorToast message={toastMessage} />}
+            {children}
+            <NavigationBar style="auto" hidden={false} />
+          </SafeAreaProvider>
+        </BottomSheetProvider>
+      </PressablesConfig>
+    </GestureHandlerRootView>
   );
 }
 

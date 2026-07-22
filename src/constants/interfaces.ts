@@ -70,6 +70,7 @@ export interface ITheme {
     statusBar: string;
     statusBarTransluscent: string;
     main: string;
+    mainSplash: string;
     secondary: string;
     secondaryTransluscent: string;
     mainText: string;

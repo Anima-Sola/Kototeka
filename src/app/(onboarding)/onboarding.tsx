@@ -6,6 +6,7 @@ import {
   Platform,
   Text,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
 import { useRouter } from "expo-router";
@@ -86,46 +87,97 @@ const OnboardingSwiper = () => {
         {
           backgroundColor: styles.firstPage.backgroundColor,
           image: (
-            <Image
+            <ImageBackground
+              source={require("./../../../assets/Images/onBoarding/1.jpg")}
               style={styles.image}
-              source={require("./../../../assets/Images/onBoarding/1.png")}
-            />
+              imageStyle={styles.imageStyle}
+            >
+              <View style={styles.overlay}>
+                <Text style={styles.title}>Welcome!</Text>
+                <Text style={styles.subTitle}>
+                  To the cats and dogs gallery.
+                </Text>
+              </View>
+            </ImageBackground>
           ),
-          title: "Welcome!",
-          subtitle: "To the cats and dogs gallery.",
+          title: "",
+          subtitle: "",
         },
         {
           backgroundColor: styles.secondPage.backgroundColor,
           image: (
-            <Image
+            <ImageBackground
+              source={require("./../../../assets/Images/onBoarding/2.jpg")}
               style={styles.image}
-              source={require("./../../../assets/Images/onBoarding/2.png")}
-            />
+              imageStyle={styles.imageStyle}
+            >
+              <View style={styles.overlay}>
+                <Text style={styles.title}>Discover</Text>
+                <Text style={styles.subTitle}>
+                  Explore adorable cats and dogs from our collection.
+                </Text>
+              </View>
+            </ImageBackground>
           ),
-          title: "Discover",
-          subtitle: "Explore adorable cats and dogs from our collection.",
+          title: "",
+          subtitle: "",
         },
         {
           backgroundColor: styles.thirdPage.backgroundColor,
           image: (
-            <Image
+            <ImageBackground
+              source={require("./../../../assets/Images/onBoarding/3.jpg")}
               style={styles.image}
-              source={require("./../../../assets/Images/onBoarding/3.png")}
-            />
+              imageStyle={styles.imageStyle}
+            >
+              <View style={styles.overlay}>
+                <Text style={styles.title}>Save favourites</Text>
+                <Text style={styles.subTitle}>
+                  Save your favourite pets and view them anytime.
+                </Text>
+              </View>
+            </ImageBackground>
           ),
-          title: "Save favourites",
-          subtitle: "Save your favourite pets and view them anytime.",
+          title: "",
+          subtitle: "",
         },
         {
           backgroundColor: styles.fourthPage.backgroundColor,
           image: (
-            <Image
+            <ImageBackground
+              source={require("./../../../assets/Images/onBoarding/4.jpg")}
               style={styles.image}
-              source={require("./../../../assets/Images/onBoarding/4.png")}
-            />
+              imageStyle={styles.imageStyle}
+            >
+              <View style={styles.overlay}>
+                <Text style={styles.title}>API Keys</Text>
+                <Text style={styles.subTitle}>
+                  Get your own API keys in the "Settings" tab for more pets.
+                </Text>
+              </View>
+            </ImageBackground>
           ),
-          title: "Enjoy together",
-          subtitle: "Join our community and share the love.",
+          title: "",
+          subtitle: "",
+        },
+        {
+          backgroundColor: styles.fourthPage.backgroundColor,
+          image: (
+            <ImageBackground
+              source={require("./../../../assets/Images/onBoarding/5.jpg")}
+              style={styles.image}
+              imageStyle={styles.imageStyle}
+            >
+              <View style={styles.overlay}>
+                <Text style={styles.title}>Enjoy together</Text>
+                <Text style={styles.subTitle}>
+                  Join our community and share the love.
+                </Text>
+              </View>
+            </ImageBackground>
+          ),
+          title: "",
+          subtitle: "",
         },
       ]}
     />
@@ -136,56 +188,69 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     pageContainer: {
       flex: 1,
-      justifyContent: "center",
     },
     title: {
-      fontSize: fontSizes.FONT32,
-      fontFamily: "Courier",
-      color: theme.colors.black,
+      fontSize: fontSizes.FONT70,
+      fontFamily: "AmaticBold",
+      color: theme.colors.white,
+      textShadowColor: theme.colors.black,
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 1,
     },
     subTitle: {
-      fontSize: fontSizes.FONT18,
-      fontFamily: "Georgia",
-      fontStyle: 'italic',
-      color: theme.colors.accent,
+      fontSize: fontSizes.FONT25,
+      fontFamily: "ShantellBold",
+      color: theme.colors.white,
+      textAlign: "center",
+      textShadowColor: theme.colors.black,
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 1,
     },
     image: {
-      width: 300,
-      height: 300,
-      marginTop: -80,
+      width: "100%",
+      height: "105%",
+    },
+    imageStyle: {
+      resizeMode: "cover",
+    },
+    overlay: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 24,
+      flex: 1,
     },
     firstPage: {
-      backgroundColor: theme.colors.main,
+      backgroundColor: theme.colors.accent2,
     },
     secondPage: {
-      backgroundColor: theme.colors.main,
+      backgroundColor: theme.colors.accent2,
     },
     thirdPage: {
-      backgroundColor: theme.colors.main,
+      backgroundColor: theme.colors.accent2,
     },
     fourthPage: {
-      backgroundColor: theme.colors.main,
+      backgroundColor: theme.colors.accent2,
     },
     skipButton: {
       fontSize: fontSizes.FONT20,
-      color: theme.colors.black,
+      color: theme.colors.white,
       marginLeft: 25,
       marginBottom: Platform.OS === "ios" ? 0 : 40,
-      fontFamily: "Courier",
+      fontFamily: "ShantellRegular",
     },
     nextButton: {
       fontSize: fontSizes.FONT20,
-      color: theme.colors.black,
+      color: theme.colors.white,
       marginRight: 25,
       marginBottom: Platform.OS === "ios" ? 0 : 40,
-      fontFamily: "Courier",
+      fontFamily: "ShantellRegular",
     },
     doneButton: {
       fontSize: fontSizes.FONT20,
-      color: theme.colors.black,
+      color: theme.colors.white,
       marginRight: 25,
       marginBottom: Platform.OS === "ios" ? 0 : 40,
-      fontFamily: "Courier",
+      fontFamily: "ShantellRegular",
     },
     dots: {
       borderRadius: 5,

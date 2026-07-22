@@ -6,6 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
+import { PressableScale } from 'pressto';
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
@@ -66,7 +67,7 @@ const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      <PressableScale
         onPress={() =>
           router.push({
             pathname: "/uploadedPetProfile",
@@ -114,7 +115,7 @@ const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
             />
           </View>
         )}
-      </TouchableOpacity>
+      </PressableScale>
       {isImageLoading && (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size={numOfColumns === 3 ? "small" : "large"} />

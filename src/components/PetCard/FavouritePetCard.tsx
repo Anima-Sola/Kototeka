@@ -1,5 +1,6 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { PressableScale } from 'pressto';
 import { useRouter } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { Image } from "expo-image";
@@ -44,7 +45,7 @@ const FavouritePetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      <PressableScale
         onPress={() =>
           router.push({ pathname: "/favouritePetProfile", params: { petId: pet.id } })
         }
@@ -85,7 +86,7 @@ const FavouritePetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
             </TouchableOpacity>
           </View>
         )}
-      </TouchableOpacity>
+      </PressableScale>
       {isImageLoading && (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size={"large"} />

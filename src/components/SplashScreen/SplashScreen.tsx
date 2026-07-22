@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
@@ -9,7 +9,6 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fetchUserData from "../../API/fetchUserData";
 import useStore from "../../store/store";
-import fontSizes from "../../constants/fontSizes";
 import SplashErrorScreen from "./SplashErrorScreen";
 
 const backgroundImage = require("../../../assets/Images/splashImage.png");
@@ -93,17 +92,14 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      
       <Image source={backgroundImage} resizeMode="cover" style={styles.image} />
-      <Text style={styles.logo}>Paws&Love</Text>
       <View style={styles.activityIndicatorContainer}>
         <ActivityIndicator
-          size={50}
+          size={40}
           color={styles.activityIndicatorColor.color}
         />
       </View>
-      <Text style={styles.text}>Loading...</Text>
-      <NavigationBar style="light" hidden={false} />
+      <NavigationBar style="auto" hidden={false} />
     </View>
   );
 };
@@ -112,31 +108,19 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.main,
+      backgroundColor: theme.colors.mainSplash,
       alignItems: "center",
-      justifyContent: "space-around",
-      paddingVertical: 50,
+      justifyContent: "center",
     },
     image: {
-      width: 300,
-      height: 300,
-    },
-    logo: {
-      fontSize: fontSizes.FONT50,
-      color: theme.colors.black,
-      fontFamily: "Courier",
+      width: 250,
+      height: 250,
     },
     activityIndicatorContainer: {
-      justifyContent: "center",
+      marginTop: 50,
     },
     activityIndicatorColor: {
       color: theme.colors.accent,
-    },
-    text: {
-      fontSize: fontSizes.FONT20,
-      fontFamily: "Georgia",
-      color: theme.colors.accent,
-      fontStyle: 'italic',
     },
   });
 

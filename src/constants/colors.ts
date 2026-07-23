@@ -1,5 +1,6 @@
 export const lightTheme = {
   colors: {
+    transparent: 'transparent',
     statusBar: "#F3F4F6",
     statusBarTransluscent: "rgba(243, 244, 246, 0.7)",
 
@@ -37,6 +38,7 @@ export const lightTheme = {
 
 export const darkTheme = {
   colors: {
+    transparent: 'transparent',
     statusBar: "#090D16",
     statusBarTransluscent: "rgba(9, 13, 22, 0.7)",
 

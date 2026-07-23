@@ -67,6 +67,7 @@ export interface IApiSlice {
 
 export interface ITheme {
   colors: {
+    transparent: string,
     statusBar: string;
     statusBarTransluscent: string;
     main: string;

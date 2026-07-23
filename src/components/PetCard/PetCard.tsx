@@ -1,11 +1,6 @@
 import { FC, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Alert,
-} from "react-native";
-import { PressableScale } from 'pressto';
+import { View, StyleSheet, Dimensions, Alert } from "react-native";
+import { PressableScale } from "pressto";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
@@ -91,6 +86,20 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
 
   return (
     <View style={{ ...styles.container }}>
+      <View style={styles.favouriteIconContainer}>
+        {isFavouriteToggling ? (
+          <ActivityIndicator
+            size={45 - iconScale}
+            color={styles.activityIndicator.color}
+          />
+        ) : (
+          <FavouriteIcon
+            isFavourite={Boolean(favouritePet)}
+            onPress={toggleFavourites}
+            size={45 - iconScale}
+          />
+        )}
+      </View>
       <PressableScale
         onPress={() =>
           router.push({ pathname: "/petProfile", params: { petId: pet.id } })
@@ -109,20 +118,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
             setIsImageLoadingError(true);
           }}
         />
-        <View style={styles.favouriteIconContainer}>
-          {isFavouriteToggling ? (
-            <ActivityIndicator
-              size={45 - iconScale}
-              color={styles.activityIndicator.color}
-            />
-          ) : (
-            <FavouriteIcon
-              isFavourite={Boolean(favouritePet)}
-              onPress={toggleFavourites}
-              size={45 - iconScale}
-            />
-          )}
-        </View>
+
         {hasBreeds && (
           <View style={styles.infoIconContainer}>
             <Ionicons
@@ -169,6 +165,7 @@ export const createStyles = (theme: ITheme) =>
       right: 10,
       alignItems: "center",
       justifyContent: "center",
+      zIndex: 100,
     },
     icon: {
       textShadowOffset: { width: 1, height: 1 },

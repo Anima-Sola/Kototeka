@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
-import { PressableScale } from 'pressto';
+import { PressableScale } from "pressto";
 import { useRouter } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { Image } from "expo-image";
@@ -45,9 +45,26 @@ const FavouritePetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.favouriteIconContainer}>
+        {isFavouriteToggling ? (
+          <ActivityIndicator
+            size={45 - iconScale}
+            color={styles.iconColor.color}
+          />
+        ) : (
+          <FavouriteIcon
+            isFavourite={true}
+            onPress={deleteFromFavourites}
+            size={45 - iconScale}
+          />
+        )}
+      </View>
       <PressableScale
         onPress={() =>
-          router.push({ pathname: "/favouritePetProfile", params: { petId: pet.id } })
+          router.push({
+            pathname: "/favouritePetProfile",
+            params: { petId: pet.id },
+          })
         }
       >
         <Image
@@ -63,17 +80,7 @@ const FavouritePetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
             setIsImageLoadingError(true);
           }}
         />
-        <View style={styles.favouriteIconContainer}>
-          {isFavouriteToggling ? (
-            <ActivityIndicator size={45 - iconScale} color={styles.iconColor.color} />
-          ) : (
-            <FavouriteIcon
-              isFavourite={true}
-              onPress={deleteFromFavourites}
-              size={45 - iconScale}
-            />
-          )}
-        </View>
+
         {hasBreeds && (
           <View style={styles.infoIconContainer}>
             <TouchableOpacity>
@@ -127,6 +134,7 @@ export const createStyles = (theme: ITheme) =>
       right: 10,
       alignItems: "center",
       justifyContent: "center",
+      zIndex: 100,
     },
     infoIconContainer: {
       position: "absolute",
@@ -134,8 +142,8 @@ export const createStyles = (theme: ITheme) =>
       left: 6,
     },
     iconColor: {
-      color: theme.colors.white
-    }
+      color: theme.colors.white,
+    },
   });
 
 export default FavouritePetCard;

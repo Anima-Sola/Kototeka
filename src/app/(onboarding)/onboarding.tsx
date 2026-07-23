@@ -192,7 +192,7 @@ export const createStyles = (theme: ITheme) =>
     title: {
       fontSize: fontSizes.FONT70,
       fontFamily: "AmaticBold",
-      color: theme.colors.white,
+      color: theme.colors.accent2,
       textShadowColor: theme.colors.black,
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 1,
@@ -200,7 +200,7 @@ export const createStyles = (theme: ITheme) =>
     subTitle: {
       fontSize: fontSizes.FONT25,
       fontFamily: "ShantellBold",
-      color: theme.colors.white,
+      color: theme.colors.accent2,
       textAlign: "center",
       textShadowColor: theme.colors.black,
       textShadowOffset: { width: 1, height: 1 },

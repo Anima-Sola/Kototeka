@@ -32,7 +32,8 @@
         "android.permission.ACCESS_MEDIA_LOCATION"
       ],
       "package": "com.anonymous.Kototeka",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -42,10 +43,10 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#f9fafc",
           "image": "./assets/Images/splash.jpeg",
-          "imageWidth": 200,
-          "resizeMode": "contain"
+          "imageWidth": 1080,
+          "resizeMode": "cover"
         }
       ],
       [

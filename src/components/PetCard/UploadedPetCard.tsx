@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import { PressableScale } from 'pressto';
+import { PressableScale } from "pressto";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
@@ -67,6 +67,23 @@ const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.deleteIconContainer}>
+        {isDeleting ? (
+          <ActivityIndicator
+            size={45 - iconScale}
+            color={styles.iconColor.color}
+          />
+        ) : (
+          <TouchableOpacity onPress={deletePet}>
+            <FontAwesome
+              name="trash-o"
+              size={45 - iconScale}
+              color={styles.iconColor.color}
+              style={styles.iconStyle}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
       <PressableScale
         onPress={() =>
           router.push({
@@ -88,23 +105,7 @@ const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
             setIsImageLoadingError(true);
           }}
         />
-        <View style={styles.favouriteIconContainer}>
-          {isDeleting ? (
-            <ActivityIndicator
-              size={45 - iconScale}
-              color={styles.iconColor.color}
-            />
-          ) : (
-            <TouchableOpacity onPress={deletePet}>
-              <FontAwesome
-                name="trash-o"
-                size={45 - iconScale}
-                color={styles.iconColor.color}
-                style={styles.iconStyle}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
+
         {hasBreeds && (
           <View style={styles.infoIconContainer}>
             <Ionicons
@@ -145,12 +146,13 @@ export const createStyles = (theme: ITheme) =>
     image: {
       borderRadius: 5,
     },
-    favouriteIconContainer: {
+    deleteIconContainer: {
       position: "absolute",
       bottom: 10,
       right: 10,
       alignItems: "center",
       justifyContent: "center",
+      zIndex: 100,
     },
     icon: {
       textShadowOffset: { width: 1, height: 1 },
@@ -169,18 +171,18 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.white,
     },
     noImageTextContainer: {
-      width: '100%',
-      height: '100%',
-      position: 'absolute',
-      alignItems: 'center',
-      justifyContent: 'center',
+      width: "100%",
+      height: "100%",
+      position: "absolute",
+      alignItems: "center",
+      justifyContent: "center",
     },
     noImageText: {
       color: theme.colors.white,
       fontSize: fontSizes.FONT20,
       fontFamily: "ShantellRegular",
       //alignSelf: "center",
-    }
+    },
   });
 
 export default UploadedPetCard;

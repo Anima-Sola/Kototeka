@@ -37,7 +37,7 @@ const Favourites = () => {
     <FavouritePetCard pet={item} numOfColumns={numColumns} />
   );
 
-  if (favouritePets.length === 0)
+  if (!favouritePets || favouritePets.length === 0)
     return (
       <View style={styles.container}>
         <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />

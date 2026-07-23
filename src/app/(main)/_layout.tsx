@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -20,9 +20,7 @@ const IOsTabs = () => {
   const styles = useThemedStyles(createStyles);
 
   return (
-    <NativeTabs
-      tintColor={styles.active.color}
-    >
+    <NativeTabs tintColor={styles.active.color}>
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Label>Gallery</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
@@ -71,6 +69,16 @@ const AndroidTabs = () => {
         tabBarActiveTintColor: styles.active.color,
         tabBarInactiveTintColor: styles.nonActive.color,
         tabBarLabelStyle: styles.tabBarLabelStyle,
+        tabBarBackground: () => (
+          <View
+            style={{
+              flex: 1,
+              borderRadius: 20,
+              overflow: "hidden",
+              backgroundColor: styles.tabBarBackgroundColor.backgroundColor,
+            }}
+          />
+        ),
       }}
     >
       <Tabs.Screen
@@ -138,15 +146,13 @@ const AndroidTabs = () => {
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     tabBarStyle: {
-      backgroundColor: theme.colors.secondaryTransluscent,
+      backgroundColor: theme.colors.transparent,
       position: "absolute",
+      borderTopWidth: 0,
+      elevation: 0,
+      marginHorizontal: 16,
       bottom: Platform.OS === "ios" ? 30 : 50,
       height: 60,
-      marginHorizontal: 16,
-      borderRadius: 20,
-      justifyContent: "center",
-      alignItems: "center",
-      borderTopWidth: 0,
     },
     iconContainer: {
       marginTop: 4,
@@ -163,5 +169,8 @@ export const createStyles = (theme: ITheme) =>
     },
     nonActive: {
       color: theme.colors.secondaryText,
+    },
+    tabBarBackgroundColor: {
+      backgroundColor: theme.colors.secondaryTransluscent,
     },
   });

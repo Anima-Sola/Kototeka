@@ -10,7 +10,7 @@ export default function OnboardingWrapper({ children }: WrapperProps) {
   return (
     <BottomSheetProvider>
       {children}
-      <NavigationBar style="light" hidden={false} />
+      <NavigationBar hidden={false} />
     </BottomSheetProvider>
   );
 }

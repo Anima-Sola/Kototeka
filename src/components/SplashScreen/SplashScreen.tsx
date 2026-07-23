@@ -99,7 +99,7 @@ const SplashScreen = () => {
           color={styles.activityIndicatorColor.color}
         />
       </View>
-      <NavigationBar style="auto" hidden={false} />
+      <NavigationBar hidden={false} />
     </View>
   );
 };

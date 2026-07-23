@@ -39,7 +39,7 @@ export default function Wrapper({ children }: WrapperProps) {
             {isSuccessToastVisible && <SuccessToast message={toastMessage} />}
             {isErrorToastVisible && <ErrorToast message={toastMessage} />}
             {children}
-            <NavigationBar style="auto" hidden={false} />
+            <NavigationBar hidden={false} />
           </SafeAreaProvider>
         </BottomSheetProvider>
       </PressablesConfig>

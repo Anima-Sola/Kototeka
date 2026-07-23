@@ -82,6 +82,9 @@ const Login = () => {
         </Link>
       </ScrollView>
       <View style={styles.buttonContainer}>
+        <Link style={styles.backToIntroLink} href="/onboarding">
+          Back to intro
+        </Link>
         <Button
           mode={"contained"}
           loading={isLogging}
@@ -137,6 +140,13 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.accent,
       alignSelf: "flex-end",
       marginTop: -24,
+    },
+    backToIntroLink: {
+      fontSize: fontSizes.FONT16,
+      fontFamily: "ShantellBold",
+      color: theme.colors.accent,
+      alignSelf: "center",
+      marginBottom: 24,
     },
     buttonContainer: {
       width: "100%",

@@ -1,14 +1,5 @@
 import { useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  Image,
-  Platform,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-} from "react-native";
-import Onboarding from "react-native-onboarding-swiper";
+import { View, StyleSheet, Text, ImageBackground } from "react-native";
 import { useRouter } from "expo-router";
 import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
@@ -21,247 +12,100 @@ const OnboardingSwiper = () => {
   const { expoPushToken, notification } = usePushNotifications();
   const { setIsOnBoarding } = useStore();
   const router = useRouter();
-  const onboardingRef = useRef<Onboarding>(null);
 
   console.log(expoPushToken, notification);
 
-  const finishOnBoarding = () => {
-    setIsOnBoarding(false);
-    router.replace("/login");
-  };
+  const dots = (currentPage: number) => {
+    const pages = [0, 1, 2, 3, 4];
 
-  const skipButton = () => {
-    return (
-      <TouchableOpacity onPress={finishOnBoarding}>
-        <Text style={styles.skipButton}>Skip</Text>
-      </TouchableOpacity>
-    );
-  };
+    return pages.map((page) => {
+      if (page === currentPage)
+        return <View key={page} style={styles.activeDot} />;
 
-  const nextButton = () => {
-    return (
-      <TouchableOpacity onPress={() => onboardingRef?.current?.goNext()}>
-        <Text style={styles.nextButton}>Next</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const doneButton = () => {
-    return (
-      <TouchableOpacity onPress={finishOnBoarding}>
-        <Text style={styles.doneButton}>Done</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const dots = ({ selected }: { selected: boolean }) => {
-    return (
-      <View
-        style={{
-          ...styles.dots,
-          width: selected ? 10 : 6,
-          height: selected ? 10 : 6,
-          backgroundColor: selected
-            ? styles.selectedDot.backgroundColor
-            : styles.unselectedDot.backgroundColor,
-        }}
-      />
-    );
+      return <View key={page} style={styles.dot} />;
+    });
   };
 
   return (
-    <Onboarding
-      ref={onboardingRef}
-      onDone={finishOnBoarding}
-      onSkip={finishOnBoarding}
-      SkipButtonComponent={skipButton}
-      NextButtonComponent={nextButton}
-      DoneButtonComponent={doneButton}
-      DotComponent={dots}
-      titleStyles={styles.title}
-      subTitleStyles={styles.subTitle}
-      controlStatusBar={true}
-      containerStyles={styles.pageContainer}
-      bottomBarHeight={Platform.OS === "ios" ? 60 : 100}
-      pages={[
-        {
-          backgroundColor: styles.firstPage.backgroundColor,
-          image: (
-            <ImageBackground
-              source={require("./../../../assets/Images/onBoarding/1.jpg")}
-              style={styles.image}
-              imageStyle={styles.imageStyle}
-            >
-              <View style={styles.overlay}>
-                <Text style={styles.title}>Welcome!</Text>
-                <Text style={styles.subTitle}>
-                  To the cats and dogs gallery.
-                </Text>
-              </View>
-            </ImageBackground>
-          ),
-          title: "",
-          subtitle: "",
-        },
-        {
-          backgroundColor: styles.secondPage.backgroundColor,
-          image: (
-            <ImageBackground
-              source={require("./../../../assets/Images/onBoarding/2.jpg")}
-              style={styles.image}
-              imageStyle={styles.imageStyle}
-            >
-              <View style={styles.overlay}>
-                <Text style={styles.title}>Discover</Text>
-                <Text style={styles.subTitle}>
-                  Explore adorable cats and dogs from our collection.
-                </Text>
-              </View>
-            </ImageBackground>
-          ),
-          title: "",
-          subtitle: "",
-        },
-        {
-          backgroundColor: styles.thirdPage.backgroundColor,
-          image: (
-            <ImageBackground
-              source={require("./../../../assets/Images/onBoarding/3.jpg")}
-              style={styles.image}
-              imageStyle={styles.imageStyle}
-            >
-              <View style={styles.overlay}>
-                <Text style={styles.title}>Save favourites</Text>
-                <Text style={styles.subTitle}>
-                  Save your favourite pets and view them anytime.
-                </Text>
-              </View>
-            </ImageBackground>
-          ),
-          title: "",
-          subtitle: "",
-        },
-        {
-          backgroundColor: styles.fourthPage.backgroundColor,
-          image: (
-            <ImageBackground
-              source={require("./../../../assets/Images/onBoarding/4.jpg")}
-              style={styles.image}
-              imageStyle={styles.imageStyle}
-            >
-              <View style={styles.overlay}>
-                <Text style={styles.title}>API Keys</Text>
-                <Text style={styles.subTitle}>
-                  Get your own API keys in the "Settings" tab for more pets.
-                </Text>
-              </View>
-            </ImageBackground>
-          ),
-          title: "",
-          subtitle: "",
-        },
-        {
-          backgroundColor: styles.fourthPage.backgroundColor,
-          image: (
-            <ImageBackground
-              source={require("./../../../assets/Images/onBoarding/5.jpg")}
-              style={styles.image}
-              imageStyle={styles.imageStyle}
-            >
-              <View style={styles.overlay}>
-                <Text style={styles.title}>Enjoy together</Text>
-                <Text style={styles.subTitle}>
-                  Join our community and share the love.
-                </Text>
-              </View>
-            </ImageBackground>
-          ),
-          title: "",
-          subtitle: "",
-        },
-      ]}
-    />
+    <ImageBackground
+      source={require("./../../../assets/Images/onBoarding/1.jpg")}
+      style={styles.image}
+      imageStyle={styles.container}
+    >
+      <View style={styles.container}>
+        <View style={styles.card}>
+          <Text style={styles.headerText}>Welcome!</Text>
+          <Text style={styles.messageText}>To the cats and dogs gallery.</Text>
+          <View style={styles.navigationContainer}>
+            <View style={styles.dots}>{dots(0)}</View>
+            <View style={styles.nexButton}>
+              {/* Pressable anim*/}
+            </View>
+          </View>
+        </View>
+      </View>
+    </ImageBackground>
   );
 };
 
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
-    pageContainer: {
+    container: {
       flex: 1,
-    },
-    title: {
-      fontSize: fontSizes.FONT70,
-      fontFamily: "AmaticBold",
-      color: theme.colors.accent2,
-      textShadowColor: theme.colors.black,
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 1,
-    },
-    subTitle: {
-      fontSize: fontSizes.FONT25,
-      fontFamily: "ShantellBold",
-      color: theme.colors.accent2,
-      textAlign: "center",
-      textShadowColor: theme.colors.black,
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 1,
     },
     image: {
       width: "100%",
-      height: "105%",
+      height: "100%",
     },
     imageStyle: {
       resizeMode: "cover",
     },
-    overlay: {
+    card: {
       alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: 24,
-      flex: 1,
+      paddingHorizontal: 16,
+      position: "absolute",
+      backgroundColor: theme.colors.main,
+      height: "25%",
+      width: "100%",
+      bottom: 0,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      paddingVertical: 20,
     },
-    firstPage: {
-      backgroundColor: theme.colors.accent2,
+    headerText: {
+      fontSize: fontSizes.FONT30,
+      fontFamily: "ShantellBold",
+      color: theme.colors.mainText,
     },
-    secondPage: {
-      backgroundColor: theme.colors.accent2,
-    },
-    thirdPage: {
-      backgroundColor: theme.colors.accent2,
-    },
-    fourthPage: {
-      backgroundColor: theme.colors.accent2,
-    },
-    skipButton: {
-      fontSize: fontSizes.FONT20,
-      color: theme.colors.white,
-      marginLeft: 25,
-      marginBottom: Platform.OS === "ios" ? 0 : 40,
+    messageText: {
+      fontSize: fontSizes.FONT18,
       fontFamily: "ShantellRegular",
+      color: theme.colors.secondaryText,
     },
-    nextButton: {
-      fontSize: fontSizes.FONT20,
-      color: theme.colors.white,
-      marginRight: 25,
-      marginBottom: Platform.OS === "ios" ? 0 : 40,
-      fontFamily: "ShantellRegular",
-    },
-    doneButton: {
-      fontSize: fontSizes.FONT20,
-      color: theme.colors.white,
-      marginRight: 25,
-      marginBottom: Platform.OS === "ios" ? 0 : 40,
-      fontFamily: "ShantellRegular",
+    navigationContainer: {
+      width: "100%",
+      flexDirection: "row",
+      marginTop: 25,
     },
     dots: {
-      borderRadius: 5,
-      marginHorizontal: 3,
-      marginBottom: Platform.OS === "ios" ? -3 : 40,
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 16,
     },
-    selectedDot: {
-      backgroundColor: theme.colors.white,
+    dot: {
+      width: 20,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: theme.colors.disabled,
+      marginHorizontal: 4,
     },
-    unselectedDot: {
-      backgroundColor: theme.colors.whiteTransluscent,
+    activeDot: {
+      width: 22,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: theme.colors.accent,
+      marginHorizontal: 4,
     },
   });
 

@@ -14,8 +14,9 @@ export default function OnboardingWrapper({ children }: WrapperProps) {
         animationType="spring"
         animationConfig={{ damping: 10, stiffness: 200 }}
         config={{ minScale: 0.9, activeOpacity: 0.6 }}
-      ></PressablesConfig>
-      {children}
+      >
+        {children}
+      </PressablesConfig>
       <NavigationBar hidden={false} />
     </GestureHandlerRootView>
   );

@@ -16,6 +16,7 @@ export const lightTheme = {
 
     accent: "#4F6BFF",
     accent2: "#F6C453",
+    accent3: "#d22656",
 
     error: "#EF4444",
 
@@ -54,6 +55,7 @@ export const darkTheme = {
 
     accent: "#6C86FF",
     accent2: "#F6C453",
+    accent3: "#d22656",
 
     error: "#F87171",
 

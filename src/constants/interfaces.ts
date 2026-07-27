@@ -79,6 +79,7 @@ export interface ITheme {
     border: string;
     accent: string;
     accent2: string;
+    accent3: string;
     error: string;
     placeholder: string;
     disabled: string;

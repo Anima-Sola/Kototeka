@@ -29,7 +29,13 @@ const Login = () => {
   const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { setIsSignedIn, showErrorToast, setUserId, setUserName } = useStore();
+  const {
+    setIsSignedIn,
+    showErrorToast,
+    setUserId,
+    setUserName,
+    setIsOnBoarding,
+  } = useStore();
   const [isLogging, setIsLogging] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
@@ -47,14 +53,14 @@ const Login = () => {
         email,
         password,
       );
-      
+
       await fetchUserData(userCredential.user.uid);
-      
+
       if (userCredential.user.displayName)
         setUserName(userCredential.user.displayName);
       setUserId(userCredential.user.uid);
       setIsSignedIn(true);
-      
+
       router.replace("/(main)");
     } catch (error: any) {
       showErrorToast("Incorrect email address or/and password");
@@ -82,7 +88,11 @@ const Login = () => {
         </Link>
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <Link style={styles.backToIntroLink} href="/onboarding">
+        <Link
+          style={styles.backToIntroLink}
+          href="/onboarding0"
+          onPress={() => setIsOnBoarding(true)}
+        >
           Back to intro
         </Link>
         <Button

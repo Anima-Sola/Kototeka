@@ -5,7 +5,7 @@ export default function Index() {
   const { isSignedIn, isOnboarding } = useStore();
 
   if (isOnboarding && !isSignedIn) {
-    return <Redirect href="/(onboarding)/onboarding" />;
+    return <Redirect href="/(onboarding)/onboarding0" />;
   }
 
   return <Redirect href={isSignedIn ? "/(main)" : "/(auth)"} />;

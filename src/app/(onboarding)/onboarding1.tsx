@@ -4,6 +4,9 @@ import {
   Text,
   ImageBackground,
   PanResponder,
+  Platform,
+  Dimensions,
+  PixelRatio,
 } from "react-native";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -12,6 +15,9 @@ import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
+
+const screenHeight = Dimensions.get("screen").height;
+const screenHeightPx = PixelRatio.getPixelSizeForLayoutSize(screenHeight);
 
 const Onboarding1 = () => {
   const styles = useThemedStyles(createStyles);
@@ -124,7 +130,7 @@ export const createStyles = (theme: ITheme) =>
       paddingHorizontal: 16,
       position: "absolute",
       backgroundColor: theme.colors.main,
-      height: "25%",
+      height: screenHeightPx < 1500 ? "35%" : "25%",
       width: "100%",
       bottom: 0,
       borderTopLeftRadius: 20,
@@ -190,7 +196,7 @@ export const createStyles = (theme: ITheme) =>
     },
     skipButtonContainer: {
       position: "absolute",
-      top: 55,
+      top: Platform.OS === 'ios' ? 55 : 40,
       right: 30,
     },
     skipButtonText: {
@@ -201,7 +207,7 @@ export const createStyles = (theme: ITheme) =>
     },
     backButtonContainer: {
       position: "absolute",
-      top: 55,
+      top: Platform.OS === 'ios' ? 55 : 40,
       left: 30,
       width: 40,
       height: 40,

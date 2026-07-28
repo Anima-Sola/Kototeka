@@ -3,20 +3,15 @@ import { AppState, Appearance, useColorScheme } from "react-native";
 import { Stack } from "expo-router";
 import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";
-import OnboardingWrapper from "../components/Wrapper/OnboardingWrapper";
+import OnboardingAuthWrapper from "../components/Wrapper/OnboardingAuthWrapper";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
 
 export default function RootLayout() {
-  const {
-    isAppReady,
-    isSignedIn,
-    isOnboarding,
-    setResolvedTheme,
-    mode,
-  } = useStore();
+  const { isAppReady, isSignedIn, isOnboarding, setResolvedTheme, mode } =
+    useStore();
   const colorScheme = useColorScheme();
 
-  useEffect(() => {
+  /*useEffect(() => {
     const updateTheme = () => {
       const systemTheme = colorScheme === "dark" ? "dark" : "light";
       setResolvedTheme(systemTheme);
@@ -25,7 +20,7 @@ export default function RootLayout() {
     updateTheme();
 
     const appearanceSub = Appearance.addChangeListener(() => {
-      console.log('changed');
+      console.log("changed");
       updateTheme();
     });
 
@@ -39,7 +34,7 @@ export default function RootLayout() {
       appearanceSub.remove();
       appStateSub.remove();
     };
-  }, [colorScheme, setResolvedTheme, mode]);
+  }, [colorScheme, setResolvedTheme, mode]);*/
 
   if (!isAppReady) {
     return <SplashScreen />;
@@ -47,25 +42,29 @@ export default function RootLayout() {
 
   if (isOnboarding && !isSignedIn)
     return (
-      <OnboardingWrapper>
+      <OnboardingAuthWrapper>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(onboarding)" />
         </Stack>
-      </OnboardingWrapper>
+      </OnboardingAuthWrapper>
     );
 
   return (
-    <Wrapper>
+    <>
       {isSignedIn ? (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(main)" />
-          <Stack.Screen name="(profile)"></Stack.Screen>
-        </Stack>
+        <Wrapper>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(main)" />
+            <Stack.Screen name="(profile)"></Stack.Screen>
+          </Stack>
+        </Wrapper>
       ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" />
-        </Stack>
+        <OnboardingAuthWrapper>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(auth)" />
+          </Stack>
+        </OnboardingAuthWrapper>
       )}
-    </Wrapper>
+    </>
   );
 }

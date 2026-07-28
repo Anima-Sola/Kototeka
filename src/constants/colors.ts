@@ -34,6 +34,10 @@ export const lightTheme = {
     shadow: "#0F172A",
 
     uploadPhotoBtn: "#FFFFFF",
+
+    authBGColor1: "#FFFFFF",
+    authBGColor2: "#E7EDFF",
+    authBGColor3: "#D8CCFF",
   },
 };
 
@@ -73,5 +77,9 @@ export const darkTheme = {
     shadow: "#000000",
 
     uploadPhotoBtn: "#1A2333",
+
+    authBGColor1: "#090D16",
+    authBGColor2: "#243B7A",
+    authBGColor3: "#5646A8",
   },
 };

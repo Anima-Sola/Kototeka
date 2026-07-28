@@ -5,12 +5,15 @@ import {
   KeyboardAvoidingView,
   Text,
   ScrollView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
+import { LinearGradient } from "expo-linear-gradient";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useStore from "../../store/store";
-import Feather from "@expo/vector-icons/Feather";
+import { PressableScale } from "pressto";
 import { Button } from "react-native-paper";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
@@ -19,7 +22,6 @@ import PasswordInput from "../../components/TextInputs/PasswordInput";
 import SimpleTextInput from "../../components/TextInputs/SimpleTextInput";
 import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
 import fontSizes from "../../constants/fontSizes";
-import Header from "../../components/Header/Header";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 
@@ -63,7 +65,7 @@ const SignUp = () => {
         setUserName(userCredential.user.displayName);
       setUserId(userCredential.user.uid);
       setIsSignedIn(true);
-      
+
       router.replace("/(main)");
     } catch (error: any) {
       showErrorToast("Error during registration");
@@ -73,52 +75,67 @@ const SignUp = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: insets.bottom }]}
+    <LinearGradient
+      colors={[
+        styles.gradientColor1.color,
+        styles.gradientColor2.color,
+        styles.gradientColor3.color,
+      ]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1 }}
     >
-      <Header
-        leftIcon={
-          <Feather name="arrow-left" size={32} color={styles.iconColor.color} />
-        }
-        onLeftIconPress={() => router.back()}
-      />
-      <Text style={styles.textHeader}>Sign Up</Text>
-      <ScrollView style={styles.formContainer}>
-        <FormProvider {...methods}>
-          <View style={styles.inputContainer}>
-            <SimpleTextInput name="name" placeholder="Your name" />
-          </View>
-          <View style={styles.inputContainer}>
-            <EmailInput name="email" />
-          </View>
-          <View style={styles.inputContainer}>
-            <PasswordInput name="password" />
-          </View>
-          <View style={styles.inputContainer}>
-            <RepeatPasswordInput
-              name="repeatPassword"
-              passwordToCheck={methods.watch("password")}
-            />
-          </View>
-        </FormProvider>
-      </ScrollView>
-      <View style={styles.buttonContainer}>
-        <Button
-          mode={"contained"}
-          style={
-            methods.formState.isValid
-              ? styles.signUpButton
-              : styles.disabledSignUpButton
-          }
-          labelStyle={styles.singUpLabelButton}
-          disabled={!methods.formState.isValid || isRegistering}
-          loading={isRegistering}
-          onPress={methods.handleSubmit(onSubmit)}
+      <KeyboardAvoidingView
+        style={[styles.container, { paddingBottom: insets.bottom }]}
+      >
+        <PressableScale
+          style={styles.backButtonContainer}
+          onPress={() => router.back()}
         >
-          Sign Up
-        </Button>
-      </View>
-    </KeyboardAvoidingView>
+          <MaterialIcons
+            name="chevron-left"
+            size={30}
+            color={styles.backIconColor.color}
+          />
+        </PressableScale>
+        <Text style={styles.textHeader}>Sign Up</Text>
+        <ScrollView style={styles.formContainer}>
+          <FormProvider {...methods}>
+            <View style={styles.inputContainer}>
+              <SimpleTextInput name="name" placeholder="Your name" />
+            </View>
+            <View style={styles.inputContainer}>
+              <EmailInput name="email" />
+            </View>
+            <View style={styles.inputContainer}>
+              <PasswordInput name="password" />
+            </View>
+            <View style={styles.inputContainer}>
+              <RepeatPasswordInput
+                name="repeatPassword"
+                passwordToCheck={methods.watch("password")}
+              />
+            </View>
+          </FormProvider>
+        </ScrollView>
+        <View style={styles.buttonContainer}>
+          <Button
+            mode={"contained"}
+            style={
+              methods.formState.isValid
+                ? styles.signUpButton
+                : styles.disabledSignUpButton
+            }
+            labelStyle={styles.singUpLabelButton}
+            disabled={!methods.formState.isValid || isRegistering}
+            loading={isRegistering}
+            onPress={methods.handleSubmit(onSubmit)}
+          >
+            Sign Up
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 
@@ -126,12 +143,12 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.main,
+      backgroundColor: "transparent",
       alignItems: "center",
       justifyContent: "center",
     },
     textHeader: {
-      paddingTop: 40,
+      paddingTop: 90,
       paddingBottom: 20,
       fontSize: fontSizes.FONT50,
       color: theme.colors.mainText,
@@ -168,6 +185,29 @@ export const createStyles = (theme: ITheme) =>
     },
     iconColor: {
       color: theme.colors.accent,
+    },
+    gradientColor1: {
+      color: theme.colors.authBGColor1,
+    },
+    gradientColor2: {
+      color: theme.colors.authBGColor2,
+    },
+    gradientColor3: {
+      color: theme.colors.authBGColor3,
+    },
+    backIconColor: {
+      color: theme.colors.black,
+    },
+    backButtonContainer: {
+      position: "absolute",
+      top: Platform.OS === "ios" ? 55 : 40,
+      left: 16,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: theme.colors.whiteTransluscent,
+      alignItems: "center",
+      justifyContent: "center",
     },
   });
 

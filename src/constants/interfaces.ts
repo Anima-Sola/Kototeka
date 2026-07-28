@@ -91,5 +91,8 @@ export interface ITheme {
     green: string,
     shadow: string;
     uploadPhotoBtn: string;
+    authBGColor1: string,
+    authBGColor2: string,
+    authBGColor3: string,
   };
 }

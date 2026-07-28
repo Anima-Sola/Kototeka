@@ -10,6 +10,7 @@ import { useRouter, Link } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { LinearGradient } from "expo-linear-gradient";
 import { auth } from "../../../firebaseConfig";
 import { Button } from "react-native-paper";
 import EmailInput from "../../components/TextInputs/EmailInput";
@@ -19,6 +20,7 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import useStore from "../../store/store";
 import fetchUserData from "../../API/fetchUserData";
+import { usePushNotifications } from "../../functions/notifications";
 
 type FormValues = {
   email: string;
@@ -27,6 +29,7 @@ type FormValues = {
 
 const Login = () => {
   const styles = useThemedStyles(createStyles);
+  const { expoPushToken, notification } = usePushNotifications();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
@@ -40,6 +43,8 @@ const Login = () => {
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
+
+  console.log(expoPushToken, notification);
 
   async function onSubmit(data: FormValues) {
     const email = data.email.trim();
@@ -70,56 +75,67 @@ const Login = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: insets.bottom }]}
+    <LinearGradient
+      colors={[
+        styles.gradientColor1.color,
+        styles.gradientColor2.color,
+        styles.gradientColor3.color,
+      ]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1 }}
     >
-      <Text style={styles.textHeader}>Sign In</Text>
-      <ScrollView style={styles.formContainer}>
-        <FormProvider {...methods}>
-          <View style={styles.emailInputContainer}>
-            <EmailInput name="email" />
-          </View>
-          <View style={styles.passwordInputContainer}>
-            <PasswordInput name="password" checkFormat={false} />
-          </View>
-        </FormProvider>
-        <Link style={styles.restorePasswordLink} href="/restorePassword">
-          Forgot Password?
-        </Link>
-      </ScrollView>
-      <View style={styles.buttonContainer}>
-        <Link
-          style={styles.backToIntroLink}
-          href="/onboarding0"
-          onPress={() => setIsOnBoarding(true)}
-        >
-          Back to intro
-        </Link>
-        <Button
-          mode={"contained"}
-          loading={isLogging}
-          style={
-            methods.formState.isValid
-              ? styles.signInButton
-              : styles.disabledSignInButton
-          }
-          labelStyle={styles.singInLabelButton}
-          disabled={!methods.formState.isValid || isLogging}
-          onPress={methods.handleSubmit(onSubmit)}
-        >
-          Sing In
-        </Button>
-        <View style={styles.gap} />
-        <Button
-          mode={"outlined"}
-          style={styles.singUpButton}
-          labelStyle={styles.singUpLabelButton}
-          onPress={() => router.navigate("/signUp")}
-        >
-          Sing Up
-        </Button>
-      </View>
-    </KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        style={[styles.container, { paddingBottom: insets.bottom }]}
+      >
+        <Text style={styles.textHeader}>Sign In</Text>
+        <ScrollView style={styles.formContainer}>
+          <FormProvider {...methods}>
+            <View style={styles.emailInputContainer}>
+              <EmailInput name="email" />
+            </View>
+            <View style={styles.passwordInputContainer}>
+              <PasswordInput name="password" checkFormat={false} />
+            </View>
+          </FormProvider>
+          <Link style={styles.restorePasswordLink} href="/restorePassword">
+            Forgot Password?
+          </Link>
+        </ScrollView>
+        <View style={styles.buttonContainer}>
+          <Link
+            style={styles.backToIntroLink}
+            href="/onboarding0"
+            onPress={() => setIsOnBoarding(true)}
+          >
+            Back to intro
+          </Link>
+          <Button
+            mode={"contained"}
+            loading={isLogging}
+            style={
+              methods.formState.isValid
+                ? styles.signInButton
+                : styles.disabledSignInButton
+            }
+            labelStyle={styles.singInLabelButton}
+            disabled={!methods.formState.isValid || isLogging}
+            onPress={methods.handleSubmit(onSubmit)}
+          >
+            Sing In
+          </Button>
+          <View style={styles.gap} />
+          <Button
+            mode={"outlined"}
+            style={styles.singUpButton}
+            labelStyle={styles.singUpLabelButton}
+            onPress={() => router.navigate("/signUp")}
+          >
+            Sing Up
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 
@@ -127,7 +143,7 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.main,
+      backgroundColor: "transparent",
       alignItems: "center",
       justifyContent: "center",
       paddingHorizontal: 16,
@@ -195,6 +211,15 @@ export const createStyles = (theme: ITheme) =>
     },
     gap: {
       height: 10,
+    },
+    gradientColor1: {
+      color: theme.colors.authBGColor1,
+    },
+    gradientColor2: {
+      color: theme.colors.authBGColor2,
+    },
+    gradientColor3: {
+      color: theme.colors.authBGColor3,
     },
   });
 

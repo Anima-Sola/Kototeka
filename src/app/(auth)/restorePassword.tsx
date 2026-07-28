@@ -6,17 +6,19 @@ import {
   Text,
   ScrollView,
   Alert,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { Button } from "react-native-paper";
 import { sendPasswordResetEmail } from "firebase/auth";
-import Feather from "@expo/vector-icons/Feather";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { PressableScale } from "pressto";
 import { auth } from "../../../firebaseConfig";
 import EmailInput from "../../components/TextInputs/EmailInput";
 import fontSizes from "../../constants/fontSizes";
-import Header from "../../components/Header/Header";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import useStore from "../../store/store";
@@ -53,43 +55,58 @@ const SignUp = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: insets.bottom }]}
+    <LinearGradient
+      colors={[
+        styles.gradientColor1.color,
+        styles.gradientColor2.color,
+        styles.gradientColor3.color,
+      ]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1 }}
     >
-      <Header
-        leftIcon={
-          <Feather name="arrow-left" size={32} color={styles.iconColor.color} />
-        }
-        onLeftIconPress={() => router.back()}
-      />
-      <Text style={styles.textHeader}>Enter email</Text>
-      <Text style={styles.hint}>
-        We will send a password reset code to the email address you provided
-      </Text>
-      <ScrollView style={styles.formContainer}>
-        <FormProvider {...methods}>
-          <View style={styles.inputContainer}>
-            <EmailInput name="email" />
-          </View>
-        </FormProvider>
-      </ScrollView>
-      <View style={styles.buttonContainer}>
-        <Button
-          mode={"contained"}
-          style={
-            methods.formState.isValid
-              ? styles.signUpButton
-              : styles.disabledSignUpButton
-          }
-          loading={isEmailSending}
-          labelStyle={styles.singUpLabelButton}
-          disabled={!methods.formState.isValid || isEmailSending}
-          onPress={methods.handleSubmit(onSubmit)}
+      <KeyboardAvoidingView
+        style={[styles.container, { paddingBottom: insets.bottom }]}
+      >
+        <PressableScale
+          style={styles.backButtonContainer}
+          onPress={() => router.back()}
         >
-          Next
-        </Button>
-      </View>
-    </KeyboardAvoidingView>
+          <MaterialIcons
+            name="chevron-left"
+            size={30}
+            color={styles.backIconColor.color}
+          />
+        </PressableScale>
+        <Text style={styles.textHeader}>Enter email</Text>
+        <Text style={styles.hint}>
+          We will send a password reset code to the email address you provided
+        </Text>
+        <ScrollView style={styles.formContainer}>
+          <FormProvider {...methods}>
+            <View style={styles.inputContainer}>
+              <EmailInput name="email" />
+            </View>
+          </FormProvider>
+        </ScrollView>
+        <View style={styles.buttonContainer}>
+          <Button
+            mode={"contained"}
+            style={
+              methods.formState.isValid
+                ? styles.signUpButton
+                : styles.disabledSignUpButton
+            }
+            loading={isEmailSending}
+            labelStyle={styles.singUpLabelButton}
+            disabled={!methods.formState.isValid || isEmailSending}
+            onPress={methods.handleSubmit(onSubmit)}
+          >
+            Next
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 
@@ -97,12 +114,12 @@ export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.main,
+      backgroundColor: "transparent",
       alignItems: "center",
       justifyContent: "center",
     },
     textHeader: {
-      paddingTop: 40,
+      paddingTop: 90,
       fontSize: fontSizes.FONT50,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
@@ -147,6 +164,29 @@ export const createStyles = (theme: ITheme) =>
     },
     iconColor: {
       color: theme.colors.accent,
+    },
+    gradientColor1: {
+      color: theme.colors.authBGColor1,
+    },
+    gradientColor2: {
+      color: theme.colors.authBGColor2,
+    },
+    gradientColor3: {
+      color: theme.colors.authBGColor3,
+    },
+    backIconColor: {
+      color: theme.colors.black,
+    },
+    backButtonContainer: {
+      position: "absolute",
+      top: Platform.OS === "ios" ? 55 : 40,
+      left: 16,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: theme.colors.whiteTransluscent,
+      alignItems: "center",
+      justifyContent: "center",
     },
   });
 

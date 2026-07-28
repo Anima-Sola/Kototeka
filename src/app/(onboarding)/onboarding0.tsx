@@ -16,11 +16,11 @@ import { usePushNotifications } from "../../functions/notifications";
 
 const Onboarding0 = () => {
   const styles = useThemedStyles(createStyles);
-  const { expoPushToken, notification } = usePushNotifications();
+  //const { expoPushToken, notification } = usePushNotifications();
   const { setIsOnBoarding } = useStore();
   const router = useRouter();
 
-  console.log(expoPushToken, notification);
+  //console.log(expoPushToken, notification);
 
   const dots = (currentPage: number) => {
     const pages = [0, 1, 2, 3, 4];
@@ -58,10 +58,11 @@ const Onboarding0 = () => {
 
   return (
     <ImageBackground
-      source={require("./../../../assets/Images/onBoarding/1.jpg")}
+      source={require("./../../../assets/Images/onBoarding/0.png")}
       style={styles.image}
       imageStyle={styles.container}
       {...panResponder.panHandlers}
+      resizeMode="cover"
     >
       <View style={styles.container} {...panResponder.panHandlers}>
         <PressableScale style={styles.skipButtonContainer} onPress={skip}>
@@ -173,7 +174,7 @@ export const createStyles = (theme: ITheme) =>
     },
     skipButtonContainer: {
       position: "absolute",
-      top: 40,
+      top: 55,
       right: 30,
     },
     skipButtonText: {

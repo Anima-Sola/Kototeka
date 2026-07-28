@@ -59,7 +59,7 @@ const Onboarding3 = () => {
 
   return (
     <ImageBackground
-      source={require("./../../../assets/Images/onBoarding/4.jpg")}
+      source={require("./../../../assets/Images/onBoarding/3.png")}
       style={styles.image}
       imageStyle={styles.container}
       {...panResponder.panHandlers}
@@ -81,7 +81,7 @@ const Onboarding3 = () => {
         <View style={styles.card}>
           <Text style={styles.headerText}>API Keys</Text>
           <Text style={styles.messageText}>
-            Get your own API keys in the "Settings" tab for more pets.
+            Add your own API keys in the "Settings" tab for more pets.
           </Text>
           <View style={styles.navigationContainer}>
             <View style={styles.dots}>{dots(3)}</View>
@@ -189,7 +189,7 @@ export const createStyles = (theme: ITheme) =>
     },
     skipButtonContainer: {
       position: "absolute",
-      top: 40,
+      top: 55,
       right: 30,
     },
     skipButtonText: {
@@ -200,7 +200,7 @@ export const createStyles = (theme: ITheme) =>
     },
     backButtonContainer: {
       position: "absolute",
-      top: 40,
+      top: 55,
       left: 30,
       width: 40,
       height: 40,

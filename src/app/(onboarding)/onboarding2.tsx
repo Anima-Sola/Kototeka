@@ -59,9 +59,10 @@ const Onboarding2 = () => {
 
   return (
     <ImageBackground
-      source={require("./../../../assets/Images/onBoarding/3.jpg")}
+      source={require("./../../../assets/Images/onBoarding/2.png")}
       style={styles.image}
       imageStyle={styles.container}
+      resizeMode="cover"
       {...panResponder.panHandlers}
     >
       <View style={styles.container} {...panResponder.panHandlers}>
@@ -189,7 +190,7 @@ export const createStyles = (theme: ITheme) =>
     },
     skipButtonContainer: {
       position: "absolute",
-      top: 40,
+      top: 55,
       right: 30,
     },
     skipButtonText: {
@@ -200,7 +201,7 @@ export const createStyles = (theme: ITheme) =>
     },
     backButtonContainer: {
       position: "absolute",
-      top: 40,
+      top: 55,
       left: 30,
       width: 40,
       height: 40,

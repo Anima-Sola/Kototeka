@@ -54,7 +54,7 @@ const Onboarding4 = () => {
 
   return (
     <ImageBackground
-      source={require("./../../../assets/Images/onBoarding/5.jpg")}
+      source={require("./../../../assets/Images/onBoarding/4.png")}
       style={styles.image}
       imageStyle={styles.container}
       {...panResponder.panHandlers}
@@ -167,7 +167,7 @@ export const createStyles = (theme: ITheme) =>
     },
     backButtonContainer: {
       position: "absolute",
-      top: 40,
+      top: 55,
       left: 30,
       width: 40,
       height: 40,

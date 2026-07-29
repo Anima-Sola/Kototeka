@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -29,7 +29,7 @@ type FormValues = {
   name: string;
   email: string;
   password: string;
-  retryPassword: string;
+  repeatPassword: string;
 };
 
 const SignUp = () => {
@@ -73,6 +73,14 @@ const SignUp = () => {
       setIsRegistering(false);
     }
   }
+
+  const repeatPasswordValue = methods.watch("password");
+  
+    useEffect(() => {
+      if (repeatPasswordValue !== undefined) {
+        methods.trigger("repeatPassword");
+      }
+    }, [repeatPasswordValue, methods]);
 
   return (
     <LinearGradient

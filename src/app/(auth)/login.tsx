@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Text,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { useRouter, Link } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
@@ -29,7 +30,7 @@ type FormValues = {
 
 const Login = () => {
   const styles = useThemedStyles(createStyles);
-  const { expoPushToken, notification } = usePushNotifications();
+  //const { expoPushToken, notification } = usePushNotifications();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
@@ -44,7 +45,7 @@ const Login = () => {
     mode: "onChange",
   });
 
-  console.log(expoPushToken, notification);
+  //console.log(expoPushToken, notification);
 
   async function onSubmit(data: FormValues) {
     const email = data.email.trim();
@@ -103,13 +104,14 @@ const Login = () => {
           </Link>
         </ScrollView>
         <View style={styles.buttonContainer}>
-          <Link
-            style={styles.backToIntroLink}
-            href="/onboarding0"
-            onPress={() => setIsOnBoarding(true)}
+          <TouchableOpacity
+            onPress={() => {
+              setIsOnBoarding(true);
+              router.replace("/onboarding0");
+            }}
           >
-            Back to intro
-          </Link>
+            <Text style={styles.backToIntroLink}>Back to intro</Text>
+          </TouchableOpacity>
           <Button
             mode={"contained"}
             loading={isLogging}

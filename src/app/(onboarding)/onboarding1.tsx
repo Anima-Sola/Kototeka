@@ -15,6 +15,7 @@ import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
+import { dots } from "../../functions/common";
 
 const screenHeight = Dimensions.get("screen").height;
 const screenHeightPx = PixelRatio.getPixelSizeForLayoutSize(screenHeight);
@@ -23,17 +24,6 @@ const Onboarding1 = () => {
   const styles = useThemedStyles(createStyles);
   const { setIsOnBoarding } = useStore();
   const router = useRouter();
-
-  const dots = (currentPage: number) => {
-    const pages = [0, 1, 2, 3, 4];
-
-    return pages.map((page) => {
-      if (page === currentPage)
-        return <View key={page} style={styles.activeDot} />;
-
-      return <View key={page} style={styles.dot} />;
-    });
-  };
 
   const skip = () => {
     setIsOnBoarding(false);
@@ -51,12 +41,10 @@ const Onboarding1 = () => {
     },
 
     onPanResponderRelease: (_, gestureState) => {
-      // свайп вправо
       if (gestureState.dx > 80) {
         router.back();
       }
 
-      // свайп влево
       if (gestureState.dx < -80) {
         router.push("/onboarding2");
       }
@@ -160,20 +148,6 @@ export const createStyles = (theme: ITheme) =>
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
-    },
-    dot: {
-      width: 20,
-      height: 6,
-      borderRadius: 3,
-      backgroundColor: theme.colors.disabled,
-      marginHorizontal: 4,
-    },
-    activeDot: {
-      width: 22,
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: theme.colors.accent3,
-      marginHorizontal: 4,
     },
     nextButton: {
       width: 50,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useStore from "../../store/store";
 import { useRouter } from "expo-router";
 import {
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Appearance,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { useForm, FormProvider } from "react-hook-form";
@@ -93,10 +94,11 @@ const Settings = () => {
   };
 
   async function onSubmit(data: FormValues) {
+    const currentPassword = data.currentPassword.trim();
+    const newPassword = data.newPassword.trim();
+
     try {
       setIsPasswordChanging(true);
-      const currentPassword = data.currentPassword.trim();
-      const newPassword = data.newPassword.trim();
 
       await updateUserPassword({
         currentPassword,
@@ -114,12 +116,24 @@ const Settings = () => {
     }
   }
 
+  const newPasswordValue = methods.watch("newPassword");
+
+  useEffect(() => {
+    if (newPasswordValue !== undefined) {
+      methods.trigger("repeatNewPassword");
+    }
+  }, [newPasswordValue, methods]);
+
   const onThemeSwitch = (value: string) => {
     switch (value) {
-      case "system":
+      case "system": {
+        const systemTheme =
+          Appearance.getColorScheme() === "dark" ? "dark" : "light";
         setMode("system");
+        setResolvedTheme(systemTheme);
         setTheme("system");
         break;
+      }
       case "light": {
         setMode("light");
         setResolvedTheme("light");
@@ -249,7 +263,10 @@ const Settings = () => {
                 />
               </View>
               <View style={styles.inputContainer}>
-                <PasswordInput name="newPassword" placeholder="New password" />
+                <PasswordInput
+                  name="newPassword"
+                  placeholder="New password"
+                />
               </View>
               <View style={styles.inputContainer}>
                 <RepeatPasswordInput

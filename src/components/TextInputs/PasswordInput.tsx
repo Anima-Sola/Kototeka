@@ -22,7 +22,7 @@ export default function PasswordInput({
         required: "Password is requied",
         pattern: {
           value: RegExps.password,
-          message: "One digit, one uppercase letter, one special character",
+          message: "1 digit, 1 uppercase letter, 1 special char",
         },
         maxLength: {
           value: 30,
@@ -81,6 +81,9 @@ export const createStyles = (theme: ITheme) =>
       borderRadius: 8,
       paddingLeft: 12,
       paddingRight: 35,
+      paddingVertical: 0,
+      textAlignVertical: "center",
+      includeFontPadding: false,
       fontSize: fontSizes.FONT16,
       fontFamily: "ShantellLightItalic",
       backgroundColor: theme.colors.secondary,

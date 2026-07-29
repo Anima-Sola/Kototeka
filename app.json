@@ -8,6 +8,7 @@
     "userInterfaceStyle": "automatic",
     "scheme": "kototeka",
     "ios": {
+      "userInterfaceStyle": "automatic",
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "Приложение сохраняет изображения в фотопленку",
@@ -16,6 +17,7 @@
       "bundleIdentifier": "com.anonymous.Kototeka"
     },
     "android": {
+      "userInterfaceStyle": "automatic",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
@@ -39,14 +41,18 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      [
+        "expo-system-ui",
+        {
+          "userInterfaceStyle": "automatic"
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",
         {
           "backgroundColor": "#f9fafc",
-          "image": "./assets/Images/splash.png",
-          "imageWidth": 1080,
-          "resizeMode": "cover"
+          "image": null
         }
       ],
       [

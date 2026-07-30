@@ -9,7 +9,8 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fetchUserData from "../../API/fetchUserData";
 import useStore from "../../store/store";
-import SplashErrorScreen from "./SplashErrorScreen";
+import { useBottomSheet } from "../../contexts/BottomSheetContext";
+import NoInternetBS from "../BottomSheets/NoInternetBS";
 
 const backgroundImage = require("../../../assets/Images/splashImage.png");
 
@@ -26,6 +27,22 @@ const SplashScreen = () => {
     setUserId,
     setIsSignedIn,
   } = useStore();
+  const { showBottomSheet, hideBottomSheet } = useBottomSheet();
+
+  const openNoInternetBottomSheet = () => {
+    showBottomSheet(
+      <NoInternetBS
+        hideBottomSheet={hideBottomSheet}
+        onRetry={() => {
+          hideBottomSheet();
+          setTimeout(() => {
+            prepare();
+          }, 350);
+        }}
+      />,
+      prepare,
+    );
+  };
 
   //Google authentication state listener
   useEffect(() => {
@@ -71,24 +88,23 @@ const SplashScreen = () => {
 
     try {
       await loadFonts();
+
       if (isSignedIn) {
         await fetchUserData(userId);
       }
-    } catch (error: any) {
-      setLoadingError(true);
-    } finally {
-      if (isSignedIn !== null && !loadingError)
+
+      if (isSignedIn !== null) {
         setTimeout(() => setIsAppReady(true), 2000);
+      }
+    } catch (error: any) {
+      openNoInternetBottomSheet();
+      setLoadingError(true);
     }
   };
 
   useEffect(() => {
     prepare();
   }, [isSignedIn]);
-
-  if (loadingError) {
-    return <SplashErrorScreen onRetry={prepare} />;
-  }
 
   return (
     <View style={styles.container}>

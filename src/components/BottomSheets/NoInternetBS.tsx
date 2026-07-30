@@ -1,21 +1,31 @@
 import { FC } from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text, Image, Platform } from "react-native";
 import { Button } from "react-native-paper";
-import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { useThemedStyles } from "../../hooks/useThemedStyles";
 import fontSizes from "../../constants/fontSizes";
+import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
 
 const noInternetImage = require("../../../assets/Images/NoInternet.png");
 
-type SplashErrorScreenProps = {
-  onRetry?: () => void;
+type NoInternetBSType = {
+  hideBottomSheet: () => void;
+  onRetry: () => void;
 };
 
-const SplashErrorScreen: FC<SplashErrorScreenProps> = ({ onRetry }) => {
+const NoInternetBS: FC<NoInternetBSType> = ({ hideBottomSheet, onRetry }) => {
   const styles = useThemedStyles(createStyles);
+
+  const onDismissBS = () => {
+    hideBottomSheet();
+    setTimeout(() => {
+      onRetry();
+    }, 350);
+  };
 
   return (
     <View style={styles.container}>
+      <BottomSheetTopBar />
       <View style={styles.content}>
         <Image
           source={noInternetImage}
@@ -32,7 +42,7 @@ const SplashErrorScreen: FC<SplashErrorScreenProps> = ({ onRetry }) => {
           mode={"contained"}
           style={styles.button}
           labelStyle={styles.labelButton}
-          onPress={onRetry}
+          onPress={onDismissBS}
         >
           Try again
         </Button>
@@ -44,21 +54,21 @@ const SplashErrorScreen: FC<SplashErrorScreenProps> = ({ onRetry }) => {
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
-      flex: 1,
+      borderTopRightRadius: 20,
+      borderTopLeftRadius: 20,
       backgroundColor: theme.colors.main,
-      padding: 16,
+      paddingHorizontal: 16,
     },
     content: {
-      flex: 1,
       alignItems: "center",
-      justifyContent: "center",
+      marginTop: -20,
     },
     image: {
-      width: 250,
-      height: 250,
+      width: 100,
+      height: 100,
     },
     title: {
-      fontSize: fontSizes.FONT50,
+      fontSize: fontSizes.FONT40,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
       marginBottom: 8,
@@ -82,11 +92,8 @@ export const createStyles = (theme: ITheme) =>
     },
     buttonContainer: {
       width: "100%",
-      paddingBottom: 30,
-    },
-    iconColor: {
-      color: theme.colors.accent,
+      paddingBottom: Platform.OS === "ios" ? 30 : 60,
     },
   });
 
-export default SplashErrorScreen;
+export default NoInternetBS;

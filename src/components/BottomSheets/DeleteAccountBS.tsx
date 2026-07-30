@@ -47,7 +47,7 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <BottomSheetTopBar title={"Delete Account"} />
       <FormProvider {...methods}>
         <View style={styles.inputContainer}>

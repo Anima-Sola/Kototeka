@@ -51,7 +51,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <BottomSheetTopBar title={"Change Name"} />
       <FormProvider {...methods}>
         <View style={styles.inputContainer}>

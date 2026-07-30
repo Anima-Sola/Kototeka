@@ -1,11 +1,17 @@
-import { createContext, useContext, useState, ReactNode, useRef, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useRef,
+  useEffect,
+} from "react";
 import {
   View,
   TouchableWithoutFeedback,
   Animated,
   Dimensions,
   StyleSheet,
-  KeyboardAvoidingView,
   Platform,
   PanResponder,
   Keyboard,
@@ -16,7 +22,7 @@ import { useThemedStyles } from "../hooks/useThemedStyles";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 interface BottomSheetContextType {
-  showBottomSheet: (content: ReactNode) => void;
+  showBottomSheet: (content: ReactNode, onClose?: () => void) => void;
   hideBottomSheet: () => void;
 }
 
@@ -29,10 +35,10 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
   const [visible, setVisible] = useState(false);
   const [bottomSheetContent, setBottomSheetContent] = useState<ReactNode>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const closeCallbackRef = useRef<(() => void) | undefined>(undefined);
 
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
-  const keyboardAnim = useRef(new Animated.Value(0)).current;
   const isOpening = useRef(false);
   const contentHeight = useRef(0);
   const panResponder = useRef(
@@ -48,40 +54,37 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
   ).current;
 
   useEffect(() => {
-    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const showEvent =
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent =
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
     const keyboardShowSub = Keyboard.addListener(showEvent, (event: any) => {
       const height = event.endCoordinates?.height || 0;
       setKeyboardHeight(height);
-      Animated.timing(keyboardAnim, {
-        toValue: height,
-        duration: 250,
-        useNativeDriver: true,
-      }).start();
     });
     const keyboardHideSub = Keyboard.addListener(hideEvent, () => {
       setKeyboardHeight(0);
-      Animated.timing(keyboardAnim, {
-        toValue: 0,
-        duration: 250,
-        useNativeDriver: true,
-      }).start();
     });
 
     return () => {
       keyboardShowSub.remove();
       keyboardHideSub.remove();
     };
-  }, [keyboardAnim]);
+  }, []);
 
-  const showBottomSheet = (content: ReactNode) => {
+  const showBottomSheet = (content: ReactNode, onClose?: () => void) => {
     setBottomSheetContent(content);
+    closeCallbackRef.current = onClose;
     setVisible(true);
     isOpening.current = true; // Отмечаем, что это операция открытия
   };
 
   const hideBottomSheet = () => {
+    Keyboard.dismiss();
+
+    const onClose = closeCallbackRef.current;
+
     Animated.parallel([
       Animated.timing(slideAnim, {
         toValue: contentHeight.current + keyboardHeight,
@@ -96,8 +99,11 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
     ]).start(() => {
       setVisible(false);
       setBottomSheetContent(null);
+      closeCallbackRef.current = undefined;
       contentHeight.current = 0;
       isOpening.current = false;
+      78;
+      onClose?.();
     });
   };
 
@@ -147,27 +153,20 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
         </TouchableWithoutFeedback>
       </Animated.View>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
-        style={styles.keyboardAvoidingView}
+      <Animated.View
+        style={[styles.bottomSheetWrapper, { paddingBottom: keyboardHeight }]}
       >
         <Animated.View
           {...panResponder.panHandlers}
           style={[
             styles.bottomSheet,
-            {
-              transform: [
-                { translateY: slideAnim },
-                { translateY: -keyboardHeight },
-              ],
-            },
+            { transform: [{ translateY: slideAnim }] },
           ]}
           onLayout={handleContentLayout}
         >
           {bottomSheetContent}
         </Animated.View>
-      </KeyboardAvoidingView>
+      </Animated.View>
     </BottomSheetContext.Provider>
   );
 };
@@ -185,13 +184,15 @@ export const createStyles = (theme: ITheme) =>
     backdropTouchArea: {
       flex: 1,
     },
-    keyboardAvoidingView: {
+    bottomSheetWrapper: {
       position: "absolute",
-      bottom: 0,
       left: 0,
       right: 0,
+      bottom: 0,
+      width: "100%",
     },
     bottomSheet: {
+      width: "100%",
       backgroundColor: theme.colors.white,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,

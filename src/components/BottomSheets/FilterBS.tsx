@@ -38,7 +38,7 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <BottomSheetTopBar title={"Filters"} />
       <View style={styles.textContainer}>
         <Text style={styles.queryParamText}>Number Of Loading Photos</Text>

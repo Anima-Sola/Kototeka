@@ -27,7 +27,7 @@ type FormValues = {
   email: string;
 };
 
-const SignUp = () => {
+const RestorePassword = () => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -190,4 +190,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default SignUp;
+export default RestorePassword;

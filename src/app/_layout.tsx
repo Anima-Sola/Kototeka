@@ -5,6 +5,7 @@ import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";
 import OnboardingAuthWrapper from "../components/Wrapper/OnboardingAuthWrapper";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
+import { BottomSheetProvider } from "../contexts/BottomSheetContext";
 
 export default function RootLayout() {
   const { isAppReady, isSignedIn, isOnboarding, setResolvedTheme, mode } =
@@ -20,7 +21,11 @@ export default function RootLayout() {
   }, [mode, systemColorScheme, setResolvedTheme]);
 
   if (!isAppReady) {
-    return <SplashScreen />;
+    return (
+      <BottomSheetProvider>
+        <SplashScreen />
+      </BottomSheetProvider>
+    );
   }
 
   if (isOnboarding && !isSignedIn)
@@ -45,6 +50,7 @@ export default function RootLayout() {
         <OnboardingAuthWrapper>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(apikeys)" />
           </Stack>
         </OnboardingAuthWrapper>
       )}

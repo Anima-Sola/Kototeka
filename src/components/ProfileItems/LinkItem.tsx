@@ -19,7 +19,7 @@ const LinkItem: FC<LinkItemType> = ({ name, link }) => {
     if (supported) {
       await Linking.openURL(link);
     } else {
-      Alert.alert("Ошибка", `Не удалось ${name} page`);
+      Alert.alert("Error", `Failed to load ${name} page`);
     }
   };
 

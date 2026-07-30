@@ -216,6 +216,17 @@ const Settings = () => {
               ]}
             />
           </View>
+          <Text style={styles.textHeader}>API Keys</Text>
+          <View style={styles.apiKeysButtonContainer}>
+            <Button
+              mode={"contained"}
+              style={styles.button}
+              labelStyle={styles.labelButton}
+              onPress={() => router.push("/(apikeys)/apikeys")}
+            >
+              Add API Keys
+            </Button>
+          </View>
           <Text style={styles.textHeader}>Theme</Text>
           <View style={styles.radioGroupContainer}>
             <TouchableOpacity
@@ -371,6 +382,9 @@ export const createStyles = (theme: ITheme) =>
       paddingHorizontal: 10,
       marginVertical: 5,
     },
+    apiKeysButtonContainer: {
+      marginBottom: 10,
+    },
     deleteAccountContainer: {
       marginTop: 50,
       alignSelf: "center",
@@ -424,15 +438,17 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT16,
       fontFamily: "ShantellBold",
       color: theme.colors.secondary,
+      marginTop: 5,
     },
     segmentedButtonLabelSelected: {
       fontSize: fontSizes.FONT16,
       fontFamily: "ShantellBold",
       color: theme.colors.mainText,
+      marginTop: 5,
     },
     segmentedButtonItem: {
       borderRadius: 20,
-      height: 40,
+      height: 50,
       borderColor: theme.colors.disabled,
     },
     segmentedButtonSelected: {

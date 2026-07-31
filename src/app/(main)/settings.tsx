@@ -434,23 +434,25 @@ export const createStyles = (theme: ITheme) =>
     activityIndicator: {
       color: theme.colors.accent,
     },
-    segmentedButtonLabel: {
-      fontSize: fontSizes.FONT16,
-      fontFamily: "ShantellBold",
-      color: theme.colors.secondary,
-      marginTop: 5,
-    },
-    segmentedButtonLabelSelected: {
-      fontSize: fontSizes.FONT16,
-      fontFamily: "ShantellBold",
-      color: theme.colors.mainText,
-      marginTop: 5,
-    },
     segmentedButtonItem: {
       borderRadius: 20,
       height: 50,
       borderColor: theme.colors.disabled,
+      justifyContent: 'center',
     },
+    segmentedButtonLabel: {
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      color: theme.colors.secondary,
+      lineHeight: 22,
+    },
+    segmentedButtonLabelSelected: {
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      color: theme.colors.mainText,
+      lineHeight: 22,
+    },
+    
     segmentedButtonSelected: {
       backgroundColor: theme.colors.accent,
     },

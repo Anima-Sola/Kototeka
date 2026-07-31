@@ -5,6 +5,8 @@ import { CATS_API_KEY, DOGS_API_KEY } from "../constants/api";
 export const createApiSlice = (set: any, get: any, api: any): IApiSlice => ({
   petsType: "cats",
   apiKey: CATS_API_KEY,
+  userCatApiKey: "",
+  userDogApiKey: "",
   baseUrl: CATS_BASE_URL,
   setApi: (value) => {
     if (value === "cats") {
@@ -21,4 +23,14 @@ export const createApiSlice = (set: any, get: any, api: any): IApiSlice => ({
       });
     }
   },
+  setUserCatApiKey: (value) => {
+    set({
+      userCatApiKey: value,
+    });
+  },
+  setUserDogApiKey: (value) => {
+    set({
+      userDogApiKey: value,
+    });
+  }
 });

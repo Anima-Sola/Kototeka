@@ -7,12 +7,15 @@ import {
   Linking,
   Alert,
   TextInput,
+  ScrollView,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PressableScale } from "pressto";
 import { useRouter } from "expo-router";
+import * as Clipboard from "expo-clipboard";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Button } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
@@ -20,10 +23,12 @@ import { CATS_BASE_URL, DOGS_BASE_URL } from "../../constants/urls";
 
 const ApiKeys = () => {
   const styles = useThemedStyles(createStyles);
-  const router = useRouter();
+  const { userCatApiKey, userDogApiKey, setUserCatApiKey, setUserDogApiKey } =
+    useStore();
   const insets = useSafeAreaInsets();
-  const [catApiKey, setCatApiKey] = useState("");
-  const [dogApiKey, setDogApiKey] = useState("");
+  const router = useRouter();
+  const [catApiKey, setCatApiKey] = useState(userCatApiKey);
+  const [dogApiKey, setDogApiKey] = useState(userDogApiKey);
 
   const handleLink = async (link: string) => {
     const supported = await Linking.canOpenURL(link);
@@ -35,72 +40,134 @@ const ApiKeys = () => {
     }
   };
 
+  const pasteCatApiKey = async () => {
+    const clipboardText = await Clipboard.getStringAsync();
+    setCatApiKey(clipboardText.trim());
+  };
+
+  const pasteDogApiKey = async () => {
+    const clipboardText = await Clipboard.getStringAsync();
+    setDogApiKey(clipboardText.trim());
+  };
+
+  const removeCatApiKey = () => setCatApiKey("");
+  const removeDogApiKey = () => setDogApiKey("");
+
+  const saveChanges = () => {
+    setUserCatApiKey(catApiKey);
+    setUserDogApiKey(dogApiKey);
+    router.back();
+  }
+
+  const isKeysChanged = userCatApiKey !== catApiKey || userDogApiKey !== dogApiKey;
+
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-      <PressableScale
-        style={styles.backButtonContainer}
-        onPress={() => router.back()}
-      >
-        <MaterialIcons
-          name="chevron-left"
-          size={30}
-          color={styles.backIconColor.color}
-        />
-      </PressableScale>
-      <Text style={styles.textHeader}>Api Keys</Text>
-      <Text style={styles.text}>
-        To enjoy cats and dogs images independently of other users, just
-        register on the websites{" "}
-        <Text style={styles.link} onPress={() => handleLink(CATS_BASE_URL)}>
-          thecatapi.com
-        </Text>{" "}
-        and{" "}
-        <Text style={styles.link} onPress={() => handleLink(DOGS_BASE_URL)}>
-          thedogapi.com
-        </Text>
-        . Get your personal API keys and paste them into the fields below - it will
-        only take a couple of minutes!
-      </Text>
-      <TextInput
-        style={styles.input}
-        placeholder={"Paste your Cat API key here"}
-        placeholderTextColor={styles.placeholderColor.color}
-        value={catApiKey}
-        keyboardType="default"
-        autoCapitalize="none"
-        autoCorrect={false}
-        editable={false}
-        multiline={true}
-      />
-      <View style={styles.pasteApiButtonContainer}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <PressableScale
+          style={styles.backButtonContainer}
+          onPress={() => router.back()}
+        >
+          <MaterialIcons
+            name="chevron-left"
+            size={30}
+            color={styles.backIconColor.color}
+          />
+        </PressableScale>
+        <View style={styles.content}>
+          <Text style={styles.textHeader}>Api Keys</Text>
+          <Text style={styles.text}>
+            To enjoy cats and dogs images independently of other users, just
+            register on the websites{" "}
+            <Text style={styles.link} onPress={() => handleLink(CATS_BASE_URL)}>
+              thecatapi.com
+            </Text>{" "}
+            and{" "}
+            <Text style={styles.link} onPress={() => handleLink(DOGS_BASE_URL)}>
+              thedogapi.com
+            </Text>
+            . Get your personal API keys and paste them into the fields below -
+            it will only take a couple of minutes!
+          </Text>
+          <TextInput
+            style={styles.input}
+            placeholder={"Paste your Cat API key here"}
+            placeholderTextColor={styles.placeholderColor.color}
+            value={catApiKey}
+            keyboardType="default"
+            autoCapitalize="none"
+            autoCorrect={false}
+            editable={false}
+            multiline={true}
+          />
+          <View style={styles.pasteApiButtonContainer}>
+            <Button
+              mode={"contained"}
+              style={styles.pasteButton}
+              labelStyle={styles.pasteLabelButton}
+              onPress={pasteCatApiKey}
+            >
+              Paste
+            </Button>
+            <Button
+              mode={"contained"}
+              style={styles.pasteButton}
+              labelStyle={styles.pasteLabelButton}
+              onPress={removeCatApiKey}
+            >
+              Remove
+            </Button>
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder={"Paste your Dog API key here"}
+            placeholderTextColor={styles.placeholderColor.color}
+            value={dogApiKey}
+            keyboardType="default"
+            autoCapitalize="none"
+            autoCorrect={false}
+            editable={false}
+            multiline={true}
+          />
+          <View style={styles.pasteApiButtonContainer}>
+            <Button
+              mode={"contained"}
+              style={styles.pasteButton}
+              labelStyle={styles.pasteLabelButton}
+              onPress={pasteDogApiKey}
+            >
+              Paste
+            </Button>
+            <Button
+              mode={"contained"}
+              style={styles.pasteButton}
+              labelStyle={styles.pasteLabelButton}
+              onPress={removeDogApiKey}
+            >
+              Remove
+            </Button>
+          </View>
+          <View style={styles.footer} />
+        </View>
+      </ScrollView>
+      <View style={styles.buttonsContainer}>
         <Button
           mode={"contained"}
-          style={styles.button}
+          style={isKeysChanged ? styles.saveCancelButton : styles.disabledSaveCancelButton}
           labelStyle={styles.labelButton}
-          onPress={() => {}}
+          disabled={!isKeysChanged}
+          onPress={saveChanges}
         >
-          Paste Cat API Key
+          Save
         </Button>
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder={"Paste your Dog API key here"}
-        placeholderTextColor={styles.placeholderColor.color}
-        value={dogApiKey}
-        keyboardType="default"
-        autoCapitalize="none"
-        autoCorrect={false}
-        editable={false}
-        multiline={true}
-      />
-      <View style={styles.pasteApiButtonContainer}>
+        <View style={styles.gap} />
         <Button
           mode={"contained"}
-          style={styles.button}
+          style={styles.saveCancelButton}
           labelStyle={styles.labelButton}
-          onPress={() => {}}
+          onPress={() => router.back()}
         >
-          Paste Dog API Key
+          Cancel
         </Button>
       </View>
     </View>
@@ -112,8 +179,11 @@ export const createStyles = (theme: ITheme) =>
     container: {
       flex: 1,
       backgroundColor: theme.colors.main,
-      alignItems: "center",
       paddingHorizontal: 16,
+    },
+    content: {
+      flex: 1,
+      marginTop: 10,
     },
     backButtonContainer: {
       position: "absolute",
@@ -134,6 +204,7 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
       marginTop: Platform.OS === "ios" ? 75 : 60,
+      textAlign: "center",
     },
     text: {
       fontSize: fontSizes.FONT18,
@@ -157,7 +228,7 @@ export const createStyles = (theme: ITheme) =>
       paddingHorizontal: 12,
       paddingVertical: 0,
       includeFontPadding: false,
-      fontSize: fontSizes.FONT16,
+      fontSize: fontSizes.FONT20,
       fontFamily: "ShantellLightItalic",
       backgroundColor: theme.colors.secondary,
       color: theme.colors.mainText,
@@ -166,20 +237,54 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.placeholder,
     },
     pasteApiButtonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
       marginTop: 5,
       width: "100%",
       marginBottom: 10,
     },
-    button: {
-      backgroundColor: theme.colors.accent,
+    pasteButton: {
+      backgroundColor: "transparent",
       height: 50,
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: theme.colors.mainText,
+      width: "49%",
+    },
+    pasteLabelButton: {
+      color: theme.colors.mainText,
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      lineHeight: 30,
     },
     labelButton: {
       color: theme.colors.secondary,
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",
       lineHeight: 30,
+    },
+    buttonsContainer: {
+      width: "100%",
+      position: "absolute",
+      bottom: Platform.OS === "ios" ? 30 : 50,
+      alignSelf: "center",
+    },
+    saveCancelButton: {
+      backgroundColor: theme.colors.accent,
+      height: 50,
+      justifyContent: "center",
+    },
+    disabledSaveCancelButton: {
+      backgroundColor: theme.colors.disabled,
+      height: 50,
+      justifyContent: "center",
+    },
+    gap: {
+      height: 10,
+    },
+    footer: {
+      height: 190,
     },
   });
 

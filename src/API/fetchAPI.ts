@@ -1,8 +1,20 @@
 import useStore from "../store/store";
 
-const fetchAPI = async (url: string, options: any, returnData: boolean = true) => {
+const fetchAPI = async (
+  url: string,
+  options: any,
+  returnData: boolean = true,
+) => {
   const store = useStore.getState();
-  options.headers['x-api-key'] = store.apiKey;
+  let apiKey = store.apiKey;
+
+  if (store.petsType === "cats" && store.userCatApiKey !== "")
+    apiKey = store.userCatApiKey;
+  if (store.petsType === "dogs" && store.userDogApiKey !== "")
+    apiKey = store.userDogApiKey;
+
+  options.headers["x-api-key"] = apiKey;
+
   try {
     const response = await fetch(store.baseUrl + url, options);
     if (!returnData) return;

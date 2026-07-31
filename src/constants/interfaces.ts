@@ -61,8 +61,12 @@ export interface IToastSlice {
 export interface IApiSlice {
   petsType: 'cats' | 'dogs',
   apiKey: string,
+  userCatApiKey: string;
+  userDogApiKey: string;
   baseUrl: string,
   setApi: (value: 'cats' | 'dogs') => void;
+  setUserCatApiKey: (value: string) => void;
+  setUserDogApiKey: (value: string) => void;
 }
 
 export interface ITheme {

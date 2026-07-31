@@ -153,6 +153,7 @@ export const createStyles = (theme: ITheme) =>
       marginHorizontal: 16,
       bottom: Platform.OS === "ios" ? 30 : 50,
       height: 60,
+      borderRadius: 20,
     },
     iconContainer: {
       marginTop: 4,

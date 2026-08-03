@@ -23,8 +23,13 @@ import { CATS_BASE_URL, DOGS_BASE_URL } from "../../constants/urls";
 
 const ApiKeys = () => {
   const styles = useThemedStyles(createStyles);
-  const { userCatApiKey, userDogApiKey, setUserCatApiKey, setUserDogApiKey } =
-    useStore();
+  const {
+    userCatApiKey,
+    userDogApiKey,
+    setUserCatApiKey,
+    setUserDogApiKey,
+    showErrorToast,
+  } = useStore();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [catApiKey, setCatApiKey] = useState(userCatApiKey);
@@ -40,13 +45,25 @@ const ApiKeys = () => {
     }
   };
 
+  const isKeyValid = (value: string): boolean => {
+    return /^live_[A-Za-z0-9]{64}$/.test(value);
+  };
+
   const pasteCatApiKey = async () => {
     const clipboardText = await Clipboard.getStringAsync();
+    if (!isKeyValid(clipboardText)) {
+      showErrorToast("The API key you are trying to paste is invalid.");
+      return;
+    }
     setCatApiKey(clipboardText.trim());
   };
 
   const pasteDogApiKey = async () => {
     const clipboardText = await Clipboard.getStringAsync();
+    if (!isKeyValid(clipboardText)) {
+      showErrorToast("The API key you are trying to paste is invalid.");
+      return;
+    }
     setDogApiKey(clipboardText.trim());
   };
 
@@ -57,9 +74,10 @@ const ApiKeys = () => {
     setUserCatApiKey(catApiKey);
     setUserDogApiKey(dogApiKey);
     router.back();
-  }
+  };
 
-  const isKeysChanged = userCatApiKey !== catApiKey || userDogApiKey !== dogApiKey;
+  const isKeysChanged =
+    userCatApiKey !== catApiKey || userDogApiKey !== dogApiKey;
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
@@ -153,7 +171,11 @@ const ApiKeys = () => {
       <View style={styles.buttonsContainer}>
         <Button
           mode={"contained"}
-          style={isKeysChanged ? styles.saveCancelButton : styles.disabledSaveCancelButton}
+          style={
+            isKeysChanged
+              ? styles.saveCancelButton
+              : styles.disabledSaveCancelButton
+          }
           labelStyle={styles.labelButton}
           disabled={!isKeysChanged}
           onPress={saveChanges}

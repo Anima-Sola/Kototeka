@@ -73,7 +73,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
       const data = await deleteFavouritePetAPI(favouritePet.id);
       deleteFavouritePet(favouritePet.id);
     } catch (error: any) {
-      console.log("Ошибка: ", error);
+      throw error;
     } finally {
       setIsFavouriteToggling(false);
     }

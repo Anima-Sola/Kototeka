@@ -8,7 +8,9 @@ import { MAX_NUMBER_OF_UPLOADED } from "../constants/common";
 
 const store = useStore.getState();
 
-export const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) => {
+export const getFavouritePetsBreeds = async (
+  favouritePets: favouritePetType[],
+) => {
   const promises = favouritePets.map(async (favouritePet) => {
     const response = await getPetByIdAPI(favouritePet.image.id);
     if (response.breeds)
@@ -19,17 +21,29 @@ export const getFavouritePetsBreeds = async (favouritePets: favouritePetType[]) 
 };
 
 export const fetchPetsData = async () => {
-  const data = await getPetsAPI(useStore.getState().filterRequestSettings);
-  store.setPets(data);
+  try {
+    const data = await getPetsAPI(useStore.getState().filterRequestSettings);
+    store.setPets(data);
+  } catch (error: any) {
+    throw error;
+  }
 };
 
 const fetchUserData = async (userId: string) => {
-  const favouritePets = await getFavouritePetsAPI(userId);
-  store.setFavouritePets(favouritePets);
-  await getFavouritePetsBreeds(favouritePets);
-  const uploadedPets = await getUploadedPetsAPI(MAX_NUMBER_OF_UPLOADED, userId);
-  store.setUploadedPets(uploadedPets);
-  await fetchPetsData();
+  try {
+    const favouritePets = await getFavouritePetsAPI(userId);
+    await getFavouritePetsBreeds(favouritePets);
+    const uploadedPets = await getUploadedPetsAPI(
+      MAX_NUMBER_OF_UPLOADED,
+      userId,
+    );
+    const pets = await getPetsAPI(useStore.getState().filterRequestSettings);
+    store.setPets(pets);
+    store.setFavouritePets(favouritePets);
+    store.setUploadedPets(uploadedPets);
+  } catch (error: any) {
+    throw error;
+  }
 };
 
 export default fetchUserData;

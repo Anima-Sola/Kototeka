@@ -36,10 +36,8 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
       setIsSignedIn(false);
       router.replace("/(auth)/login");
       setTimeout(() => showSuccessToast("Your account has been deleted"), 1000);
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      showErrorToast("Error deleting account: " + errorMessage);
+    } catch (error: any) {
+      showErrorToast("Error while deleting account");
     } finally {
       setIsLoading(false);
       hideBottomSheet();

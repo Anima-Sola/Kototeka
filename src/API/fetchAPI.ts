@@ -28,6 +28,7 @@ const fetchAPI = async (
   } catch (error: any) {
     console.error("Error while receiving data:", error);
     store.showErrorToast("Error while receiving data");
+    throw error;
   }
 };
 

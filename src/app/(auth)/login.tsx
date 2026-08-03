@@ -30,7 +30,7 @@ type FormValues = {
 
 const Login = () => {
   const styles = useThemedStyles(createStyles);
-  //const { expoPushToken, notification } = usePushNotifications();
+  const { expoPushToken, notification } = usePushNotifications();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
@@ -45,7 +45,7 @@ const Login = () => {
     mode: "onChange",
   });
 
-  //console.log(expoPushToken, notification);
+  console.log(expoPushToken, notification);
 
   async function onSubmit(data: FormValues) {
     const email = data.email.trim();
@@ -69,7 +69,10 @@ const Login = () => {
 
       router.replace("/(main)");
     } catch (error: any) {
-      showErrorToast("Incorrect email address or/and password");
+      const message = JSON.stringify(error).indexOf("auth/invalid-credential");
+      if (message !== -1)
+        showErrorToast("Incorrect email address or/and password");
+      else showErrorToast("Login error");
     } finally {
       setIsLogging(false);
     }

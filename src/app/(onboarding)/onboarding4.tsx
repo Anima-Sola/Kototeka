@@ -25,7 +25,7 @@ const Onboarding4 = () => {
   const { setIsOnBoarding } = useStore();
   const router = useRouter();
 
-  const toLogin = () => {
+  const skip = () => {
     setIsOnBoarding(false);
     router.replace({
       pathname: "/login",
@@ -44,6 +44,10 @@ const Onboarding4 = () => {
       if (gestureState.dx > 80) {
         router.back();
       }
+
+      if (gestureState.dx < -80) {
+        router.push("/onboarding5");
+      }
     },
   });
 
@@ -55,6 +59,9 @@ const Onboarding4 = () => {
       {...panResponder.panHandlers}
     >
       <View style={styles.container} {...panResponder.panHandlers}>
+        <PressableScale style={styles.skipButtonContainer} onPress={skip}>
+          <Text style={styles.skipButtonText}>Skip</Text>
+        </PressableScale>
         <PressableScale
           style={styles.backButtonContainer}
           onPress={() => router.back()}
@@ -66,14 +73,25 @@ const Onboarding4 = () => {
           />
         </PressableScale>
         <View style={styles.card}>
-          <Text style={styles.headerText}>Enjoy together</Text>
+          <Text style={styles.headerText}>API Keys</Text>
           <Text style={styles.messageText}>
-            Join our community and share the love.
+            Add your own API keys in the "Settings" tab for more pets.
           </Text>
           <View style={styles.navigationContainer}>
             <View style={styles.dots}>{dots(4)}</View>
-            <PressableScale style={styles.nextButton} onPress={toLogin}>
-              <Text style={styles.nextText}>Go</Text>
+            <PressableScale
+              style={styles.nextButton}
+              onPress={() =>
+                router.push({
+                  pathname: "/onboarding5",
+                })
+              }
+            >
+              <MaterialIcons
+                name="chevron-right"
+                size={30}
+                color={styles.nextIconColor.color}
+              />
             </PressableScale>
           </View>
         </View>
@@ -131,20 +149,34 @@ export const createStyles = (theme: ITheme) =>
       alignItems: "center",
     },
     nextButton: {
-      width: 100,
+      width: 50,
       height: 50,
       borderRadius: 25,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: theme.colors.accent3,
     },
-    nextText: {
+    nextArrow: {
       color: theme.colors.white,
-      fontSize: fontSizes.FONT20,
-      fontFamily: "ShantellBold",
+      fontWeight: 400,
+      fontSize: fontSizes.FONT25,
+    },
+    nextIconColor: {
+      color: theme.colors.white,
     },
     backIconColor: {
       color: theme.colors.black,
+    },
+    skipButtonContainer: {
+      position: "absolute",
+      top: Platform.OS === 'ios' ? 55 : 40,
+      right: 30,
+    },
+    skipButtonText: {
+      fontSize: fontSizes.FONT25,
+      fontFamily: "ShantellRegular",
+      color: theme.colors.white,
+      textDecorationLine: "underline",
     },
     backButtonContainer: {
       position: "absolute",

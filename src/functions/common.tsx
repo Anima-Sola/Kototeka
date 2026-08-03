@@ -12,7 +12,7 @@ export const isElementInArray = (
 
 export const dots = (currentPage: number) => {
   const styles = useThemedStyles(createStyles);
-  const pages = [0, 1, 2, 3, 4];
+  const pages = [0, 1, 2, 3, 4, 5];
 
   return pages.map((page) => {
     if (page === currentPage)

@@ -28,7 +28,7 @@ import {
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
-  const { uploadedPets, setUploadedPets, addUploadedPet, userId } = useStore();
+  const { uploadedPets, setUploadedPets, addUploadedPet, userId, showErrorToast } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] =
@@ -39,9 +39,10 @@ const Upload = () => {
     setIsUploading(true);
 
     try {
-      let uploadPetResult = await uploadPetAPI(image, userId);
+      const uploadPetResult = await uploadPetAPI(image, userId);
       if (uploadPetResult) addUploadedPet(uploadPetResult);
     } catch (error: any) {
+      showErrorToast('Error while uploading the image');
       throw error;
     } finally {
       setIsUploading(false);
@@ -53,8 +54,7 @@ const Upload = () => {
 
     try {
       const data = await getUploadedPetsAPI(MAX_NUMBER_OF_UPLOADED, userId);
-      if (data) setUploadedPets(data);
-      else setUploadedPets([]);
+      setUploadedPets(data);
     } catch (error: any) {
       throw error;
     } finally {

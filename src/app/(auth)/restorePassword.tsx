@@ -80,7 +80,7 @@ const RestorePassword = () => {
         </PressableScale>
         <Text style={styles.textHeader}>Enter email</Text>
         <Text style={styles.hint}>
-          We will send a password reset code to the email address you provided
+          We will send a password reset link to the email address you provided
         </Text>
         <ScrollView style={styles.formContainer}>
           <FormProvider {...methods}>
@@ -102,7 +102,7 @@ const RestorePassword = () => {
             disabled={!methods.formState.isValid || isEmailSending}
             onPress={methods.handleSubmit(onSubmit)}
           >
-            Next
+            Send
           </Button>
         </View>
       </KeyboardAvoidingView>

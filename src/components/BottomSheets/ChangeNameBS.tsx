@@ -41,9 +41,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
         );
       }
     } catch (error: any) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      showErrorToast("Error updating user name: " + errorMessage);
+      showErrorToast("Error while updating user name");
     } finally {
       setIsLoading(false);
       hideBottomSheet();

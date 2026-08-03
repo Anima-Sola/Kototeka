@@ -68,19 +68,24 @@ const SignUp = () => {
 
       router.replace("/(main)");
     } catch (error: any) {
-      showErrorToast("Error during registration");
+      const message = JSON.stringify(error).indexOf(
+        "auth/email-already-in-use",
+      );
+      if (message !== -1)
+        showErrorToast("A user with this email address is already registered");
+      else showErrorToast("Error during registration");
     } finally {
       setIsRegistering(false);
     }
   }
 
   const repeatPasswordValue = methods.watch("password");
-  
-    useEffect(() => {
-      if (repeatPasswordValue !== undefined) {
-        methods.trigger("repeatPassword");
-      }
-    }, [repeatPasswordValue, methods]);
+
+  useEffect(() => {
+    if (repeatPasswordValue !== undefined) {
+      methods.trigger("repeatPassword");
+    }
+  }, [repeatPasswordValue, methods]);
 
   return (
     <LinearGradient

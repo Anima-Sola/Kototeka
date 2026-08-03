@@ -42,7 +42,6 @@ const Settings = () => {
   });
   const [theme, setTheme] = useState("system");
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
-  const [isLoggingOut, setIsLogginOut] = useState(false);
   const [isPetsSelecting, setIsPetsSelecting] = useState(false);
   const {
     setResolvedTheme,
@@ -68,19 +67,9 @@ const Settings = () => {
   };
 
   const logout = async () => {
-    try {
-      setIsLogginOut(true);
-
-      await signOut(auth);
-      setIsSignedIn(false);
-      router.replace("/(auth)/login");
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      showErrorToast("Error while loggin out: " + errorMessage);
-    } finally {
-      setIsLogginOut(false);
-    }
+    await signOut(auth);
+    setIsSignedIn(false);
+    router.replace("/(auth)/login");
   };
 
   const logoutAlert = () => {
@@ -107,10 +96,8 @@ const Settings = () => {
 
       methods.reset();
       showSuccessToast("Your password has been changed successfully");
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      showErrorToast("Error updating password: " + errorMessage);
+    } catch (error: any) {
+      showErrorToast("Error while updating password");
     } finally {
       setIsPasswordChanging(false);
     }
@@ -274,10 +261,7 @@ const Settings = () => {
                 />
               </View>
               <View style={styles.inputContainer}>
-                <PasswordInput
-                  name="newPassword"
-                  placeholder="New password"
-                />
+                <PasswordInput name="newPassword" placeholder="New password" />
               </View>
               <View style={styles.inputContainer}>
                 <RepeatPasswordInput
@@ -307,10 +291,9 @@ const Settings = () => {
           <View style={styles.logoutButtonContainer}>
             <Button
               mode={"contained"}
-              style={!isLoggingOut ? styles.button : styles.disabledButton}
+              style={styles.button}
               labelStyle={styles.labelButton}
               onPress={logoutAlert}
-              loading={isLoggingOut}
             >
               Log out
             </Button>
@@ -438,7 +421,7 @@ export const createStyles = (theme: ITheme) =>
       borderRadius: 20,
       height: 50,
       borderColor: theme.colors.disabled,
-      justifyContent: 'center',
+      justifyContent: "center",
     },
     segmentedButtonLabel: {
       fontSize: fontSizes.FONT18,
@@ -452,7 +435,7 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.mainText,
       lineHeight: 22,
     },
-    
+
     segmentedButtonSelected: {
       backgroundColor: theme.colors.accent,
     },

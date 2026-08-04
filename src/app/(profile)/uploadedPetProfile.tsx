@@ -28,7 +28,7 @@ const UploadedPetProfile = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
 
-  const breeds = false; //uploadedPet?.breeds;
+  const breeds = false; //uploadedPet?.breeds; - maybe in future need breeds for uploads
 
   const deletePet = async () => {
     setIsDeleting(true);

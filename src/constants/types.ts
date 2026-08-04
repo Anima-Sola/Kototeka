@@ -4,7 +4,7 @@ export type IconType = {
 };
 
 export type PetType = {
-  breeds: any[];
+  breeds: any;
   height: number;
   id: string;
   url: string;

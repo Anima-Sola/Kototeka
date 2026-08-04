@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Platform, Alert } from "react-native";
+import { router } from "expo-router";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import useStore from "../store/store";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldPlaySound: false,
-    shouldSetBadge: false,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
     shouldShowBanner: true,
     shouldShowList: true,
   }),
@@ -61,20 +63,6 @@ export const usePushNotifications = (): PushNotificationState => {
   };
 };
 
-async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
-      data: { data: "goes here", test: { test1: "more data" } },
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds: 2,
-    },
-  });
-}
-
 async function registerForPushNotificationsAsync() {
   let token;
 
@@ -118,4 +106,70 @@ async function registerForPushNotificationsAsync() {
   }
 
   return token;
+}
+
+export async function schedulePushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Hi, this is the pet of the day :)",
+      body: "I miss you. Please come over and give me a hug.",
+      data: {},
+    },
+    /*trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+      seconds: 10,
+    },*/
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      hour: 12,
+      minute: 0,
+    },
+  });
+}
+
+function redirectToNotificationScreen(isSignedIn: boolean | null) {
+  const targetRoute = isSignedIn
+    ? "/(petoftheday)/petoftheday"
+    : "/(auth)/login";
+
+  router.replace(targetRoute);
+}
+
+export function useNotificationObserver() {
+  const isAppReady = useStore((state) => state.isAppReady);
+  const isSignedIn = useStore((state) => state.isSignedIn);
+  const [pendingNotification, setPendingNotification] =
+    useState<Notifications.Notification | null>(null);
+
+  useEffect(() => {
+    const response = Notifications.getLastNotificationResponse();
+    if (response?.notification) {
+      setPendingNotification(response.notification);
+    }
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        setPendingNotification(response.notification);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!pendingNotification || !isAppReady) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      redirectToNotificationScreen(isSignedIn);
+      setPendingNotification(null);
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [pendingNotification, isAppReady, isSignedIn]);
+
+  return pendingNotification !== null;
 }

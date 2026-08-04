@@ -2,9 +2,9 @@ import { Redirect } from "expo-router";
 import useStore from "../store/store";
 
 export default function Index() {
-  const { isSignedIn, isOnboarding } = useStore();
+  const { isSignedIn, isOnboarding, isAppReady } = useStore();
 
-  if (isSignedIn === null) {
+  if (!isAppReady || isSignedIn === null) {
     return null;
   }
 

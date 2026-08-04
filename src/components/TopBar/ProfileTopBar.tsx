@@ -21,6 +21,7 @@ import {
 import useStore from "../../store/store";
 
 type ProfileTopBarProps = {
+  onBackIconPress?: () => void;
   isFavourite?: boolean;
   isFavouriteIconEnabled?: boolean;
   onFavouriteIconPress?: () => void;
@@ -31,6 +32,7 @@ type ProfileTopBarProps = {
 };
 
 const ProfileTopBar: FC<ProfileTopBarProps> = ({
+  onBackIconPress,
   isFavourite = false,
   onFavouriteIconPress,
   isFavouriteIconEnabled = false,
@@ -118,9 +120,14 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
     }
   };
 
+  const onBack = () => {
+    if(onBackIconPress) onBackIconPress();
+    else router.back();
+  }
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.icon} onPress={() => router.back()}>
+      <TouchableOpacity style={styles.icon} onPress={onBack}>
         <Feather name="arrow-left" size={32} color={styles.iconColor.color} />
       </TouchableOpacity>
       <View style={styles.shareIconsContainer}>

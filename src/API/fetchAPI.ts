@@ -20,14 +20,19 @@ const fetchAPI = async (
     if (!returnData) return;
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${JSON.stringify(response)}`);
+      throw {
+        status: response.status,
+      };
     }
 
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error while receiving data:", error);
-    store.showErrorToast("Error while receiving data");
+    if (error.status === 429)
+      store.showErrorToast(
+        'Too many requests. Add your own API key. Instructions in the "Settings" section.',
+      );
+    else store.showErrorToast("Error while receiving data.");
     throw error;
   }
 };

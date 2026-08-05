@@ -1,3 +1,4 @@
+import { Alert } from "react-native";
 import useStore from "../store/store";
 
 const fetchAPI = async (
@@ -17,11 +18,10 @@ const fetchAPI = async (
 
   try {
     const response = await fetch(store.baseUrl + url, options);
-    if (!returnData) return;
 
     if (!response.ok) {
       throw {
-        status: response.status,
+        status: 429,
       };
     }
 
@@ -29,10 +29,17 @@ const fetchAPI = async (
     return data;
   } catch (error: any) {
     if (error.status === 429)
-      store.showErrorToast(
-        'Too many requests. Add your own API key. Instructions in the "Settings" section.',
+      Alert.alert(
+        "Too many requests to the server",
+        'For more requests, please add your own API keys. Read more in the "Settings" tab.',
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
       );
-    else store.showErrorToast("Error while receiving data.");
+    else store.showErrorToast("Error while receiving data");
     throw error;
   }
 };

@@ -42,7 +42,8 @@ const Upload = () => {
       const uploadPetResult = await uploadPetAPI(image, userId);
       if (uploadPetResult) addUploadedPet(uploadPetResult);
     } catch (error: any) {
-      showErrorToast('Error while uploading the image');
+      if(error.status === 400) showErrorToast('Classifcation failed: correct pet not found.');
+      else showErrorToast('Error while uploading the image');
       throw error;
     } finally {
       setIsUploading(false);

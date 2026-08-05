@@ -11,18 +11,28 @@ const uploadPetAPI = async (imageUri: string, userId: string) => {
   formData.append("file", fileToUpload);
   formData.append("sub_id", userId);
 
-  const response = await fetch(store.baseUrl + URLs.upload, {
-    method: "POST",
-    body: formData,
+  try {
+    const response = await fetch(store.baseUrl + URLs.upload, {
+      method: "POST",
+      body: formData,
 
-    headers: {
-      Accept: "application/json",
-      "x-api-key": store.apiKey,
-    },
-  });
+      headers: {
+        Accept: "application/json",
+        "x-api-key": store.apiKey,
+      },
+    });
 
-  const responseData = await response.json();
-  return responseData;
+    if (!response.ok) {
+      throw {
+        status: response.status,
+      };
+    }
+
+    const responseData = await response.json();
+    return responseData;
+  } catch (error: any) {
+    throw error;
+  }
 };
 
 export default uploadPetAPI;

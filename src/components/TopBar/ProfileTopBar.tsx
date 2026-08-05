@@ -88,8 +88,7 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
           () => showSuccessToast("The image has been downloaded"),
           500,
         );
-    } catch (error) {
-      console.error("Error when downloading the image:", error);
+    } catch (error: any) {
       setTimeout(() => showErrorToast("Error when downloading the image"), 500);
     } finally {
       setDownloadProgress(0);

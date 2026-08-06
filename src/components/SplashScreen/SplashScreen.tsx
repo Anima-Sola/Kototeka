@@ -16,7 +16,6 @@ const backgroundImage = require("../../../assets/Images/splashImage.png");
 
 const SplashScreen = () => {
   const styles = useThemedStyles(createStyles);
-  const [loadingError, setLoadingError] = useState(false);
   const {
     isSignedIn,
     setIsAppReady,
@@ -84,8 +83,6 @@ const SplashScreen = () => {
   };
 
   const prepare = async () => {
-    setLoadingError(false);
-
     try {
       await loadFonts();
 
@@ -98,7 +95,6 @@ const SplashScreen = () => {
       }
     } catch (error: any) {
       openNoInternetBottomSheet();
-      setLoadingError(true);
     }
   };
 

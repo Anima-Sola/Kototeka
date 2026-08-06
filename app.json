@@ -61,9 +61,7 @@
           "photosPermission": "Разрешить доступ к фото",
           "savePhotosPermission": "Разрешить сохранение фото",
           "isAccessMediaLocationEnabled": true,
-          "granularPermissions": [
-            "photo"
-          ]
+          "granularPermissions": ["photo"]
         }
       ],
       [
@@ -75,7 +73,8 @@
       ],
       "expo-font",
       "expo-image",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-secure-store"
     ],
     "extra": {
       "router": {},

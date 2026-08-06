@@ -1,3 +1,13 @@
+import {
+  IAuthSlice,
+  IPetsSlice,
+  IFavouritePetsSlice,
+  IUploadedPetsSlice,
+  ISettingsSlice,
+  IToastSlice,
+  IApiSlice,
+} from "./interfaces";
+
 export type IconType = {
   size: number;
   color: string;
@@ -26,3 +36,11 @@ export type favouritePetType = {
     user_id: string,
   }
 }
+
+export type StoreState = IAuthSlice &
+  IPetsSlice &
+  IFavouritePetsSlice &
+  IUploadedPetsSlice &
+  ISettingsSlice &
+  IToastSlice &
+  IApiSlice;

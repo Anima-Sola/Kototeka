@@ -30,6 +30,8 @@ export const fetchPetsData = async () => {
 };
 
 const fetchUserData = async (userId: string) => {
+  console.log('fetch')
+
   try {
     const favouritePets = await getFavouritePetsAPI(userId);
     await getFavouritePetsBreeds(favouritePets);

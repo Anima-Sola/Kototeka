@@ -30,10 +30,9 @@ export const fetchPetsData = async () => {
 };
 
 const fetchUserData = async (userId: string) => {
-  console.log('fetch')
-
   try {
     const favouritePets = await getFavouritePetsAPI(userId);
+    store.setFavouritePets(favouritePets);
     await getFavouritePetsBreeds(favouritePets);
     const uploadedPets = await getUploadedPetsAPI(
       MAX_NUMBER_OF_UPLOADED,
@@ -41,7 +40,6 @@ const fetchUserData = async (userId: string) => {
     );
     const pets = await getPetsAPI(useStore.getState().filterRequestSettings);
     store.setPets(pets);
-    store.setFavouritePets(favouritePets);
     store.setUploadedPets(uploadedPets);
   } catch (error: any) {
     throw error;

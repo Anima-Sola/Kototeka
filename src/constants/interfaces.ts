@@ -3,13 +3,13 @@ import { PetType, favouritePetType } from "./types";
 export interface IAuthSlice {
   isSignedIn: boolean | null;
   isAppReady: boolean;
-  isFontsLoaded: boolean;
+  isHydrated: boolean;
   userName: string;
   userId: string;
   isOnboarding: boolean;
   setIsSignedIn: (value: boolean) => void;
   setIsAppReady: (value: boolean) => void; 
-  setIsFontsLoaded: (value: boolean) => void;
+  setIsHydrated: (value: boolean) => void;
   setUserName: (value: string) => void;
   setUserId: (value: string) => void;
   setIsOnBoarding: (value: boolean) => void;

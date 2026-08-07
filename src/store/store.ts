@@ -29,6 +29,9 @@ const useStore = create<StoreState>()(
       name: rootStorageKey,
       version: 1,
       storage: customStorage,
+      onRehydrateStorage: () => (state) => {
+        state?.setIsHydrated(true);
+      },
     },
   ),
 );

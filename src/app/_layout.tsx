@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { useColorScheme, Alert } from "react-native";
 import { Stack } from "expo-router";
 import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";

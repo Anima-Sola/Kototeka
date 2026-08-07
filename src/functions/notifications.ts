@@ -108,17 +108,20 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
+const PET_OF_THE_DAY_NOTIFICATION_ID = "pet-of-the-day-notification";
+
 export async function schedulePushNotification() {
+  await Notifications.cancelScheduledNotificationAsync(
+    PET_OF_THE_DAY_NOTIFICATION_ID,
+  );
+
   await Notifications.scheduleNotificationAsync({
+    identifier: PET_OF_THE_DAY_NOTIFICATION_ID,
     content: {
       title: "Hi, this is the pet of the day :)",
       body: "I miss you. Please come over and give me a hug.",
       data: {},
     },
-    /*trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds: 10,
-    },*/
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
       hour: 12,

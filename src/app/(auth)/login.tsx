@@ -32,11 +32,16 @@ const Login = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
+    userId,
     setIsSignedIn,
     showErrorToast,
     setUserId,
     setUserName,
     setIsOnBoarding,
+    setUserCatApiKey,
+    setUserDogApiKey,
+    setMode,
+    setApi,
   } = useStore();
   const [isLogging, setIsLogging] = useState(false);
   const { ...methods } = useForm<FormValues>({
@@ -56,11 +61,17 @@ const Login = () => {
         password,
       );
 
-      await fetchUserData(userCredential.user.uid);
+      if (userId !== userCredential.user.uid) {
+        setApi("cats");
+        await fetchUserData(userCredential.user.uid);
 
-      if (userCredential.user.displayName)
-        setUserName(userCredential.user.displayName);
-      setUserId(userCredential.user.uid);
+        if (userCredential.user.displayName)
+          setUserName(userCredential.user.displayName);
+        setUserId(userCredential.user.uid);
+        setUserCatApiKey("");
+        setUserDogApiKey("");
+        setMode("system");
+      }
       setIsSignedIn(true);
 
       router.replace("/(main)");

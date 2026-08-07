@@ -40,10 +40,11 @@ const Settings = () => {
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
-  const [theme, setTheme] = useState("system");
+  
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
   const [isPetsSelecting, setIsPetsSelecting] = useState(false);
   const {
+    mode,
     setResolvedTheme,
     setMode,
     setIsSignedIn,
@@ -54,6 +55,7 @@ const Settings = () => {
     setApi,
     userId,
   } = useStore();
+  const [theme, setTheme] = useState(mode);
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
   const openChangeNameBottomSheet = () => {

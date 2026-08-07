@@ -28,10 +28,14 @@ export const customStorage: PersistStorage<StoreState> = {
   setItem: async (name: string, storage) => {
     const state = storage.state ? storage.state : (storage as any);
     const secureValues = ["apiKey", "userCatApiKey", "userDogApiKey"];
+    const excludedValues = ["isAppReady", "isOnboarding", "isHydrated"];
     const secureState: Record<string, unknown> = {};
     const asyncState: Record<string, unknown> = {};
 
     for (const key in state) {
+      if (excludedValues.includes(key) || typeof state[key] === "function")
+        continue;
+
       if (secureValues.includes(key)) {
         secureState[key] = state[key];
       } else {

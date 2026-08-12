@@ -37,7 +37,9 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
       router.replace("/(auth)/login");
       setTimeout(() => showSuccessToast("Your account has been deleted"), 1000);
     } catch (error: any) {
-      showErrorToast("Error while deleting account");
+      const message = JSON.stringify(error).indexOf("auth/invalid-credential");
+      if (message !== -1) showErrorToast("Incorrect password");
+      else showErrorToast("Error while deleting account");
     } finally {
       setIsLoading(false);
       hideBottomSheet();

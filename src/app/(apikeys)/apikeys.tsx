@@ -20,10 +20,12 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
 import { CATS_BASE_URL, DOGS_BASE_URL } from "../../constants/urls";
+import checkApiKeyAPI from "../../API/checkApiKey";
 
 const ApiKeys = () => {
   const styles = useThemedStyles(createStyles);
   const {
+    userId,
     userCatApiKey,
     userDogApiKey,
     setUserCatApiKey,
@@ -34,6 +36,8 @@ const ApiKeys = () => {
   const router = useRouter();
   const [catApiKey, setCatApiKey] = useState(userCatApiKey);
   const [dogApiKey, setDogApiKey] = useState(userDogApiKey);
+  const [isChekingCatApiKey, setIsChekingCatApiKey] = useState(false);
+  const [isChekingDogApiKey, setIsChekingDogApiKey] = useState(false);
 
   const handleLink = async (link: string) => {
     const supported = await Linking.canOpenURL(link);
@@ -49,22 +53,38 @@ const ApiKeys = () => {
     return /^live_[A-Za-z0-9]{64}$/.test(value);
   };
 
-  const pasteCatApiKey = async () => {
-    const clipboardText = await Clipboard.getStringAsync();
-    if (!isKeyValid(clipboardText)) {
-      showErrorToast("The API key you are trying to paste is invalid.");
-      return;
-    }
-    setCatApiKey(clipboardText.trim());
-  };
+  const checkAndPasteApiKey = async (petsType: "cats" | "dogs") => {
+    if (petsType === "cats") setIsChekingCatApiKey(true);
+    else setIsChekingDogApiKey(true);
 
-  const pasteDogApiKey = async () => {
     const clipboardText = await Clipboard.getStringAsync();
-    if (!isKeyValid(clipboardText)) {
+    const pastedApiKey = clipboardText.trim();
+
+    if (!isKeyValid(pastedApiKey)) {
       showErrorToast("The API key you are trying to paste is invalid.");
+      setIsChekingCatApiKey(false);
+      setIsChekingDogApiKey(false);
       return;
     }
-    setDogApiKey(clipboardText.trim());
+
+    try {
+      const status = await checkApiKeyAPI(petsType, pastedApiKey, userId);
+      if (status !== 200)
+        throw {
+          status,
+        };
+
+      if (petsType === "cats") setCatApiKey(pastedApiKey);
+      else setDogApiKey(pastedApiKey);
+    } catch (error: any) {
+      if (error.status)
+        showErrorToast("The API key you are trying to paste is invalid.");
+      else showErrorToast("Error while adding api key");
+      return;
+    } finally {
+      setIsChekingCatApiKey(false);
+      setIsChekingDogApiKey(false);
+    }
   };
 
   const removeCatApiKey = () => setCatApiKey("");
@@ -123,7 +143,8 @@ const ApiKeys = () => {
               mode={"contained"}
               style={styles.pasteButton}
               labelStyle={styles.pasteLabelButton}
-              onPress={pasteCatApiKey}
+              onPress={() => checkAndPasteApiKey("cats")}
+              loading={isChekingCatApiKey}
             >
               Paste
             </Button>
@@ -152,7 +173,8 @@ const ApiKeys = () => {
               mode={"contained"}
               style={styles.pasteButton}
               labelStyle={styles.pasteLabelButton}
-              onPress={pasteDogApiKey}
+              onPress={() => checkAndPasteApiKey("dogs")}
+              loading={isChekingDogApiKey}
             >
               Paste
             </Button>

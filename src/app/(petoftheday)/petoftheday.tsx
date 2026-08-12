@@ -69,7 +69,7 @@ const PetOfTheDay = () => {
       setPetOfTheDay(pet[0]);
       setIsLoading(false);
     } catch (error: any) {
-      router.replace('(main)/home');
+      router.dismissTo("/(main)");
       throw error;
     }
   };
@@ -158,7 +158,7 @@ const PetOfTheDay = () => {
       </ScrollView>
       <View style={styles.topBarContainer}>
         <ProfileTopBar
-          onBackIconPress={() => router.replace("(main)/home")}
+          onBackIconPress={() => router.dismissTo("/(main)")}
           isFavouriteIconEnabled={true}
           isFavourite={Boolean(favouritePet)}
           isRequestInProcess={isFavouriteToggling}
@@ -171,9 +171,9 @@ const PetOfTheDay = () => {
           mode={"contained"}
           style={styles.buttonStyle}
           labelStyle={styles.labelStyle}
-          onPress={() => router.replace("(main)/home")}
+          onPress={() => router.dismissTo("/(main)")}
         >
-          Go home
+          Go to the gallery
         </Button>
       </View>
     </View>

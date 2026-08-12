@@ -40,9 +40,10 @@ const Settings = () => {
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
-  
+
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
   const [isPetsSelecting, setIsPetsSelecting] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const {
     mode,
     setResolvedTheme,
@@ -69,9 +70,17 @@ const Settings = () => {
   };
 
   const logout = async () => {
-    await signOut(auth);
-    setIsSignedIn(false);
-    router.replace("/(auth)/login");
+    setIsLoggingOut(true);
+
+    try {
+      await signOut(auth);
+      setIsSignedIn(false);
+      router.replace("/(auth)/login");
+    } catch (error: any) {
+      throw error;
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const logoutAlert = () => {
@@ -99,7 +108,10 @@ const Settings = () => {
       methods.reset();
       showSuccessToast("Your password has been changed successfully");
     } catch (error: any) {
-      showErrorToast("Error while updating password");
+      const message = JSON.stringify(error).indexOf("auth/invalid-credential");
+      if (message !== -1)
+        showErrorToast("Incorrect current password");
+      else showErrorToast("Error while updating password");
     } finally {
       setIsPasswordChanging(false);
     }
@@ -296,6 +308,7 @@ const Settings = () => {
               style={styles.button}
               labelStyle={styles.labelButton}
               onPress={logoutAlert}
+              loading={isLoggingOut}
             >
               Log out
             </Button>

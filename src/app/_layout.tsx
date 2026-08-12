@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useColorScheme, Alert } from "react-native";
+import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";
 import useStore from "../store/store";
 import Wrapper from "../components/Wrapper/Wrapper";
@@ -39,15 +39,6 @@ export default function RootLayout() {
     );
   }
 
-  if (isOnboarding && !isSignedIn)
-    return (
-      <OnboardingAuthWrapper>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(onboarding)" />
-        </Stack>
-      </OnboardingAuthWrapper>
-    );
-
   return (
     <>
       {isSignedIn ? (
@@ -62,7 +53,11 @@ export default function RootLayout() {
       ) : (
         <OnboardingAuthWrapper>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(auth)" />
+            {isOnboarding ? (
+              <Stack.Screen name="(onboarding)" />
+            ) : (
+              <Stack.Screen name="(auth)" />
+            )}
           </Stack>
         </OnboardingAuthWrapper>
       )}

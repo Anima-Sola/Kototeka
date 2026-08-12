@@ -167,8 +167,11 @@ export function useNotificationObserver() {
     }
 
     const timeoutId = setTimeout(() => {
-      redirectToNotificationScreen(isSignedIn);
       setPendingNotification(null);
+
+      Notifications.clearLastNotificationResponse();
+
+      redirectToNotificationScreen(isSignedIn);
     }, 0);
 
     return () => clearTimeout(timeoutId);

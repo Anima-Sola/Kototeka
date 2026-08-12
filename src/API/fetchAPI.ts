@@ -4,7 +4,6 @@ import useStore from "../store/store";
 const fetchAPI = async (
   url: string,
   options: any,
-  returnData: boolean = true,
 ) => {
   const store = useStore.getState();
   let apiKey = store.apiKey;
@@ -23,6 +22,13 @@ const fetchAPI = async (
       throw {
         status: 429,
       };
+    }
+
+    if (
+      response.status === 204 ||
+      response.headers.get("content-length") === "0"
+    ) {
+      return null;
     }
 
     const data = await response.json();

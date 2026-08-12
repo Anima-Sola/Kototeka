@@ -5,7 +5,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import NetInfo from "@react-native-community/netinfo";
 import { auth } from "../../../firebaseConfig";
 import * as Font from "expo-font";
-import { NavigationBar } from "expo-navigation-bar";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import useStore from "../../store/store";
@@ -16,8 +15,8 @@ const SplashScreen = () => {
   const styles = useThemedStyles(createStyles);
   const { isSignedIn, isHydrated, setIsAppReady, setIsSignedIn } = useStore();
   const [isFontsLoaded, setIsFontsLoaded] = useState(false);
+  const [isAuthResolved, setIsAuthResolved] = useState(false);
 
-  //Google authentication state listener
   useEffect(() => {
     if (!isHydrated) return;
 
@@ -29,34 +28,26 @@ const SplashScreen = () => {
         return;
       }
 
-      if (currentUser) {
-        console.log(
-          "User is logged in:",
-          currentUser.email,
-          "User id: ",
-          currentUser.uid,
-        );
-        setIsSignedIn(true);
-      } else {
-        console.log("User is logged out");
-        setIsSignedIn(false);
-      }
+      setIsSignedIn(!!currentUser);
+      setIsAuthResolved(true);
     });
 
-    return () => unsubscribe();
+    return unsubscribe;
   }, [isHydrated]);
 
   useEffect(() => {
-    if (!isHydrated) return;
-    prepare();
-  }, [isSignedIn, isHydrated]);
+    if (!isHydrated || !isAuthResolved) return;
 
-  const prepare = async () => {
-    await loadFonts();
-    if (isSignedIn !== null) {
-      setTimeout(() => setIsAppReady(true), 2000);
-    }
-  };
+    const prepare = async () => {
+      await loadFonts();
+
+      setTimeout(() => {
+        setIsAppReady(true);
+      }, 2000);
+    };
+
+    prepare();
+  }, [isHydrated, isAuthResolved]);
 
   const loadFonts = async () => {
     try {
@@ -84,7 +75,6 @@ const SplashScreen = () => {
           color={styles.activityIndicatorColor.color}
         />
       </View>
-      <NavigationBar hidden={false} />
     </View>
   );
 };

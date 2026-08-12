@@ -135,7 +135,7 @@ function redirectToNotificationScreen(isSignedIn: boolean | null) {
     ? "/(petoftheday)/petoftheday"
     : "/(auth)/login";
 
-  router.replace(targetRoute);
+  router.dismissTo(targetRoute);
 }
 
 export function useNotificationObserver() {

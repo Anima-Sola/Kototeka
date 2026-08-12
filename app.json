@@ -35,7 +35,8 @@
       ],
       "package": "com.anonymous.Kototeka",
       "googleServicesFile": "./google-services.json",
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "allowBackup": false
     },
     "web": {
       "favicon": "./assets/favicon.png"

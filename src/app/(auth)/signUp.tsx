@@ -74,6 +74,7 @@ const SignUp = () => {
       if (message !== -1)
         showErrorToast("A user with this email address is already registered");
       else showErrorToast("Error during registration");
+      setIsSignedIn(false);
     } finally {
       setIsRegistering(false);
     }

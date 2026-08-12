@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Colors from "../../constants/colors";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 

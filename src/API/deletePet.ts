@@ -11,7 +11,6 @@ const deletePetAPI = async (id: string | number) => {
       method: "DELETE",
       headers,
     },
-    false,
   );
 };
 

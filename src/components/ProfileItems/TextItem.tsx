@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";

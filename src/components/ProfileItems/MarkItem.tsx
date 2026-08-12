@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { View, StyleSheet, Text, Platform } from "react-native";
-import Colors from "../../constants/colors";
 import fontSizes from "../../constants/fontSizes";
 import RatingRects from "../RatingRects/RatingRects";
 import { useThemedStyles } from "../../hooks/useThemedStyles";

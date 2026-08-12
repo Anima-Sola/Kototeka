@@ -80,6 +80,7 @@ const Login = () => {
       if (message !== -1)
         showErrorToast("Incorrect email address or/and password");
       else showErrorToast("Login error");
+      setIsSignedIn(false);
     } finally {
       setIsLogging(false);
     }

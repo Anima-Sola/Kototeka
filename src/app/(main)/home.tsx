@@ -7,11 +7,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
 import getPetsAPI from "../../API/getPets";
 import PetCard from "../../components/PetCard/PetCard";
 import useStore from "../../store/store";
 import TopBar from "../../components/TopBar/TopBar";
-import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
 import { PetType } from "../../constants/types";
 import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
@@ -20,6 +20,7 @@ import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import FilterBS from "../../components/BottomSheets/FilterBS";
 import { MAX_NUMBER_OF_PHOTOS } from "../../constants/common";
 import { fetchPetsData } from "../../API/fetchUserData";
+import fetchUserData from "../../API/fetchUserData";
 
 const Home = () => {
   const {
@@ -28,11 +29,13 @@ const Home = () => {
     filterRequestSettings,
     isFiltersChanged,
     setIsFiltersChanged,
+    isApiChanged,
+    setIsApiChanged,
+    userId,
   } = useStore();
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingPetsLoading, setIsAddingPetsLoading] = useState(false);
-  const [isFilteredLoading, setIsFilteredLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
@@ -62,29 +65,27 @@ const Home = () => {
       throw error;
     } finally {
       setIsLoading(false);
-      setIsFilteredLoading(false);
     }
   };
 
   useEffect(() => {
-    if (isFiltersChanged) {
-      setIsFilteredLoading(true);
-      refreshPetsList();
-      setIsFiltersChanged(false);
-    }
-  }, [isFiltersChanged]);
+    const updatePets = async () => {
+      try {
+        if (isApiChanged) {
+          await fetchUserData(userId);
+        } else {
+          await fetchPetsData();
+        }
+      } catch (error: any) {
+        throw error;
+      } finally {
+        setIsFiltersChanged(false);
+        setIsApiChanged(false);
+      }
+    };
 
-  if (isFilteredLoading) {
-    return (
-      <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
-        <View style={styles.loadingContainer}>
-          <PaperActivityIndicator size={"large"} />
-          <Text style={styles.text}>Pets are coming!</Text>
-        </View>
-      </View>
-    );
-  }
+    if (isApiChanged || isFiltersChanged) updatePets();
+  }, [isApiChanged, isFiltersChanged]);
 
   const openFilterBottomSheet = () => {
     showBottomSheet(<FilterBS hideBottomSheet={hideBottomSheet} />);
@@ -92,7 +93,11 @@ const Home = () => {
 
   const keyExtractor = (item: PetType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: PetType }) => (
-    <PetCard pet={item} numOfColumns={numColumns} />
+    <PetCard
+      pet={item}
+      numOfColumns={numColumns}
+      isListRefreshing={isLoading}
+    />
   );
 
   const footerComponent = () => {
@@ -115,6 +120,18 @@ const Home = () => {
     );
   };
 
+  if (isApiChanged || isFiltersChanged) {
+    return (
+      <View style={styles.container}>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <View style={styles.loadingContainer}>
+          <PaperActivityIndicator size={"large"} />
+          <Text style={styles.text}>Pets are coming!</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -132,12 +149,15 @@ const Home = () => {
         maxToRenderPerBatch={20}
         contentContainerStyle={styles.flatListContent}
         scrollIndicatorInsets={{ top: 60 }}
+        progressViewOffset={30}
       />
       <View style={styles.topBarContainer}>
         <TopBar
           setNumOfColumns={setNumOfColumns}
           numOfColumns={numColumns}
-          onFilterPress={openFilterBottomSheet}
+          onFilterPress={() => {
+            if (!isLoading) openFilterBottomSheet();
+          }}
         />
       </View>
     </View>

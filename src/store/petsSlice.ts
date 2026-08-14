@@ -9,6 +9,7 @@ export const createPetsSlice = (set: any, get: any, api: any): IPetsSlice => ({
     has_breeds: false,
   },
   isFiltersChanged: false,
+  isApiChanged: false,
   setPets: (value: Array<PetType>) =>
     set({
       pets: value,
@@ -27,5 +28,9 @@ export const createPetsSlice = (set: any, get: any, api: any): IPetsSlice => ({
   setIsFiltersChanged: (value: boolean) =>
     set({
       isFiltersChanged: value,
+    }),
+  setIsApiChanged: (value: boolean) =>
+    set({
+      isApiChanged: value,
     }),
 });

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
+import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
 import getFavouritePetsAPI from "../../API/getFavouritePets";
 import FavouritePetCard from "../../components/PetCard/FavouritePetCard";
 import useStore from "../../store/store";
@@ -13,7 +14,7 @@ import { getFavouritePetsBreeds } from "../../API/fetchUserData";
 
 const Favourites = () => {
   const styles = useThemedStyles(createStyles);
-  const { favouritePets, setFavouritePets, userId } = useStore();
+  const { favouritePets, setFavouritePets, userId, isApiChanged } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
 
@@ -34,8 +35,24 @@ const Favourites = () => {
   const keyExtractor = (item: favouritePetType, index: number) =>
     `${item.id}_${index}`;
   const renderItem = ({ item }: { item: favouritePetType }) => (
-    <FavouritePetCard pet={item} numOfColumns={numColumns} />
+    <FavouritePetCard
+      pet={item}
+      numOfColumns={numColumns}
+      isListRefreshing={isLoading}
+    />
   );
+
+  if (isApiChanged) {
+    return (
+      <View style={styles.container}>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <View style={styles.loadingContainer}>
+          <PaperActivityIndicator size={"large"} />
+          <Text style={styles.text}>Pets are coming!</Text>
+        </View>
+      </View>
+    );
+  }
 
   if (!favouritePets || favouritePets.length === 0)
     return (
@@ -64,6 +81,7 @@ const Favourites = () => {
         ListFooterComponent={<View style={styles.footer} />}
         contentContainerStyle={styles.flatListContent}
         scrollIndicatorInsets={{ top: 60 }}
+        progressViewOffset={30}
       />
       <View style={styles.topBarContainer}>
         <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
@@ -73,6 +91,11 @@ const Favourites = () => {
 };
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
+    loadingContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      paddingTop: 200,
+    },
     emptyContainer: {
       flex: 1,
       backgroundColor: theme.colors.main,

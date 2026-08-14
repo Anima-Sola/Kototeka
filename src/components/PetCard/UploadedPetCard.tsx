@@ -23,9 +23,14 @@ import fontSizes from "../../constants/fontSizes";
 type PetCardProps = {
   pet: PetType;
   numOfColumns: number;
+  isListRefreshing: boolean;
 };
 
-const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
+const UploadedPetCard: FC<PetCardProps> = ({
+  pet,
+  numOfColumns,
+  isListRefreshing,
+}) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const { deleteUploadedPet } = useStore();
@@ -85,12 +90,13 @@ const UploadedPetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
         )}
       </View>
       <PressableScale
-        onPress={() =>
-          router.push({
-            pathname: "/uploadedPetProfile",
-            params: { petId: pet.id },
-          })
-        }
+        onPress={() => {
+          if (!isListRefreshing)
+            router.push({
+              pathname: "/uploadedPetProfile",
+              params: { petId: pet.id },
+            });
+        }}
       >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}

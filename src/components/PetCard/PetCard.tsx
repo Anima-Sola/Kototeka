@@ -20,9 +20,10 @@ import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
 type PetCardProps = {
   pet: PetType;
   numOfColumns: number;
+  isListRefreshing: boolean;
 };
 
-const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
+const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const {
@@ -101,9 +102,10 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
         )}
       </View>
       <PressableScale
-        onPress={() =>
-          router.push({ pathname: "/petProfile", params: { petId: pet.id } })
-        }
+        onPress={() => {
+          if (!isListRefreshing)
+            router.push({ pathname: "/petProfile", params: { petId: pet.id } });
+        }}
       >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}

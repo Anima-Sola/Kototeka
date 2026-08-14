@@ -16,9 +16,14 @@ import { ITheme } from "../../constants/interfaces";
 type PetCardProps = {
   pet: favouritePetType;
   numOfColumns: number;
+  isListRefreshing: boolean;
 };
 
-const FavouritePetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
+const FavouritePetCard: FC<PetCardProps> = ({
+  pet,
+  numOfColumns,
+  isListRefreshing,
+}) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const { deleteFavouritePet } = useStore();
@@ -60,12 +65,13 @@ const FavouritePetCard: FC<PetCardProps> = ({ pet, numOfColumns }) => {
         )}
       </View>
       <PressableScale
-        onPress={() =>
-          router.push({
-            pathname: "/favouritePetProfile",
-            params: { petId: pet.id },
-          })
-        }
+        onPress={() => {
+          if (!isListRefreshing)
+            router.push({
+              pathname: "/favouritePetProfile",
+              params: { petId: pet.id },
+            });
+        }}
       >
         <Image
           style={{ ...styles.image, width: imageWidth, height: imageWidth }}

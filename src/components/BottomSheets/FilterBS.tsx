@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { View, StyleSheet, ScrollView, Text, Platform } from "react-native";
 import useStore from "../../store/store";
-import { Button } from "react-native-paper";
+import { Button, SegmentedButtons } from "react-native-paper";
 import { ITheme } from "../../constants/interfaces";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import fontSizes from "../../constants/fontSizes";
@@ -20,26 +20,81 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
     filterRequestSettings,
     setFilterRequestSettings,
     setIsFiltersChanged,
+    petsType,
+    setApi,
+    setIsApiChanged,
   } = useStore();
+  const [currentPetsType, setCurrentPetsType] = useState(petsType);
   const [limit, setLimit] = useState(filterRequestSettings.limit);
   const [hasBreeds, setHasBreeds] = useState(filterRequestSettings.has_breeds);
 
   const isFiltersChanged =
     limit !== filterRequestSettings.limit ||
-    hasBreeds !== filterRequestSettings.has_breeds;
+    hasBreeds !== filterRequestSettings.has_breeds ||
+    currentPetsType !== petsType;
 
   const onSavePress = () => {
-    setFilterRequestSettings({
-      limit: limit,
-      has_breeds: hasBreeds,
-    });
-    setIsFiltersChanged(true);
+    if (
+      filterRequestSettings.limit !== limit ||
+      filterRequestSettings.has_breeds !== hasBreeds
+    ) {
+      setFilterRequestSettings({
+        limit: limit,
+        has_breeds: hasBreeds,
+      });
+      setIsFiltersChanged(true);
+    }
+    if (petsType !== currentPetsType) {
+      setApi(currentPetsType);
+      setIsApiChanged(true);
+    }
     hideBottomSheet();
+  };
+
+  const changePets = async (value: "cats" | "dogs") => {
+    if (value === currentPetsType) return;
+    setCurrentPetsType(value);
   };
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <BottomSheetTopBar title={"Filters"} />
+      <View style={styles.textContainer}>
+        <Text style={styles.queryParamText}>Pets Selection</Text>
+      </View>
+      <View style={styles.segmentedButtonsContainer}>
+        <SegmentedButtons
+          value={currentPetsType}
+          onValueChange={changePets}
+          density={"regular"}
+          buttons={[
+            {
+              value: "cats",
+              label: "Cats",
+              labelStyle:
+                currentPetsType === "cats"
+                  ? styles.segmentedButtonLabel
+                  : styles.segmentedButtonLabelSelected,
+              style: [
+                styles.segmentedButtonItem,
+                currentPetsType === "cats" && styles.segmentedButtonSelected,
+              ],
+            },
+            {
+              value: "dogs",
+              label: "Dogs",
+              labelStyle:
+                currentPetsType === "dogs"
+                  ? styles.segmentedButtonLabel
+                  : styles.segmentedButtonLabelSelected,
+              style: [
+                styles.segmentedButtonItem,
+                currentPetsType === "dogs" && styles.segmentedButtonSelected,
+              ],
+            },
+          ]}
+        />
+      </View>
       <View style={styles.textContainer}>
         <Text style={styles.queryParamText}>Number Of Loading Photos</Text>
       </View>
@@ -109,7 +164,6 @@ export const createStyles = (theme: ITheme) =>
     },
     textContainer: {
       marginHorizontal: 6,
-      marginTop: 20,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -118,6 +172,30 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.mainText,
       fontSize: fontSizes.FONT16,
       fontFamily: "ShantellRegular",
+    },
+    segmentedButtonsContainer: {
+      marginBottom: 10,
+    },
+    segmentedButtonItem: {
+      borderRadius: 20,
+      height: 50,
+      borderColor: theme.colors.disabled,
+      justifyContent: "center",
+    },
+    segmentedButtonLabel: {
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      color: theme.colors.secondary,
+      lineHeight: 22,
+    },
+    segmentedButtonLabelSelected: {
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      color: theme.colors.mainText,
+      lineHeight: 22,
+    },
+    segmentedButtonSelected: {
+      backgroundColor: theme.colors.accent,
     },
     limitTextContainer: {
       marginHorizontal: 6,

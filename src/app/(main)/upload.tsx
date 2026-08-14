@@ -13,6 +13,7 @@ import TopBar from "../../components/TopBar/TopBar";
 import fontSizes from "../../constants/fontSizes";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
 import uploadPetAPI from "../../API/uploadPet";
 import UploadedPetCard from "../../components/PetCard/UploadedPetCard";
 import { PetType } from "../../constants/types";
@@ -28,7 +29,14 @@ import {
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
-  const { uploadedPets, setUploadedPets, addUploadedPet, userId, showErrorToast } = useStore();
+  const {
+    uploadedPets,
+    setUploadedPets,
+    addUploadedPet,
+    userId,
+    showErrorToast,
+    isApiChanged,
+  } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] =
@@ -42,8 +50,9 @@ const Upload = () => {
       const uploadPetResult = await uploadPetAPI(image, userId);
       if (uploadPetResult) addUploadedPet(uploadPetResult);
     } catch (error: any) {
-      if(error.status === 400) showErrorToast('Classifcation failed: correct pet not found.');
-      else showErrorToast('Error while uploading the image');
+      if (error.status === 400)
+        showErrorToast("Classifcation failed: correct pet not found.");
+      else showErrorToast("Error while uploading the image");
       throw error;
     } finally {
       setIsUploading(false);
@@ -150,8 +159,24 @@ const Upload = () => {
 
   const keyExtractor = (item: PetType, index: number) => `${item.id}_${index}`;
   const renderItem = ({ item }: { item: PetType }) => (
-    <UploadedPetCard pet={item} numOfColumns={numColumns} />
+    <UploadedPetCard
+      pet={item}
+      numOfColumns={numColumns}
+      isListRefreshing={isLoading}
+    />
   );
+
+  if (isApiChanged) {
+    return (
+      <View style={styles.container}>
+        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <View style={styles.loadingContainer}>
+          <PaperActivityIndicator size={"large"} />
+          <Text style={styles.loadingText}>Pets are coming!</Text>
+        </View>
+      </View>
+    );
+  }
 
   if (uploadedPets.length === 0) {
     return (
@@ -184,6 +209,7 @@ const Upload = () => {
         ListFooterComponent={<View style={styles.footer} />}
         contentContainerStyle={styles.flatListContent}
         scrollIndicatorInsets={{ top: 60 }}
+        progressViewOffset={30}
       />
       <View style={styles.topBarContainer}>
         <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
@@ -196,6 +222,11 @@ const Upload = () => {
 
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
+    loadingContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      paddingTop: 200,
+    },
     container: {
       flex: 1,
       backgroundColor: theme.colors.main,
@@ -230,14 +261,14 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT32,
       color: theme.colors.accent,
     },
-    emptyText: {
+    loadingText: {
       fontSize: fontSizes.FONT32,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
       alignSelf: "center",
       marginTop: 10,
     },
-    loadingText: {
+    emptyText: {
       fontSize: fontSizes.FONT32,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",

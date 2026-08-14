@@ -254,7 +254,7 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellRegular",
       color: theme.colors.mainText,
-      textAlign: "justify",
+      textAlign: Platform.OS === "android" ? "left" : "justify",
     },
     link: {
       color: "blue",

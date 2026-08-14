@@ -22,10 +22,12 @@ export interface IPetsSlice {
     has_breeds: boolean;
   };
   isFiltersChanged: boolean;
+  isApiChanged: boolean;
   setPets: (value: Array<PetType>) => void;
   addPets: (value: Array<PetType>) => void;
   setFilterRequestSettings: (value: { limit: number; has_breeds: boolean }) => void;
   setIsFiltersChanged: (value: boolean) => void;
+  setIsApiChanged: (value: boolean) => void;
 }
 
 export interface IFavouritePetsSlice {

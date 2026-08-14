@@ -57,10 +57,6 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your camera</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Expo Dev Launcher uses the local network to discover and connect to development servers running on your computer.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your microphone</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Разрешить сохранение фото</string>
 	<key>NSPhotoLibraryUsageDescription</key>

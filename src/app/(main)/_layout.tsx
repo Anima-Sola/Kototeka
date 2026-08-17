@@ -48,6 +48,16 @@ const IOsTabs = () => {
           md="home"
         />
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="facts">
+        <NativeTabs.Trigger.Label>Facts</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf={{
+            default: "book.pages",
+            selected: "book.pages.fill",
+          }}
+          md="home"
+        />
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="settings">
         <NativeTabs.Trigger.Icon sf="gear" md="settings" />
         <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
@@ -120,6 +130,19 @@ const AndroidTabs = () => {
           tabBarIcon: ({ focused }) => (
             <Feather
               name="upload"
+              size={28}
+              color={focused ? styles.active.color : styles.nonActive.color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="facts"
+        options={{
+          tabBarLabel: "Facts",
+          tabBarIcon: ({ focused }) => (
+            <Feather
+              name="file-text"
               size={28}
               color={focused ? styles.active.color : styles.nonActive.color}
             />

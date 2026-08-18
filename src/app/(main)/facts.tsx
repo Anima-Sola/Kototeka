@@ -6,86 +6,40 @@ import {
   ScrollView,
   RefreshControl,
 } from "react-native";
-import {
-  Button,
-  ActivityIndicator as PaperActivityIndicator,
-} from "react-native-paper";
+import { Button } from "react-native-paper";
 import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
-import getDogFactsAPI from "../../API/FactsAPI/getDogFacts";
-import getCatFactsAPI from "../../API/FactsAPI/getCatFacts";
 import FactItem from "../../components/FactItem/FactItem";
+import { CAT_FACTS } from "../../constants/catFacts";
+import { DOG_FACTS } from "../../constants/dogFacts";
 
 const Facts = () => {
   const { petsType } = useStore();
   const styles = useThemedStyles(createStyles);
-  const [isLoading, setIsLoading] = useState(false);
   const [facts, setFacts] = useState<string[]>([]);
 
-  const getRandomPage = (min: number = 1, max: number = 34): number => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
+  function getRandomFacts(arr: string[], count = 5): string[] {
+    const result = [...arr];
 
-  const getCatFacts = async () => {
-    setIsLoading(true);
-
-    try {
-      let result = await getCatFactsAPI();
-      const facts: string[] = [];
-      const lastPage = result.last_page;
-
-      const randomPage = getRandomPage(1, lastPage);
-      result = await getCatFactsAPI(randomPage);
-      result.data.map((fact: any) => {
-        facts.push(fact.fact);
-      });
-      setFacts(facts);
-    } catch (error: any) {
-      throw error;
-    } finally {
-      setIsLoading(false);
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
     }
-  };
 
-  const getDogFacts = async () => {
-    setIsLoading(true);
-
-    try {
-      const result = await getDogFactsAPI();
-      const facts: string[] = [];
-      result.data.map((fact: any) => {
-        facts.push(fact.attributes.body);
-      });
-
-      setFacts(facts);
-    } catch (error: any) {
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    return result.slice(0, count);
+  }
 
   const getNewFacts = () => {
-    if (petsType === "cats") getCatFacts();
-    else getDogFacts();
+    if (petsType === "cats") {
+      setFacts(getRandomFacts(CAT_FACTS));
+    } else setFacts(getRandomFacts(DOG_FACTS));
   };
 
   useEffect(() => {
     getNewFacts();
   }, [petsType]);
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <PaperActivityIndicator size={"large"} />
-          <Text style={styles.text}>Facts are coming!</Text>
-        </View>
-      </View>
-    );
-  }
 
   const showFacts = () => {
     return facts.map((fact, key) => {
@@ -98,10 +52,7 @@ const Facts = () => {
       <ScrollView
         alwaysBounceVertical
         refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={getNewFacts}
-          />
+          <RefreshControl refreshing={false} onRefresh={getNewFacts} />
         }
         style={styles.content}
       >

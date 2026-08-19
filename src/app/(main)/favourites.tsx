@@ -11,6 +11,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import { getFavouritePetsBreeds } from "../../API/fetchUserData";
+import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
 
 const Favourites = () => {
   const styles = useThemedStyles(createStyles);
@@ -28,7 +29,10 @@ const Favourites = () => {
     setIsLoading(true);
 
     try {
-      const favouritePets = await getFavouritePetsAPI(userId);
+      const favouritePets = await getFavouritePetsAPI(
+        userId,
+        MAX_NUMBER_OF_FAVOURITES,
+      );
       setFavouritePets(favouritePets);
       await getFavouritePetsBreeds(favouritePets);
     } catch (error: any) {

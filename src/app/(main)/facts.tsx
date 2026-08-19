@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ const Facts = () => {
   const { petsType } = useStore();
   const styles = useThemedStyles(createStyles);
   const [facts, setFacts] = useState<string[]>([]);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   function getRandomFacts(arr: string[], count = 5): string[] {
     const result = [...arr];
@@ -35,6 +36,11 @@ const Facts = () => {
     if (petsType === "cats") {
       setFacts(getRandomFacts(CAT_FACTS));
     } else setFacts(getRandomFacts(DOG_FACTS));
+
+    scrollViewRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
   };
 
   useEffect(() => {
@@ -50,6 +56,7 @@ const Facts = () => {
   return (
     <View style={styles.container}>
       <ScrollView
+        ref={scrollViewRef}
         alwaysBounceVertical
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={getNewFacts} />

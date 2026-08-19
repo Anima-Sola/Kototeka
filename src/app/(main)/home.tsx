@@ -32,6 +32,7 @@ const Home = () => {
     isApiChanged,
     setIsApiChanged,
     userId,
+    showErrorToast,
   } = useStore();
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +51,7 @@ const Home = () => {
       const data = await getPetsAPI(filterRequestSettings);
       addPets(data);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsAddingPetsLoading(false);
     }
@@ -62,7 +63,7 @@ const Home = () => {
     try {
       await fetchPetsData();
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +78,7 @@ const Home = () => {
           await fetchPetsData();
         }
       } catch (error: any) {
-        throw error;
+        showErrorToast(error.message);
       } finally {
         setIsFiltersChanged(false);
         setIsApiChanged(false);

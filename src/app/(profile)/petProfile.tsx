@@ -34,6 +34,7 @@ const PetProfile = () => {
     addFavouritePet,
     deleteFavouritePet,
     addFavoritePetBreeds,
+    showErrorToast,
   } = useStore();
   const styles = useThemedStyles(createStyles);
   const { petId } = useLocalSearchParams<{ petId: string }>();
@@ -67,7 +68,7 @@ const PetProfile = () => {
       addFavouritePet(addedFavouritePet);
       if (breeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -81,7 +82,7 @@ const PetProfile = () => {
       const data = await deleteFavouritePetAPI(favouritePet.id);
       deleteFavouritePet(favouritePet.id);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -96,7 +97,10 @@ const PetProfile = () => {
     <View style={styles.container}>
       <ScrollView style={styles.content}>
         <Image
-          style={{ width: imageWidth, height: imageWidth }}
+          style={{
+            width: imageWidth,
+            height: imageWidth * (pet?.height / pet?.width),
+          }}
           source={pet?.url}
           placeholder={{ blurhash }}
           contentFit="cover"

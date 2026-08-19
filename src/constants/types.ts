@@ -34,6 +34,8 @@ export type favouritePetType = {
     image_id: string,
     sub_id: boolean,
     user_id: string,
+    width: number,
+    height: number,
   }
 }
 

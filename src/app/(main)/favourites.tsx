@@ -14,7 +14,13 @@ import { getFavouritePetsBreeds } from "../../API/fetchUserData";
 
 const Favourites = () => {
   const styles = useThemedStyles(createStyles);
-  const { favouritePets, setFavouritePets, userId, isApiChanged } = useStore();
+  const {
+    favouritePets,
+    setFavouritePets,
+    userId,
+    isApiChanged,
+    showErrorToast,
+  } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [numColumns, setNumOfColumns] = useState(2);
 
@@ -26,7 +32,7 @@ const Favourites = () => {
       setFavouritePets(favouritePets);
       await getFavouritePetsBreeds(favouritePets);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsLoading(false);
     }

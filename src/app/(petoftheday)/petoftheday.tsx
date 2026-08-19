@@ -36,6 +36,7 @@ const PetOfTheDay = () => {
     addFavouritePet,
     deleteFavouritePet,
     addFavoritePetBreeds,
+    showErrorToast,
   } = useStore();
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
@@ -69,8 +70,8 @@ const PetOfTheDay = () => {
       setPetOfTheDay(pet[0]);
       setIsLoading(false);
     } catch (error: any) {
+      showErrorToast(error.message);
       router.dismissTo("/(main)");
-      throw error;
     }
   };
 
@@ -96,7 +97,7 @@ const PetOfTheDay = () => {
       if (breeds)
         addFavoritePetBreeds(addedFavouritePet.id, petOfTheDay.breeds[0]);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -110,7 +111,7 @@ const PetOfTheDay = () => {
       const data = await deleteFavouritePetAPI(favouritePet.id);
       deleteFavouritePet(favouritePet.id);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }

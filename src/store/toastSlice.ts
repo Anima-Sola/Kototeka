@@ -6,10 +6,10 @@ export const createToastSlice = (set: any, get: any, api: any): IToastSlice => (
   toastMessage: "",
   showSuccessToast: (message: string) => {
     set({ isSuccessToastVisible: true, toastMessage: message });
-    setTimeout(() => set({ isSuccessToastVisible: false, toastMessage: "" }), 3000);
+    setTimeout(() => set({ isSuccessToastVisible: false, toastMessage: "" }), 4000);
   },
   showErrorToast: (message: string) => {
     set({ isErrorToastVisible: true, toastMessage: message });
-    setTimeout(() => set({ isErrorToastVisible: false, toastMessage: "" }), 3000);
+    setTimeout(() => set({ isErrorToastVisible: false, toastMessage: "" }), 4000);
   },
 });

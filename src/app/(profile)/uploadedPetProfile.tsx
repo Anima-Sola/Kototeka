@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { View, StyleSheet, Dimensions, ScrollView, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ActivityIndicator, Button } from "react-native-paper";
 import useStore from "../../store/store";
@@ -17,9 +23,11 @@ const imageWidth = Dimensions.get("screen").width;
 
 const UploadedPetProfile = () => {
   const styles = useThemedStyles(createStyles);
-  const { uploadedPets, deleteUploadedPet } = useStore();
+  const { uploadedPets, deleteUploadedPet, showErrorToast } = useStore();
   const { petId } = useLocalSearchParams<{ petId: string }>();
-  const uploadedPet = uploadedPets.find((pet) => pet.id.toString() === petId.toString());
+  const uploadedPet = uploadedPets.find(
+    (pet) => pet.id.toString() === petId.toString(),
+  );
 
   if (!uploadedPet) return null;
 
@@ -38,7 +46,7 @@ const UploadedPetProfile = () => {
       setTimeout(() => deleteUploadedPet(uploadedPet.id), 500);
       router.back();
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsDeleting(false);
     }
@@ -48,7 +56,10 @@ const UploadedPetProfile = () => {
     <View style={styles.container}>
       <ScrollView style={styles.content}>
         <Image
-          style={{ width: imageWidth, height: imageWidth }}
+          style={{
+            width: imageWidth,
+            height: imageWidth * (uploadedPet?.height / uploadedPet?.width),
+          }}
           source={uploadedPet.url}
           placeholder={{ blurhash }}
           contentFit="cover"

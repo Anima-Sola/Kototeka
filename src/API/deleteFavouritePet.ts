@@ -5,13 +5,12 @@ import fetchAPI from "./fetchAPI";
 const deleteFavouritePetAPI = async (id: string | number) => {
   const strId = id.toString();
 
-  await fetchAPI(
-    URLs.favourites + "/" + strId,
-    {
-      method: "DELETE",
-      headers,
-    },
-  );
+  const result = await fetchAPI(URLs.favourites + "/" + strId, {
+    method: "DELETE",
+    headers,
+  });
+
+  return result;
 };
 
 export default deleteFavouritePetAPI;

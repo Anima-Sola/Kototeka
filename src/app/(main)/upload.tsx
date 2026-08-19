@@ -50,10 +50,7 @@ const Upload = () => {
       const uploadPetResult = await uploadPetAPI(image, userId);
       if (uploadPetResult) addUploadedPet(uploadPetResult);
     } catch (error: any) {
-      if (error.status === 400)
-        showErrorToast("Classifcation failed: correct pet not found.");
-      else showErrorToast("Error while uploading the image");
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsUploading(false);
     }
@@ -66,7 +63,7 @@ const Upload = () => {
       const data = await getUploadedPetsAPI(MAX_NUMBER_OF_UPLOADED, userId);
       setUploadedPets(data);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsLoading(false);
     }

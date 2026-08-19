@@ -68,19 +68,14 @@ const ApiKeys = () => {
     }
 
     try {
-      const status = await checkApiKeyAPI(petsType, pastedApiKey, userId);
-      if (status !== 200)
-        throw {
-          status,
-        };
+      await checkApiKeyAPI(petsType, pastedApiKey, userId);
 
       if (petsType === "cats") setCatApiKey(pastedApiKey);
       else setDogApiKey(pastedApiKey);
     } catch (error: any) {
-      if (error.status)
+      if (error.type === "http")
         showErrorToast("The API key you are trying to paste is invalid.");
-      else showErrorToast("Error while adding api key");
-      return;
+      else showErrorToast(error.message);
     } finally {
       setIsChekingCatApiKey(false);
       setIsChekingDogApiKey(false);

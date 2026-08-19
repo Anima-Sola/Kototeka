@@ -32,6 +32,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
     deleteFavouritePet,
     addFavoritePetBreeds,
     userId,
+    showErrorToast,
   } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
@@ -60,7 +61,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
       addFavouritePet(addedFavouritePet);
       if (hasBreeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -74,7 +75,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
       const data = await deleteFavouritePetAPI(favouritePet.id);
       deleteFavouritePet(favouritePet.id);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }

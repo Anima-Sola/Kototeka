@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { View, StyleSheet, Dimensions, ScrollView, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ActivityIndicator, Button } from "react-native-paper";
 import useStore from "../../store/store";
@@ -19,7 +25,13 @@ const imageWidth = Dimensions.get("screen").width;
 
 const FavouritePetProfile = () => {
   const styles = useThemedStyles(createStyles);
-  const { favouritePets, addFavouritePet, deleteFavouritePet, userId } = useStore();
+  const {
+    favouritePets,
+    addFavouritePet,
+    deleteFavouritePet,
+    userId,
+    showErrorToast,
+  } = useStore();
   const { petId } = useLocalSearchParams<{ petId: string }>();
   const favouritePet = favouritePets.find(
     (pet) => pet.id.toString() === petId.toString(),
@@ -38,11 +50,16 @@ const FavouritePetProfile = () => {
     setIsFavouriteToggling(true);
 
     try {
-      const addingFavouritePetResult = await addFavouritePetAPI(favouritePet.id, userId);
-      const addedFavouritePet = await getFavouritePetByIdAPI(addingFavouritePetResult.id);
+      const addingFavouritePetResult = await addFavouritePetAPI(
+        favouritePet.id,
+        userId,
+      );
+      const addedFavouritePet = await getFavouritePetByIdAPI(
+        addingFavouritePetResult.id,
+      );
       addFavouritePet(addedFavouritePet);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -56,7 +73,7 @@ const FavouritePetProfile = () => {
       setTimeout(() => deleteFavouritePet(favouritePet.id), 500);
       router.back();
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -71,7 +88,12 @@ const FavouritePetProfile = () => {
     <View style={styles.container}>
       <ScrollView style={styles.content}>
         <Image
-          style={{ width: imageWidth, height: imageWidth }}
+          style={{
+            width: imageWidth,
+            height:
+              imageWidth *
+              (favouritePet.image?.height / favouritePet.image?.width),
+          }}
           source={favouritePet?.image.url}
           placeholder={{ blurhash }}
           contentFit="cover"

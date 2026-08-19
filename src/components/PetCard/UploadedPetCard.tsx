@@ -33,7 +33,7 @@ const UploadedPetCard: FC<PetCardProps> = ({
 }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { deleteUploadedPet } = useStore();
+  const { deleteUploadedPet, showErrorToast } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -49,7 +49,7 @@ const UploadedPetCard: FC<PetCardProps> = ({
       await deletePetAPI(pet.id);
       deleteUploadedPet(pet.id);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsDeleting(false);
     }

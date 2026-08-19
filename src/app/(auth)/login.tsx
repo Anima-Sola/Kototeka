@@ -10,7 +10,8 @@ import {
 import { useRouter, Link } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { LinearGradient } from "expo-linear-gradient";
 import { auth } from "../../../firebaseConfig";
 import { Button } from "react-native-paper";
@@ -76,15 +77,43 @@ const Login = () => {
 
       router.replace("/(main)");
     } catch (error: any) {
-      const message = JSON.stringify(error).indexOf("auth/invalid-credential");
-      if (message !== -1)
-        showErrorToast("Incorrect email address or/and password");
-      else showErrorToast("Login error");
-      setIsSignedIn(false);
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case "auth/invalid-credential":
+            showErrorToast("Incorrect email address or/and password");
+            break;
+
+          case "auth/too-many-requests":
+            showErrorToast("Too many login attempts. Please try again later.");
+            break;
+
+          case "auth/network-request-failed":
+            showErrorToast(
+              "Network error. Please check your internet connection.",
+            );
+            break;
+
+          default:
+            console.log("Firebase error:", error.code, error.message);
+            showErrorToast("Login error");
+        }
+      } else {
+        showErrorToast(error.message);
+        logout();
+      }
     } finally {
       setIsLogging(false);
     }
   }
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setIsSignedIn(false);
+    } catch (error: any) {
+      throw error;
+    }
+  };
 
   return (
     <LinearGradient

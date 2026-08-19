@@ -26,7 +26,7 @@ const FavouritePetCard: FC<PetCardProps> = ({
 }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { deleteFavouritePet } = useStore();
+  const { deleteFavouritePet, showErrorToast } = useStore();
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
@@ -42,7 +42,7 @@ const FavouritePetCard: FC<PetCardProps> = ({
       await deleteFavouritePetAPI(pet.id);
       deleteFavouritePet(pet.id);
     } catch (error: any) {
-      throw error;
+      showErrorToast(error.message);
     } finally {
       setIsFavouriteToggling(false);
     }

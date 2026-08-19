@@ -1,10 +1,6 @@
-import { Alert } from "react-native";
 import useStore from "../store/store";
 
-const fetchAPI = async (
-  url: string,
-  options: any,
-) => {
+const fetchAPI = async (url: string, options: any) => {
   const store = useStore.getState();
   let apiKey = store.apiKey;
 
@@ -15,38 +11,57 @@ const fetchAPI = async (
 
   options.headers["x-api-key"] = apiKey;
 
+  const controller = new AbortController();
+  let isTimeout = false;
+
+  const timeoutId = setTimeout(() => {
+    isTimeout = true;
+    controller.abort();
+  }, 30000);
+
   try {
-    const response = await fetch(store.baseUrl + url, options);
+    const response = await fetch(store.baseUrl + url, {
+      ...options,
+      signal: controller.signal,
+    });
+
+    let data: any = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      console.log("No JSON in response");
+    }
 
     if (!response.ok) {
       throw {
-        status: 429,
+        type: "http",
+        status: response.status,
+        message: data?.message || `HTTP error ${response.status}`,
+        data,
       };
     }
 
-    if (
-      response.status === 204 ||
-      response.headers.get("content-length") === "0"
-    ) {
-      return null;
-    }
-
-    const data = await response.json();
     return data;
   } catch (error: any) {
-    if (error.status === 429)
-      Alert.alert(
-        "Too many requests to the server",
-        'For more requests, please add your own API keys. Read more in the "Settings" tab.',
-        [
-          {
-            text: "OK",
-            style: "cancel",
-          },
-        ],
-      );
-    else store.showErrorToast("Error while receiving data");
-    throw error;
+    if (isTimeout) {
+      throw {
+        type: "timeout",
+        message: "Request timed out",
+      };
+    }
+
+    if (error?.type === "http") {
+      throw error;
+    }
+
+    throw {
+      type: "network",
+      message: "Unable to connect to the server",
+      originalError: error,
+    };
+  } finally {
+    clearTimeout(timeoutId);
   }
 };
 

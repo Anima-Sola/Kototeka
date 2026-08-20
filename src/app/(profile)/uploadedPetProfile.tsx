@@ -18,6 +18,7 @@ import deletePetAPI from "../../API/deletePet";
 import UploadNoBreedInfo from "../../components/BreedInfo/UploadNoBreedInfo";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 const imageWidth = Dimensions.get("screen").width;
 
@@ -46,7 +47,7 @@ const UploadedPetProfile = () => {
       setTimeout(() => deleteUploadedPet(uploadedPet.id), 500);
       router.back();
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsDeleting(false);
     }

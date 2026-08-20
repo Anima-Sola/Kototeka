@@ -19,6 +19,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 type PetCardProps = {
   pet: PetType;
@@ -49,7 +50,7 @@ const UploadedPetCard: FC<PetCardProps> = ({
       await deletePetAPI(pet.id);
       deleteUploadedPet(pet.id);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsDeleting(false);
     }

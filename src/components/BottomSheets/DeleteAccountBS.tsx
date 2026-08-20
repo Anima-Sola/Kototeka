@@ -10,6 +10,7 @@ import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
 import PasswordInput from "../TextInputs/PasswordInput";
 import deleteUserAccount from "../../API/FirebaseAPI/deleteAccount";
+import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
 
 type DeleteAccountBSType = {
   hideBottomSheet: () => void;
@@ -37,9 +38,7 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
       router.replace("/(auth)/login");
       setTimeout(() => showSuccessToast("Your account has been deleted"), 1000);
     } catch (error: any) {
-      const message = JSON.stringify(error).indexOf("auth/invalid-credential");
-      if (message !== -1) showErrorToast("Incorrect password");
-      else showErrorToast("Error while deleting account");
+      showErrorToast(getFirebaseApiErrorMessage(error));
     } finally {
       setIsLoading(false);
       hideBottomSheet();

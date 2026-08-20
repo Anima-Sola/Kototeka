@@ -22,6 +22,7 @@ import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import useStore from "../../store/store";
+import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
 
 type FormValues = {
   email: string;
@@ -48,7 +49,7 @@ const RestorePassword = () => {
         "Check your email to reset your password.",
       );
     } catch (error: any) {
-      showErrorToast("Error sending a message");
+      showErrorToast(getFirebaseApiErrorMessage(error));
     } finally {
       setIsEmailSending(false);
     }

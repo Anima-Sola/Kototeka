@@ -21,6 +21,7 @@ import FilterBS from "../../components/BottomSheets/FilterBS";
 import { MAX_NUMBER_OF_PHOTOS } from "../../constants/common";
 import { fetchPetsData } from "../../API/fetchUserData";
 import fetchUserData from "../../API/fetchUserData";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 const Home = () => {
   const {
@@ -51,7 +52,7 @@ const Home = () => {
       const data = await getPetsAPI(filterRequestSettings);
       addPets(data);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsAddingPetsLoading(false);
     }
@@ -63,7 +64,7 @@ const Home = () => {
     try {
       await fetchPetsData();
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +79,7 @@ const Home = () => {
           await fetchPetsData();
         }
       } catch (error: any) {
-        showErrorToast(error.message);
+        showErrorToast(getApiErrorMessage(error));
       } finally {
         setIsFiltersChanged(false);
         setIsApiChanged(false);

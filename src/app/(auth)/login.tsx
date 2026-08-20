@@ -22,6 +22,10 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import useStore from "../../store/store";
 import fetchUserData from "../../API/fetchUserData";
+import {
+  getApiErrorMessage,
+  getFirebaseApiErrorMessage,
+} from "../../functions/errorApiMessages";
 
 type FormValues = {
   email: string;
@@ -78,27 +82,9 @@ const Login = () => {
       router.replace("/(main)");
     } catch (error: any) {
       if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case "auth/invalid-credential":
-            showErrorToast("Incorrect email address or/and password");
-            break;
-
-          case "auth/too-many-requests":
-            showErrorToast("Too many login attempts. Please try again later.");
-            break;
-
-          case "auth/network-request-failed":
-            showErrorToast(
-              "Network error. Please check your internet connection.",
-            );
-            break;
-
-          default:
-            console.log("Firebase error:", error.code, error.message);
-            showErrorToast("Login error");
-        }
+        showErrorToast(getFirebaseApiErrorMessage(error));
       } else {
-        showErrorToast(error.message);
+        showErrorToast(getApiErrorMessage(error));
         logout();
       }
     } finally {

@@ -12,6 +12,7 @@ import FavouriteIcon from "../FavouriteIcon/FavouriteIcon";
 import { blurhash } from "../../constants/common";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 type PetCardProps = {
   pet: favouritePetType;
@@ -42,7 +43,7 @@ const FavouritePetCard: FC<PetCardProps> = ({
       await deleteFavouritePetAPI(pet.id);
       deleteFavouritePet(pet.id);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsFavouriteToggling(false);
     }

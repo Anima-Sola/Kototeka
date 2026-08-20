@@ -9,6 +9,7 @@ import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
 import SimpleTextInput from "../TextInputs/SimpleTextInput";
 import updateUserName from "../../API/FirebaseAPI/updateUserName";
+import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
 
 type ChangeNameBSType = {
   hideBottomSheet: () => void;
@@ -41,7 +42,7 @@ const ChangeNameBS: FC<ChangeNameBSType> = ({ hideBottomSheet, userName }) => {
         );
       }
     } catch (error: any) {
-      showErrorToast("Error while updating user name");
+      showErrorToast(getFirebaseApiErrorMessage(error));
     } finally {
       setIsLoading(false);
       hideBottomSheet();

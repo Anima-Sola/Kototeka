@@ -12,6 +12,7 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import { getFavouritePetsBreeds } from "../../API/fetchUserData";
 import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 const Favourites = () => {
   const styles = useThemedStyles(createStyles);
@@ -36,7 +37,7 @@ const Favourites = () => {
       setFavouritePets(favouritePets);
       await getFavouritePetsBreeds(favouritePets);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

@@ -23,6 +23,7 @@ import deleteFavouritePetAPI from "../../API/deleteFavouritePet";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 const imageWidth = Dimensions.get("screen").width;
 
@@ -68,7 +69,7 @@ const PetProfile = () => {
       addFavouritePet(addedFavouritePet);
       if (breeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -82,7 +83,7 @@ const PetProfile = () => {
       const data = await deleteFavouritePetAPI(favouritePet.id);
       deleteFavouritePet(favouritePet.id);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsFavouriteToggling(false);
     }

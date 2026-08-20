@@ -26,6 +26,7 @@ import { ITheme } from "../../constants/interfaces";
 import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
 import getPetsAPI from "../../API/getPets";
 import { PetType } from "../../constants/types";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 const imageWidth = Dimensions.get("screen").width;
 
@@ -70,7 +71,7 @@ const PetOfTheDay = () => {
       setPetOfTheDay(pet[0]);
       setIsLoading(false);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
       router.dismissTo("/(main)");
     }
   };
@@ -97,7 +98,7 @@ const PetOfTheDay = () => {
       if (breeds)
         addFavoritePetBreeds(addedFavouritePet.id, petOfTheDay.breeds[0]);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -111,7 +112,7 @@ const PetOfTheDay = () => {
       const data = await deleteFavouritePetAPI(favouritePet.id);
       deleteFavouritePet(favouritePet.id);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsFavouriteToggling(false);
     }

@@ -16,6 +16,7 @@ import { blurhash } from "../../constants/common";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import { MAX_NUMBER_OF_FAVOURITES } from "../../constants/common";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 type PetCardProps = {
   pet: PetType;
@@ -61,7 +62,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
       addFavouritePet(addedFavouritePet);
       if (hasBreeds) addFavoritePetBreeds(addedFavouritePet.id, pet.breeds[0]);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsFavouriteToggling(false);
     }
@@ -75,7 +76,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
       const data = await deleteFavouritePetAPI(favouritePet.id);
       deleteFavouritePet(favouritePet.id);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsFavouriteToggling(false);
     }

@@ -21,6 +21,7 @@ import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
 import { CATS_BASE_URL, DOGS_BASE_URL } from "../../constants/urls";
 import checkApiKeyAPI from "../../API/checkApiKey";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 const ApiKeys = () => {
   const styles = useThemedStyles(createStyles);
@@ -73,9 +74,12 @@ const ApiKeys = () => {
       if (petsType === "cats") setCatApiKey(pastedApiKey);
       else setDogApiKey(pastedApiKey);
     } catch (error: any) {
-      if (error.type === "http")
-        showErrorToast("The API key you are trying to paste is invalid.");
-      else showErrorToast(error.message);
+      showErrorToast(
+        getApiErrorMessage(
+          error,
+          "The API key you are trying to paste is invalid.",
+        ),
+      );
     } finally {
       setIsChekingCatApiKey(false);
       setIsChekingDogApiKey(false);

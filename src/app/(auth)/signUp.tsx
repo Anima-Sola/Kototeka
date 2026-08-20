@@ -15,7 +15,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useStore from "../../store/store";
 import { PressableScale } from "pressto";
 import { Button } from "react-native-paper";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut,
+} from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import EmailInput from "../../components/TextInputs/EmailInput";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
@@ -24,6 +28,7 @@ import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput
 import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
 
 type FormValues = {
   name: string;
@@ -68,17 +73,21 @@ const SignUp = () => {
 
       router.replace("/(main)");
     } catch (error: any) {
-      const message = JSON.stringify(error).indexOf(
-        "auth/email-already-in-use",
-      );
-      if (message !== -1)
-        showErrorToast("A user with this email address is already registered");
-      else showErrorToast("Error during registration");
-      setIsSignedIn(false);
+      showErrorToast(getFirebaseApiErrorMessage(error));
+      logout();
     } finally {
       setIsRegistering(false);
     }
   }
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setIsSignedIn(false);
+    } catch (error: any) {
+      throw error;
+    }
+  };
 
   const repeatPasswordValue = methods.watch("password");
 

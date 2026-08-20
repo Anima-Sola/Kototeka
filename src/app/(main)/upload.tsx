@@ -26,6 +26,7 @@ import {
   requestMediaLibraryPermission,
   requestCameraPermission,
 } from "../../functions/permissionsReqFuncs";
+import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 const Upload = () => {
   const styles = useThemedStyles(createStyles);
@@ -50,7 +51,7 @@ const Upload = () => {
       const uploadPetResult = await uploadPetAPI(image, userId);
       if (uploadPetResult) addUploadedPet(uploadPetResult);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsUploading(false);
     }
@@ -63,7 +64,7 @@ const Upload = () => {
       const data = await getUploadedPetsAPI(MAX_NUMBER_OF_UPLOADED, userId);
       setUploadedPets(data);
     } catch (error: any) {
-      showErrorToast(error.message);
+      showErrorToast(getApiErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

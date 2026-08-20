@@ -25,6 +25,7 @@ import ChangeNameBS from "../../components/BottomSheets/ChangeNameBS";
 import DeleteAccountBS from "../../components/BottomSheets/DeleteAccountBS";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
 import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
+import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
 
 type FormValues = {
   currentPassword: string;
@@ -101,9 +102,7 @@ const Settings = () => {
       methods.reset();
       showSuccessToast("Your password has been changed successfully");
     } catch (error: any) {
-      const message = JSON.stringify(error).indexOf("auth/invalid-credential");
-      if (message !== -1) showErrorToast("Incorrect current password");
-      else showErrorToast("Error while updating password");
+      showErrorToast(getFirebaseApiErrorMessage(error));
     } finally {
       setIsPasswordChanging(false);
     }

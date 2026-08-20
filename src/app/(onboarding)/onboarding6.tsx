@@ -20,12 +20,12 @@ import { dots } from "../../functions/common";
 const screenHeight = Dimensions.get("screen").height;
 const screenHeightPx = PixelRatio.getPixelSizeForLayoutSize(screenHeight);
 
-const Onboarding4 = () => {
+const Onboarding6 = () => {
   const styles = useThemedStyles(createStyles);
   const { setIsOnBoarding } = useStore();
   const router = useRouter();
 
-  const skip = () => {
+  const toLogin = () => {
     setIsOnBoarding(false);
     router.replace({
       pathname: "/login",
@@ -44,24 +44,17 @@ const Onboarding4 = () => {
       if (gestureState.dx > 80) {
         router.back();
       }
-
-      if (gestureState.dx < -80) {
-        router.push("/onboarding5");
-      }
     },
   });
 
   return (
     <ImageBackground
-      source={require("./../../../assets/Images/onBoarding/4.png")}
+      source={require("./../../../assets/Images/onBoarding/6.png")}
       style={styles.image}
       imageStyle={styles.container}
       {...panResponder.panHandlers}
     >
       <View style={styles.container} {...panResponder.panHandlers}>
-        <PressableScale style={styles.skipButtonContainer} onPress={skip}>
-          <Text style={styles.skipButtonText}>Skip</Text>
-        </PressableScale>
         <PressableScale
           style={styles.backButtonContainer}
           onPress={() => router.back()}
@@ -73,25 +66,14 @@ const Onboarding4 = () => {
           />
         </PressableScale>
         <View style={styles.card}>
-          <Text style={styles.headerText}>Facts</Text>
+          <Text style={styles.headerText}>Enjoy together</Text>
           <Text style={styles.messageText}>
-            Read random interesting facts about cats and dogs.
+            Join our community and share the love.
           </Text>
           <View style={styles.navigationContainer}>
-            <View style={styles.dots}>{dots(4)}</View>
-            <PressableScale
-              style={styles.nextButton}
-              onPress={() =>
-                router.push({
-                  pathname: "/onboarding5",
-                })
-              }
-            >
-              <MaterialIcons
-                name="chevron-right"
-                size={30}
-                color={styles.nextIconColor.color}
-              />
+            <View style={styles.dots}>{dots(6)}</View>
+            <PressableScale style={styles.nextButton} onPress={toLogin}>
+              <Text style={styles.nextText}>Go</Text>
             </PressableScale>
           </View>
         </View>
@@ -149,34 +131,20 @@ export const createStyles = (theme: ITheme) =>
       alignItems: "center",
     },
     nextButton: {
-      width: 50,
+      width: 100,
       height: 50,
       borderRadius: 25,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: theme.colors.accent3,
     },
-    nextArrow: {
+    nextText: {
       color: theme.colors.white,
-      fontWeight: 400,
-      fontSize: fontSizes.FONT25,
-    },
-    nextIconColor: {
-      color: theme.colors.white,
+      fontSize: fontSizes.FONT20,
+      fontFamily: "ShantellBold",
     },
     backIconColor: {
       color: theme.colors.black,
-    },
-    skipButtonContainer: {
-      position: "absolute",
-      top: Platform.OS === 'ios' ? 55 : 40,
-      right: 30,
-    },
-    skipButtonText: {
-      fontSize: fontSizes.FONT25,
-      fontFamily: "ShantellRegular",
-      color: theme.colors.white,
-      textDecorationLine: "underline",
     },
     backButtonContainer: {
       position: "absolute",
@@ -191,4 +159,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default Onboarding4;
+export default Onboarding6;

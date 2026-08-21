@@ -34,6 +34,8 @@ const Home = () => {
     setIsApiChanged,
     userId,
     showErrorToast,
+    petsType,
+    setApi,
   } = useStore();
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +81,9 @@ const Home = () => {
           await fetchPetsData();
         }
       } catch (error: any) {
+        if (isApiChanged) {
+          petsType === "cats" ? setApi("dogs") : setApi("cats");
+        }
         showErrorToast(getApiErrorMessage(error));
       } finally {
         setIsFiltersChanged(false);

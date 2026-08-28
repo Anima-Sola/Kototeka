@@ -1,4 +1,9 @@
-import { PetType, favouritePetType } from "./types";
+import {
+  PetType,
+  favouritePetType,
+  BreedType,
+  BreedTypeFromBack,
+} from "./types";
 
 export interface IAuthSlice {
   isSignedIn: boolean | null;
@@ -8,7 +13,7 @@ export interface IAuthSlice {
   userId: string;
   isOnboarding: boolean;
   setIsSignedIn: (value: boolean) => void;
-  setIsAppReady: (value: boolean) => void; 
+  setIsAppReady: (value: boolean) => void;
   setIsHydrated: (value: boolean) => void;
   setUserName: (value: string) => void;
   setUserId: (value: string) => void;
@@ -20,14 +25,21 @@ export interface IPetsSlice {
   filterRequestSettings: {
     limit: number;
     has_breeds: boolean;
+    breed_ids: string;
   };
   isFiltersChanged: boolean;
   isApiChanged: boolean;
   setPets: (value: Array<PetType>) => void;
   addPets: (value: Array<PetType>) => void;
-  setFilterRequestSettings: (value: { limit: number; has_breeds: boolean }) => void;
+  setFilterRequestSettings: (value: {
+    limit: number;
+    has_breeds: boolean;
+  }) => void;
   setIsFiltersChanged: (value: boolean) => void;
   setIsApiChanged: (value: boolean) => void;
+  setBreedsIdsReqStr: (
+    breeds: Record<string, { name: string; isSelected: boolean }>[],
+  ) => void;
 }
 
 export interface IFavouritePetsSlice {
@@ -46,10 +58,10 @@ export interface IUploadedPetsSlice {
 }
 
 export interface ISettingsSlice {
-  mode: 'light' | 'dark' | 'system';
-  resolvedTheme: 'light' | 'dark';
-  setMode: (mode: 'light' | 'dark' | 'system') => void;
-  setResolvedTheme: (theme: 'light' | 'dark') => void;
+  mode: "light" | "dark" | "system";
+  resolvedTheme: "light" | "dark";
+  setMode: (mode: "light" | "dark" | "system") => void;
+  setResolvedTheme: (theme: "light" | "dark") => void;
 }
 
 export interface IToastSlice {
@@ -61,19 +73,28 @@ export interface IToastSlice {
 }
 
 export interface IApiSlice {
-  petsType: 'cats' | 'dogs',
-  apiKey: string,
+  petsType: "cats" | "dogs";
+  apiKey: string;
   userCatApiKey: string;
   userDogApiKey: string;
-  baseUrl: string,
-  setApi: (value: 'cats' | 'dogs') => void;
+  baseUrl: string;
+  setApi: (value: "cats" | "dogs") => void;
   setUserCatApiKey: (value: string) => void;
   setUserDogApiKey: (value: string) => void;
 }
 
+export interface IBreedsSlice {
+  breeds: Record<string, BreedType>;
+  selectedBreeds: Record<string, boolean>;
+  setBreeds: (breeds: BreedTypeFromBack[]) => void;
+  toggleBreed: (id: string) => void;
+  clearSelectedBreeds: () => void;
+  selectAllBreeds: () => void;
+}
+
 export interface ITheme {
   colors: {
-    transparent: string,
+    transparent: string;
     statusBar: string;
     statusBarTransluscent: string;
     main: string;
@@ -94,11 +115,11 @@ export interface ITheme {
     blackTransluscent: string;
     whiteTransluscent: string;
     red: string;
-    green: string,
+    green: string;
     shadow: string;
     uploadPhotoBtn: string;
-    authBGColor1: string,
-    authBGColor2: string,
-    authBGColor3: string,
+    authBGColor1: string;
+    authBGColor2: string;
+    authBGColor3: string;
   };
 }

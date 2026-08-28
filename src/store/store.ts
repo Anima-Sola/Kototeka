@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist} from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { createAuthSlice } from "./authSlice";
 import { createPetsSlice } from "./petsSlice";
 import { createFavouritePetsSlice } from "./favouritePetsSlice";
@@ -7,6 +7,7 @@ import { createUploadedPetsSlice } from "./uploadedPetsSlice";
 import { createSettingsSlice } from "./settingsSlice";
 import { createToastSlice } from "./toastSlice";
 import { createApiSlice } from "./apiSlice";
+import { createBreedsSlice } from "./breedsSlice";
 import { StoreState } from "../constants/types";
 import { customStorage } from "./customStorage";
 
@@ -23,6 +24,7 @@ const useStore = create<StoreState>()(
         ...createSettingsSlice(set, get, api),
         ...createToastSlice(set, get, api),
         ...createApiSlice(set, get, api),
+        ...createBreedsSlice(set, get, api),
       };
     },
     {

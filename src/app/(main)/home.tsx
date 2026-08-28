@@ -81,9 +81,7 @@ const Home = () => {
           await fetchPetsData();
         }
       } catch (error: any) {
-        if (isApiChanged) {
-          petsType === "cats" ? setApi("dogs") : setApi("cats");
-        }
+        if (isApiChanged && petsType === "cats") setApi("dogs");
         showErrorToast(getApiErrorMessage(error));
       } finally {
         setIsFiltersChanged(false);

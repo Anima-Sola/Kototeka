@@ -100,17 +100,17 @@ const ApiKeys = () => {
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+      <PressableScale
+        style={styles.backButtonContainer}
+        onPress={() => router.back()}
+      >
+        <MaterialIcons
+          name="chevron-left"
+          size={30}
+          color={styles.backIconColor.color}
+        />
+      </PressableScale>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <PressableScale
-          style={styles.backButtonContainer}
-          onPress={() => router.back()}
-        >
-          <MaterialIcons
-            name="chevron-left"
-            size={30}
-            color={styles.backIconColor.color}
-          />
-        </PressableScale>
         <View style={styles.content}>
           <Text style={styles.textHeader}>Api Keys</Text>
           <Text style={styles.text}>
@@ -230,14 +230,15 @@ export const createStyles = (theme: ITheme) =>
     },
     backButtonContainer: {
       position: "absolute",
-      top: Platform.OS === "ios" ? 55 : 40,
       left: 16,
       width: 40,
       height: 40,
+      top: Platform.OS === "ios" ? 55 : 40,
       borderRadius: 20,
       backgroundColor: theme.colors.whiteTransluscent,
       alignItems: "center",
       justifyContent: "center",
+      zIndex: 100,
     },
     backIconColor: {
       color: theme.colors.black,

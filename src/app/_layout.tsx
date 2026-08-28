@@ -46,7 +46,6 @@ export default function RootLayout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(main)" />
             <Stack.Screen name="(profile)" />
-            <Stack.Screen name="(apikeys)" />
             <Stack.Screen name="(petoftheday)" />
           </Stack>
         </Wrapper>

@@ -7,7 +7,7 @@ export const lightTheme = {
     main: "#F8FAFC",
     mainSplash: "#F8FAFC",
     secondary: "#FFFFFF",
-    secondaryTransluscent: "rgba(255, 255, 255, 0.82)",
+    secondaryTransluscent: "rgba(255, 255, 255, 0.95)",
 
     mainText: "#0F172A",
     secondaryText: "#64748B",
@@ -50,7 +50,7 @@ export const darkTheme = {
     main: "#090D16",
     mainSplash: "#F8FAFC",
     secondary: "#121826",
-    secondaryTransluscent: "rgba(18, 24, 38, 0.82)",
+    secondaryTransluscent: "rgba(18, 24, 38, 0.95)",
 
     mainText: "#F8FAFC",
     secondaryText: "#94A3B8",

@@ -1,6 +1,13 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, ScrollView, Text, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Platform,
+} from "react-native";
 import useStore from "../../store/store";
+import { useRouter } from "expo-router";
 import { Button, SegmentedButtons } from "react-native-paper";
 import { ITheme } from "../../constants/interfaces";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
@@ -16,6 +23,7 @@ type ChangeNameBSType = {
 
 const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
   const styles = useThemedStyles(createStyles);
+  const router = useRouter();
   const {
     filterRequestSettings,
     setFilterRequestSettings,
@@ -55,6 +63,11 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
     if (value === currentPetsType) return;
     setCurrentPetsType(value);
   };
+
+  const onSelectBreeds = () => {
+    hideBottomSheet();
+    router.push('/selectPetsBreeds');
+  }
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
@@ -121,14 +134,26 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
           color={styles.chekedColor.color}
           uncheckedColor={styles.uncheckedColor.color}
         />
-        <Text style={styles.queryParamText}>Only with breed info</Text>
+        <Text style={styles.queryParamText}>
+          Only pets with random breed info
+        </Text>
       </View>
+
       <View
         style={{
           ...styles.buttonsContainer,
           paddingBottom: Platform.OS === "ios" ? 0 : 30,
         }}
       >
+        <Button
+          mode={"contained"}
+          style={styles.addButton}
+          labelStyle={styles.addLabelButton}
+          onPress={onSelectBreeds}
+        >
+          Only these breeds
+        </Button>
+        <View style={styles.gap} />
         <Button
           mode={"contained"}
           style={
@@ -219,8 +244,8 @@ export const createStyles = (theme: ITheme) =>
     checkBoxContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 20,
       marginLeft: -6,
+      marginBottom: 20,
     },
     buttonsContainer: {
       marginBottom: 30,
@@ -253,6 +278,19 @@ export const createStyles = (theme: ITheme) =>
     },
     chekedColor: {
       color: theme.colors.accent,
+    },
+    addButton: {
+      backgroundColor: "transparent",
+      height: 50,
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor: theme.colors.mainText,
+    },
+    addLabelButton: {
+      color: theme.colors.mainText,
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      lineHeight: 30,
     },
   });
 

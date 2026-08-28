@@ -7,6 +7,7 @@ export const createPetsSlice = (set: any, get: any, api: any): IPetsSlice => ({
   filterRequestSettings: {
     limit: DEFAULT_LIMIT_PHOTOS,
     has_breeds: false,
+    breed_ids: '',
   },
   isFiltersChanged: false,
   isApiChanged: false,
@@ -33,4 +34,12 @@ export const createPetsSlice = (set: any, get: any, api: any): IPetsSlice => ({
     set({
       isApiChanged: value,
     }),
+    setBreedsIdsReqStr: (breeds) => {
+      let str = '';
+      breeds.map((breed) => {
+        console.log(breed);
+
+      })
+
+    }
 });

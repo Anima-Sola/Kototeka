@@ -3,6 +3,7 @@ import getPetByIdAPI from "./getPetById";
 import getPetsAPI from "./getPets";
 import getFavouritePetsAPI from "./getFavouritePets";
 import getUploadedPetsAPI from "./getUploadedPets";
+import getAllBreedsAPI from "./getAllBreeds";
 import { favouritePetType } from "../constants/types";
 import { MAX_NUMBER_OF_UPLOADED, MAX_NUMBER_OF_FAVOURITES } from "../constants/common";
 
@@ -39,6 +40,8 @@ const fetchUserData = async (userId: string) => {
       userId,
     );
     const pets = await getPetsAPI(useStore.getState().filterRequestSettings);
+    const breeds = await getAllBreedsAPI();
+    store.setBreeds(breeds);
     store.setPets(pets);
     store.setUploadedPets(uploadedPets);
   } catch (error: any) {

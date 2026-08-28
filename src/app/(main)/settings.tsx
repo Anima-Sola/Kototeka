@@ -162,7 +162,7 @@ const Settings = () => {
               mode={"contained"}
               style={styles.button}
               labelStyle={styles.labelButton}
-              onPress={() => router.push("/(apikeys)/apikeys")}
+              onPress={() => router.push("/apikeys")}
             >
               Add API Keys
             </Button>

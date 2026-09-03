@@ -7,7 +7,14 @@ export const createPetsSlice = (set: any, get: any, api: any): IPetsSlice => ({
   filterRequestSettings: {
     limit: DEFAULT_LIMIT_PHOTOS,
     has_breeds: false,
-    breed_ids: '',
+    breed_ids: "",
+    mode: "allPhotos",
+  },
+  tempFilterRequestSettings: {
+    limit: DEFAULT_LIMIT_PHOTOS,
+    has_breeds: false,
+    breed_ids: "",
+    mode: "allPhotos",
   },
   isFiltersChanged: false,
   isApiChanged: false,
@@ -22,9 +29,13 @@ export const createPetsSlice = (set: any, get: any, api: any): IPetsSlice => ({
       pets: currentPets,
     });
   },
-  setFilterRequestSettings: (value: { limit: number; has_breeds: boolean }) =>
+  setFilterRequestSettings: (value) =>
     set({
       filterRequestSettings: value,
+    }),
+  setTempFilterRequestSettings: (value) =>
+    set({
+      tempFilterRequestSettings: value,
     }),
   setIsFiltersChanged: (value: boolean) =>
     set({
@@ -34,12 +45,4 @@ export const createPetsSlice = (set: any, get: any, api: any): IPetsSlice => ({
     set({
       isApiChanged: value,
     }),
-    setBreedsIdsReqStr: (breeds) => {
-      let str = '';
-      breeds.map((breed) => {
-        console.log(breed);
-
-      })
-
-    }
 });

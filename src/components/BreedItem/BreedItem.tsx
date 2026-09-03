@@ -21,7 +21,7 @@ const BreedItem = ({ breedId }: { breedId: string }) => {
       style={isSelected ? styles.selectedBreedContainer : styles.breedContainer}
       onPress={() => toggleBreed(breedId)}
     >
-      <Text style={styles.text}>{breed.name}</Text>
+      <Text style={isSelected ? styles.selectedText: styles.text}>{breed.name}</Text>
     </Pressable>
   );
 };
@@ -35,20 +35,30 @@ export const createStyles = (theme: ITheme) =>
       borderRadius: 20,
       margin: 3,
       paddingHorizontal: 5,
+      maxWidth: '48%',
+      justifyContent: 'center',
     },
     selectedBreedContainer: {
       borderWidth: 1,
-      borderColor: theme.colors.accent,
-      backgroundColor: theme.colors.disabled,
+      borderColor: theme.colors.accent2,
+      backgroundColor: theme.colors.secondary,
       padding: 5,
       borderRadius: 20,
       margin: 3,
       paddingHorizontal: 5,
+      maxWidth: '48%',
+      justifyContent: 'center',
     },
     text: {
-      fontSize: fontSizes.FONT18,
+      fontSize: fontSizes.FONT16,
       fontFamily: "ShantellRegular",
       color: theme.colors.mainText,
+      textAlign: "center",
+    },
+    selectedText: {
+      fontSize: fontSizes.FONT16,
+      fontFamily: "ShantellRegular",
+      color: theme.colors.accent2,
       textAlign: "center",
     },
   });

@@ -28,7 +28,13 @@ export const customStorage: PersistStorage<StoreState> = {
   setItem: async (name: string, storage) => {
     const state = storage.state ? storage.state : (storage as any);
     const secureValues = ["apiKey", "userCatApiKey", "userDogApiKey"];
-    const excludedValues = ["isAppReady", "isOnboarding", "isHydrated"];
+    const excludedValues = [
+      "isAppReady",
+      "isOnboarding",
+      "isHydrated",
+      "isSuccessToastVisible",
+      "isErrorToastVisible",
+    ];
     const secureState: Record<string, unknown> = {};
     const asyncState: Record<string, unknown> = {};
 

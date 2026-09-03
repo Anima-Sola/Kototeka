@@ -28,6 +28,7 @@ const Home = () => {
     pets,
     addPets,
     filterRequestSettings,
+    setFilterRequestSettings,
     isFiltersChanged,
     setIsFiltersChanged,
     isApiChanged,
@@ -36,6 +37,10 @@ const Home = () => {
     showErrorToast,
     petsType,
     setApi,
+    tempFilterRequestSettings,
+    setTempFilterRequestSettings,
+    tempPetsType,
+    setTempPetsType,
   } = useStore();
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,9 +49,11 @@ const Home = () => {
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
   const fetchAddedPetsData = async () => {
-    if (pets.length >= MAX_NUMBER_OF_PHOTOS) {
+    if (
+      pets.length <= filterRequestSettings.limit ||
+      pets.length >= MAX_NUMBER_OF_PHOTOS
+    )
       return;
-    }
 
     setIsAddingPetsLoading(true);
 
@@ -92,8 +99,19 @@ const Home = () => {
     if (isApiChanged || isFiltersChanged) updatePets();
   }, [isApiChanged, isFiltersChanged]);
 
+  const onFilterBottomSheetClose = () => {
+    setFilterRequestSettings(tempFilterRequestSettings);
+    setApi(tempPetsType);
+  };
+
   const openFilterBottomSheet = () => {
-    showBottomSheet(<FilterBS hideBottomSheet={hideBottomSheet} />);
+    setTempFilterRequestSettings(filterRequestSettings);
+    setTempPetsType(petsType);
+
+    return showBottomSheet(
+      <FilterBS hideBottomSheet={hideBottomSheet} />,
+      onFilterBottomSheetClose,
+    );
   };
 
   const keyExtractor = (item: PetType, index: number) => `${item.id}_${index}`;
@@ -137,6 +155,24 @@ const Home = () => {
     );
   }
 
+  if (!pets || pets.length === 0)
+    return (
+      <View style={styles.container}>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
+          <Text style={styles.text}>No loaded pets</Text>
+          <Text style={styles.text}>Try to change filters</Text>
+        </View>
+        <View style={styles.topBarContainer}>
+          <TopBar
+            setNumOfColumns={setNumOfColumns}
+            numOfColumns={numColumns}
+            onFilterPress={() => openFilterBottomSheet()}
+          />
+        </View>
+      </View>
+    );
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -171,6 +207,12 @@ const Home = () => {
 
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
+    emptyContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      paddingTop: 200,
+      alignItems: "center",
+    },
     loadingContainer: {
       flex: 1,
       backgroundColor: theme.colors.main,

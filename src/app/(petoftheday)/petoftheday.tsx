@@ -65,6 +65,7 @@ const PetOfTheDay = () => {
       const params = {
         limit: 1,
         has_breeds: false,
+        breed_ids: "",
       };
 
       const pet = await getPetsAPI(params);

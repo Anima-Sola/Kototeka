@@ -5,12 +5,18 @@ import fetchAPI from "./fetchAPI";
 type reqParams = {
   limit: number;
   has_breeds: boolean;
+  breed_ids: string;
 };
 
 const getPetsAPI = async (params: reqParams) => {
   let queryParams: URLSearchParams;
 
-  if (params.has_breeds) {
+  if (params.breed_ids !== "") {
+    queryParams = new URLSearchParams({
+      limit: String(params.limit),
+      breed_ids: params.breed_ids,
+    });
+  } else if (params.has_breeds) {
     queryParams = new URLSearchParams({
       limit: String(params.limit),
       has_breeds: String(params.has_breeds),

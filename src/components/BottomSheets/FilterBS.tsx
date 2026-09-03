@@ -1,24 +1,25 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import {
   View,
   StyleSheet,
   ScrollView,
   Text,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import useStore from "../../store/store";
 import { useRouter } from "expo-router";
-import { Button, SegmentedButtons } from "react-native-paper";
+import { Button, SegmentedButtons, RadioButton } from "react-native-paper";
 import { ITheme } from "../../constants/interfaces";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
 import Slider from "@react-native-community/slider";
-import { Checkbox } from "react-native-paper";
 import { MIN_LIMIT_PHOTOS, MAX_LIMIT_PHOTOS } from "../../constants/common";
+import { getNumOfSelectedBreedIds } from "../../functions/common";
 
 type ChangeNameBSType = {
-  hideBottomSheet: () => void;
+  hideBottomSheet: (executeOnClose?: boolean) => void;
 };
 
 const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
@@ -31,53 +32,81 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
     petsType,
     setApi,
     setIsApiChanged,
+    selectedBreeds,
+    tempFilterRequestSettings,
+    tempPetsType,
   } = useStore();
-  const [currentPetsType, setCurrentPetsType] = useState(petsType);
-  const [limit, setLimit] = useState(filterRequestSettings.limit);
-  const [hasBreeds, setHasBreeds] = useState(filterRequestSettings.has_breeds);
 
-  const isFiltersChanged =
-    limit !== filterRequestSettings.limit ||
-    hasBreeds !== filterRequestSettings.has_breeds ||
-    currentPetsType !== petsType;
+  const checkIsFiltersChanged = () => {
+    if (
+      filterRequestSettings.mode === "selectedPhotos" &&
+      filterRequestSettings.breed_ids.length === 0
+    )
+      return false;
+
+    return (
+      filterRequestSettings.mode !== tempFilterRequestSettings.mode ||
+      filterRequestSettings.limit !== tempFilterRequestSettings.limit ||
+      filterRequestSettings.has_breeds !==
+        tempFilterRequestSettings.has_breeds ||
+      filterRequestSettings.breed_ids !== tempFilterRequestSettings.breed_ids ||
+      petsType !== tempPetsType
+    );
+  };
+
+  const isFiltersChanged = checkIsFiltersChanged();
 
   const onSavePress = () => {
-    if (
-      filterRequestSettings.limit !== limit ||
-      filterRequestSettings.has_breeds !== hasBreeds
-    ) {
-      setFilterRequestSettings({
-        limit: limit,
-        has_breeds: hasBreeds,
-      });
+    if (petsType !== tempPetsType) {
+      setIsApiChanged(true);
+    } else {
       setIsFiltersChanged(true);
     }
-    if (petsType !== currentPetsType) {
-      setApi(currentPetsType);
-      setIsApiChanged(true);
-    }
-    hideBottomSheet();
+    hideBottomSheet(false);
   };
+
+  const onCancel = () => hideBottomSheet();
 
   const changePets = async (value: "cats" | "dogs") => {
-    if (value === currentPetsType) return;
-    setCurrentPetsType(value);
+    if (value === petsType) return;
+    setApi(value);
   };
 
-  const onSelectBreeds = () => {
-    hideBottomSheet();
-    router.push('/selectPetsBreeds');
-  }
+  const onRadioButtonsValueChange = (
+    value: "allPhotos" | "randomPhotos" | "selectedPhotos",
+  ) => {
+    switch (value) {
+      case "allPhotos":
+        setFilterRequestSettings({
+          ...filterRequestSettings,
+          has_breeds: false,
+          breed_ids: "",
+          mode: "allPhotos",
+        });
+        break;
+      case "randomPhotos":
+        setFilterRequestSettings({
+          ...filterRequestSettings,
+          has_breeds: true,
+          breed_ids: "",
+          mode: "randomPhotos",
+        });
+        break;
+      case "selectedPhotos":
+        hideBottomSheet(false);
+        router.push("/selectPetsBreeds");
+    }
+  };
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <BottomSheetTopBar title={"Filters"} />
       <View style={styles.textContainer}>
-        <Text style={styles.queryParamText}>Pets Selection</Text>
+        <Text style={styles.queryParamText}>Pets selection</Text>
       </View>
       <View style={styles.segmentedButtonsContainer}>
         <SegmentedButtons
-          value={currentPetsType}
+          value={petsType}
           onValueChange={changePets}
           density={"regular"}
           buttons={[
@@ -85,37 +114,39 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
               value: "cats",
               label: "Cats",
               labelStyle:
-                currentPetsType === "cats"
+                petsType === "cats"
                   ? styles.segmentedButtonLabel
                   : styles.segmentedButtonLabelSelected,
               style: [
                 styles.segmentedButtonItem,
-                currentPetsType === "cats" && styles.segmentedButtonSelected,
+                petsType === "cats" && styles.segmentedButtonSelected,
               ],
             },
             {
               value: "dogs",
               label: "Dogs",
               labelStyle:
-                currentPetsType === "dogs"
+                petsType === "dogs"
                   ? styles.segmentedButtonLabel
                   : styles.segmentedButtonLabelSelected,
               style: [
                 styles.segmentedButtonItem,
-                currentPetsType === "dogs" && styles.segmentedButtonSelected,
+                petsType === "dogs" && styles.segmentedButtonSelected,
               ],
             },
           ]}
         />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.queryParamText}>Number Of Loading Photos</Text>
+        <Text style={styles.queryParamText}>Number of loading photos</Text>
       </View>
       <Slider
         style={styles.slider}
-        value={limit}
+        value={filterRequestSettings.limit}
         step={1}
-        onValueChange={(value) => setLimit(value)}
+        onValueChange={(value) =>
+          setFilterRequestSettings({ ...filterRequestSettings, limit: value })
+        }
         minimumValue={MIN_LIMIT_PHOTOS}
         maximumValue={MAX_LIMIT_PHOTOS}
         minimumTrackTintColor={styles.minimumTrackTintColor.color}
@@ -123,37 +154,54 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
       />
       <View style={styles.limitTextContainer}>
         <Text style={styles.textLimit}>{MIN_LIMIT_PHOTOS}</Text>
-        <Text style={styles.text}>{limit}</Text>
+        <Text style={styles.text}>{filterRequestSettings.limit}</Text>
         <Text style={styles.textLimit}>{MAX_LIMIT_PHOTOS}</Text>
       </View>
       <View style={styles.gap} />
-      <View style={styles.checkBoxContainer}>
-        <Checkbox.Android
-          status={hasBreeds ? "checked" : "unchecked"}
-          onPress={() => setHasBreeds(!hasBreeds)}
-          color={styles.chekedColor.color}
-          uncheckedColor={styles.uncheckedColor.color}
-        />
-        <Text style={styles.queryParamText}>
-          Only pets with random breed info
-        </Text>
+      <View style={styles.radioButtonsContainer}>
+        <RadioButton.Group
+          onValueChange={(newValue: string) =>
+            onRadioButtonsValueChange(
+              newValue as "allPhotos" | "randomPhotos" | "selectedPhotos",
+            )
+          }
+          value={filterRequestSettings.mode}
+        >
+          <View style={styles.radioButtonContainer}>
+            <RadioButton value="allPhotos" />
+            <TouchableOpacity
+              onPress={() => onRadioButtonsValueChange("allPhotos")}
+            >
+              <Text style={styles.queryParamText}>All photos</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.radioButtonContainer}>
+            <RadioButton value="randomPhotos" />
+            <TouchableOpacity
+              onPress={() => onRadioButtonsValueChange("randomPhotos")}
+            >
+              <Text style={styles.queryParamText}>Random breeds photos</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.radioButtonContainer}>
+            <RadioButton value="selectedPhotos" />
+            <TouchableOpacity
+              onPress={() => onRadioButtonsValueChange("selectedPhotos")}
+            >
+              <Text style={styles.queryParamText}>
+                Selected breeds photos (
+                {getNumOfSelectedBreedIds(selectedBreeds)} breeds)
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </RadioButton.Group>
       </View>
-
       <View
         style={{
           ...styles.buttonsContainer,
           paddingBottom: Platform.OS === "ios" ? 0 : 30,
         }}
       >
-        <Button
-          mode={"contained"}
-          style={styles.addButton}
-          labelStyle={styles.addLabelButton}
-          onPress={onSelectBreeds}
-        >
-          Only these breeds
-        </Button>
-        <View style={styles.gap} />
         <Button
           mode={"contained"}
           style={
@@ -170,7 +218,7 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
           mode={"contained"}
           style={styles.enabledButton}
           labelStyle={styles.labelButton}
-          onPress={hideBottomSheet}
+          onPress={onCancel}
         >
           Cancel
         </Button>
@@ -241,11 +289,12 @@ export const createStyles = (theme: ITheme) =>
     slider: {
       width: "100%",
     },
-    checkBoxContainer: {
+    radioButtonsContainer: {
+      marginBottom: 20,
+    },
+    radioButtonContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginLeft: -6,
-      marginBottom: 20,
     },
     buttonsContainer: {
       marginBottom: 30,
@@ -272,25 +321,6 @@ export const createStyles = (theme: ITheme) =>
     },
     maximumTrackTintColor: {
       color: theme.colors.disabled,
-    },
-    uncheckedColor: {
-      color: theme.colors.disabled,
-    },
-    chekedColor: {
-      color: theme.colors.accent,
-    },
-    addButton: {
-      backgroundColor: "transparent",
-      height: 50,
-      justifyContent: "center",
-      borderWidth: 1,
-      borderColor: theme.colors.mainText,
-    },
-    addLabelButton: {
-      color: theme.colors.mainText,
-      fontSize: fontSizes.FONT18,
-      fontFamily: "ShantellBold",
-      lineHeight: 30,
     },
   });
 

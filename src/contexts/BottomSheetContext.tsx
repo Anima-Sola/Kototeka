@@ -23,7 +23,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 interface BottomSheetContextType {
   showBottomSheet: (content: ReactNode, onClose?: () => void) => void;
-  hideBottomSheet: () => void;
+  hideBottomSheet: (executeOnClose?: boolean) => void;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
@@ -80,7 +80,7 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
     isOpening.current = true; // Отмечаем, что это операция открытия
   };
 
-  const hideBottomSheet = () => {
+  const hideBottomSheet = (executeOnClose = true) => {
     Keyboard.dismiss();
 
     const onClose = closeCallbackRef.current;
@@ -102,8 +102,7 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
       closeCallbackRef.current = undefined;
       contentHeight.current = 0;
       isOpening.current = false;
-      78;
-      onClose?.();
+      if (executeOnClose) onClose?.();
     });
   };
 
@@ -148,7 +147,7 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
         {...panResponder.panHandlers}
         style={[styles.backdrop, { opacity: backdropOpacity }]}
       >
-        <TouchableWithoutFeedback onPress={hideBottomSheet}>
+        <TouchableWithoutFeedback onPress={() => hideBottomSheet()}>
           <View style={styles.backdropTouchArea} />
         </TouchableWithoutFeedback>
       </Animated.View>

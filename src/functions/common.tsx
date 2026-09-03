@@ -10,6 +10,30 @@ export const isElementInArray = (
   return array.find((item) => element === item.image.id);
 };
 
+export const getBreedIdsStr = (
+  selectedBreeds: Record<string, boolean>,
+): string => {
+  let reqStr = "";
+  Object.entries(selectedBreeds).forEach((breed) => {
+    if (breed[1]) reqStr = reqStr + breed[0] + ",";
+  });
+
+  reqStr = reqStr.substring(0, reqStr.length - 1);
+
+  return reqStr;
+};
+
+export const getNumOfSelectedBreedIds = (
+  selectedBreeds: Record<string, boolean>,
+): number => {
+  let num = 0;
+  Object.entries(selectedBreeds).forEach((breed) => {
+    if (breed[1]) num++;
+  });
+
+  return num;
+};
+
 export const dots = (currentPage: number) => {
   const styles = useThemedStyles(createStyles);
   const pages = [0, 1, 2, 3, 4, 5, 6];
@@ -38,5 +62,4 @@ export const createStyles = (theme: ITheme) =>
       backgroundColor: theme.colors.accent3,
       marginHorizontal: 4,
     },
-    
   });

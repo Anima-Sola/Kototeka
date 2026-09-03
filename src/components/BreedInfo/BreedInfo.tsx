@@ -10,8 +10,6 @@ type BreedInfoProps = {
 };
 
 const BreedInfo: FC<BreedInfoProps> = ({ breeds }) => {
-  console.log(breeds);
-
   return (
     <View style={styles.container}>
       <TextItem name={`Name: ${breeds.name}`} text={breeds.description} />

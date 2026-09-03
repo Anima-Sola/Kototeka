@@ -26,6 +26,13 @@ export interface IPetsSlice {
     limit: number;
     has_breeds: boolean;
     breed_ids: string;
+    mode: "allPhotos" | "randomPhotos" | "selectedPhotos";
+  };
+  tempFilterRequestSettings: {
+    limit: number;
+    has_breeds: boolean;
+    breed_ids: string;
+    mode: "allPhotos" | "randomPhotos" | "selectedPhotos";
   };
   isFiltersChanged: boolean;
   isApiChanged: boolean;
@@ -34,12 +41,17 @@ export interface IPetsSlice {
   setFilterRequestSettings: (value: {
     limit: number;
     has_breeds: boolean;
+    breed_ids: string;
+    mode: "allPhotos" | "randomPhotos" | "selectedPhotos";
+  }) => void;
+  setTempFilterRequestSettings: (value: {
+    limit: number;
+    has_breeds: boolean;
+    breed_ids: string;
+    mode: "allPhotos" | "randomPhotos" | "selectedPhotos";
   }) => void;
   setIsFiltersChanged: (value: boolean) => void;
   setIsApiChanged: (value: boolean) => void;
-  setBreedsIdsReqStr: (
-    breeds: Record<string, { name: string; isSelected: boolean }>[],
-  ) => void;
 }
 
 export interface IFavouritePetsSlice {
@@ -74,6 +86,7 @@ export interface IToastSlice {
 
 export interface IApiSlice {
   petsType: "cats" | "dogs";
+  tempPetsType: "cats" | "dogs";
   apiKey: string;
   userCatApiKey: string;
   userDogApiKey: string;
@@ -81,6 +94,7 @@ export interface IApiSlice {
   setApi: (value: "cats" | "dogs") => void;
   setUserCatApiKey: (value: string) => void;
   setUserDogApiKey: (value: string) => void;
+  setTempPetsType: (value: "cats" | "dogs") => void;
 }
 
 export interface IBreedsSlice {

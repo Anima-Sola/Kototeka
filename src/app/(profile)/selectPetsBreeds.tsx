@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,8 +6,9 @@ import {
   Text,
   FlatList,
   ListRenderItemInfo,
+  TextInput,
+  Pressable,
 } from "react-native";
-import { PressableScale } from "pressto";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -18,96 +19,142 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
 import BreedItem from "../../components/BreedItem/BreedItem";
+import { useBottomSheet } from "../../contexts/BottomSheetContext";
+import FilterBS from "../../components/BottomSheets/FilterBS";
+import { getBreedIdsStr } from "../../functions/common";
+import { BreedType } from "../../constants/types";
+
+const filterBreeds = (
+  breeds: Record<string, BreedType>,
+  filterText: string,
+) => {
+  const normalizedFilterText = filterText.toLowerCase();
+
+  return Object.keys(breeds).filter((breedId) =>
+    breeds[breedId].name.toLowerCase().includes(normalizedFilterText),
+  );
+};
 
 const SelectPetsBreeds = () => {
   const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const {
+    breeds,
+    clearSelectedBreeds,
+    selectAllBreeds,
+    filterRequestSettings,
+    setFilterRequestSettings,
+    selectedBreeds,
+    setApi,
+    tempPetsType,
+    tempFilterRequestSettings,
+  } = useStore();
+  const { showBottomSheet, hideBottomSheet } = useBottomSheet();
+  const [filterText, setFilterText] = useState("");
 
-  const breeds = useStore((state) => state.breeds);
-  const clearSelectedBreeds = useStore((state) => state.clearSelectedBreeds);
-  const selectAllBreeds = useStore((state) => state.selectAllBreeds);
-  const breedIds = useMemo(() => Object.keys(breeds), [breeds]);
-
-  const saveChanges = () => {
-    router.back();
+  const onFilterBottomSheetClose = () => {
+    setFilterRequestSettings(tempFilterRequestSettings);
+    setApi(tempPetsType);
   };
 
-  const keyExtractor = (id: string) => id;
+  const openFilterBottomSheet = () => {
+    showBottomSheet(
+      <FilterBS hideBottomSheet={hideBottomSheet} />,
+      onFilterBottomSheetClose,
+    );
+  };
+
   const renderItem = ({ item: breedId }: ListRenderItemInfo<string>) => (
     <BreedItem breedId={breedId} />
   );
 
-  const isBreedsChanged = true;
-
   const footerComponent = () => {
     return <View style={styles.footer} />;
+  };
+
+  const onGoBack = () => {
+    setFilterRequestSettings({
+      ...filterRequestSettings,
+      mode: "selectedPhotos",
+      breed_ids: getBreedIdsStr(selectedBreeds),
+    });
+    router.back();
+    openFilterBottomSheet();
   };
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View style={styles.iconsContainer}>
         <View>
-          <PressableScale
-            style={styles.backButtonContainer}
-            onPress={() => router.back()}
-          >
+          <Pressable style={styles.backButtonContainer} onPress={onGoBack}>
             <MaterialIcons
               name="chevron-left"
               size={30}
               color={styles.backIconColor.color}
             />
-          </PressableScale>
+          </Pressable>
         </View>
         <View style={styles.selectAllEraseIconsContainer}>
-          <PressableScale onPress={() => selectAllBreeds()}>
+          <Pressable style={styles.iconButton} onPress={selectAllBreeds}>
             <MaterialCommunityIcons
               name="selection-multiple"
               size={38}
               color={styles.iconColor.color}
             />
-          </PressableScale>
-          <PressableScale onPress={() => clearSelectedBreeds()} style={styles.eraseIcon}>
+          </Pressable>
+          <Pressable
+            onPress={clearSelectedBreeds}
+            style={[styles.iconButton, styles.eraseIcon]}
+          >
             <MaterialCommunityIcons
               name="eraser"
               size={38}
               color={styles.iconColor.color}
             />
-          </PressableScale>
+          </Pressable>
         </View>
       </View>
-      <Text style={styles.textHeader}>Select breeds</Text>
+      <View>
+        <Text style={styles.textHeader}>Select breeds</Text>
+        <View style={styles.searchInputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder={"Find breeds"}
+            placeholderTextColor={styles.placeholderColor.color}
+            value={filterText}
+            defaultValue={""}
+            onChangeText={(newText) => setFilterText(newText)}
+            keyboardType="default"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <View pointerEvents="none" style={styles.searchIconContainer}>
+            <MaterialIcons
+              name="search"
+              size={28}
+              color={styles.iconColor.color}
+            />
+          </View>
+        </View>
+      </View>
       <FlatList
-        data={breedIds}
+        data={filterBreeds(breeds, filterText)}
         renderItem={renderItem}
-        numColumns={1}
-        keyExtractor={keyExtractor}
+        numColumns={2}
+        keyExtractor={(id: string) => id}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={footerComponent}
         contentContainerStyle={styles.content}
       />
-      <View style={styles.buttonsContainer}>
-        <Button
-          mode={"contained"}
-          style={
-            isBreedsChanged
-              ? styles.saveCancelButton
-              : styles.disabledSaveCancelButton
-          }
-          labelStyle={styles.labelButton}
-          disabled={!isBreedsChanged}
-          onPress={saveChanges}
-        >
-          Save
-        </Button>
-        <View style={styles.gap} />
+      <View style={styles.buttonContainer}>
         <Button
           mode={"contained"}
           style={styles.saveCancelButton}
           labelStyle={styles.labelButton}
-          onPress={() => router.back()}
+          onPress={onGoBack}
         >
-          Cancel
+          Go back
         </Button>
       </View>
     </View>
@@ -145,19 +192,53 @@ export const createStyles = (theme: ITheme) =>
     selectAllEraseIconsContainer: {
       flexDirection: "row",
     },
+    iconButton: {
+      minWidth: 44,
+      minHeight: 44,
+      alignItems: "center",
+      justifyContent: "center",
+    },
     backIconColor: {
       color: theme.colors.black,
     },
     eraseIcon: {
       marginLeft: 5,
     },
+    searchInputContainer: {
+      position: "relative",
+    },
+    searchIconContainer: {
+      position: "absolute",
+      right: 10,
+      top: 18,
+    },
     textHeader: {
       fontSize: fontSizes.FONT40,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
-      marginTop: Platform.OS === "ios" ? 75 : 60,
+      marginTop: Platform.OS === "ios" ? 75 : 50,
       textAlign: "center",
     },
+    input: {
+      height: 44,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingRight: 52,
+      paddingVertical: 0,
+      textAlignVertical: "center",
+      includeFontPadding: false,
+      fontSize: fontSizes.FONT16,
+      fontFamily: "ShantellLightItalic",
+      backgroundColor: theme.colors.secondary,
+      color: theme.colors.mainText,
+      marginVertical: 10,
+    },
+    placeholderColor: {
+      color: theme.colors.placeholder,
+    },
+
     text: {
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellRegular",
@@ -169,7 +250,7 @@ export const createStyles = (theme: ITheme) =>
       fontFamily: "ShantellBold",
       lineHeight: 30,
     },
-    buttonsContainer: {
+    buttonContainer: {
       width: "100%",
       position: "absolute",
       bottom: Platform.OS === "ios" ? 30 : 50,
@@ -180,13 +261,8 @@ export const createStyles = (theme: ITheme) =>
       height: 50,
       justifyContent: "center",
     },
-    disabledSaveCancelButton: {
-      backgroundColor: theme.colors.disabled,
-      height: 50,
-      justifyContent: "center",
-    },
     iconColor: {
-      color: theme.colors.accent,
+      color: theme.colors.accent2,
     },
     gap: {
       height: 10,

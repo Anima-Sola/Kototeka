@@ -29,6 +29,8 @@ import fontSizes from "../../constants/fontSizes";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
+import getCatsBreedsAPI from "../../API/getCatsBreeds";
+import getDogsBreedsAPI from "../../API/getDogsBreeds";
 
 type FormValues = {
   name: string;
@@ -39,7 +41,14 @@ type FormValues = {
 
 const SignUp = () => {
   const styles = useThemedStyles(createStyles);
-  const { setIsSignedIn, showErrorToast, setUserId, setUserName } = useStore();
+  const {
+    setIsSignedIn,
+    showErrorToast,
+    setUserId,
+    setUserName,
+    setCatBreeds,
+    setDogBreeds,
+  } = useStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [isRegistering, setIsRegistering] = useState(false);
@@ -69,6 +78,12 @@ const SignUp = () => {
       if (userCredential.user.displayName)
         setUserName(userCredential.user.displayName);
       setUserId(userCredential.user.uid);
+
+      const catBreeds = await getCatsBreedsAPI();
+      const dogBreeds = await getDogsBreedsAPI();
+      setCatBreeds(catBreeds);
+      setDogBreeds(dogBreeds);
+
       setIsSignedIn(true);
 
       router.replace("/(main)");

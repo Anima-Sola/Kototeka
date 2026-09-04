@@ -1,13 +1,16 @@
+import URLs, { DOGS_BASE_URL } from "../constants/urls";
+import { DOGS_API_KEY } from "../constants/api";
 import useStore from "../store/store";
+import { headers } from "../constants/api";
 
-const fetchAPI = async (mainUrl: string, options: any) => {
+const getDogsBreedsAPI = async () => {
   const store = useStore.getState();
-  let apiKey = store.apiKey;
+  const apiKey =
+    store.userDogApiKey !== "" ? store.userDogApiKey : DOGS_API_KEY;
 
-  if (store.petsType === "cats" && store.userCatApiKey !== "")
-    apiKey = store.userCatApiKey;
-  if (store.petsType === "dogs" && store.userDogApiKey !== "")
-    apiKey = store.userDogApiKey;
+  const options: any = {
+    headers,
+  };
 
   options.headers["x-api-key"] = apiKey;
 
@@ -20,7 +23,7 @@ const fetchAPI = async (mainUrl: string, options: any) => {
   }, 30000);
 
   try {
-    const response = await fetch(store.baseUrl + mainUrl, {
+    const response = await fetch(DOGS_BASE_URL + URLs.breeds, {
       ...options,
       signal: controller.signal,
     });
@@ -65,4 +68,4 @@ const fetchAPI = async (mainUrl: string, options: any) => {
   }
 };
 
-export default fetchAPI;
+export default getDogsBreedsAPI;

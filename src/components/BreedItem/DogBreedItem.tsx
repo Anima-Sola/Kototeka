@@ -4,24 +4,24 @@ import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
 
-const BreedItem = ({ breedId }: { breedId: string }) => {
+const DogBreedItem = ({ breedId }: { breedId: string }) => {
   const styles = useThemedStyles(createStyles);
-  const breed = useStore((state) => state.breeds[breedId]);
 
+  const breed = useStore((state) => state.dogBreeds[breedId]);
   if (!breed?.name) return null;
-
   const isSelected = useStore(
-    (state) => state.selectedBreeds[breedId] ?? false,
+    (state) => state.selectedDogBreeds[breedId] ?? false,
   );
-
-  const toggleBreed = useStore((state) => state.toggleBreed);
+  const toggleBreed = useStore((state) => state.toggleDogBreed);
 
   return (
     <Pressable
       style={isSelected ? styles.selectedBreedContainer : styles.breedContainer}
       onPress={() => toggleBreed(breedId)}
     >
-      <Text style={isSelected ? styles.selectedText: styles.text}>{breed.name}</Text>
+      <Text style={isSelected ? styles.selectedText : styles.text}>
+        {breed.name}
+      </Text>
     </Pressable>
   );
 };
@@ -35,8 +35,8 @@ export const createStyles = (theme: ITheme) =>
       borderRadius: 20,
       margin: 3,
       paddingHorizontal: 5,
-      maxWidth: '48%',
-      justifyContent: 'center',
+      maxWidth: "48%",
+      justifyContent: "center",
     },
     selectedBreedContainer: {
       borderWidth: 1,
@@ -46,8 +46,8 @@ export const createStyles = (theme: ITheme) =>
       borderRadius: 20,
       margin: 3,
       paddingHorizontal: 5,
-      maxWidth: '48%',
-      justifyContent: 'center',
+      maxWidth: "48%",
+      justifyContent: "center",
     },
     text: {
       fontSize: fontSizes.FONT16,
@@ -63,4 +63,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default BreedItem;
+export default DogBreedItem;

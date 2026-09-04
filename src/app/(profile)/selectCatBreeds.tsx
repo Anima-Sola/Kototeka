@@ -18,7 +18,7 @@ import useStore from "../../store/store";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
-import BreedItem from "../../components/BreedItem/BreedItem";
+import CatBreedItem from "../../components/BreedItem/CatBreedItem";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import FilterBS from "../../components/BottomSheets/FilterBS";
 import { getBreedIdsStr } from "../../functions/common";
@@ -35,20 +35,20 @@ const filterBreeds = (
   );
 };
 
-const SelectPetsBreeds = () => {
+const SelectCatBreeds = () => {
   const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
-    breeds,
-    clearSelectedBreeds,
-    selectAllBreeds,
+    catBreeds,
+    clearSelectedCatBreeds,
+    selectAllCatBreeds,
     filterRequestSettings,
     setFilterRequestSettings,
-    selectedBreeds,
-    setApi,
-    tempPetsType,
+    selectedCatBreeds,
     tempFilterRequestSettings,
+    tempPetsType,
+    setApi,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
   const [filterText, setFilterText] = useState("");
@@ -66,7 +66,7 @@ const SelectPetsBreeds = () => {
   };
 
   const renderItem = ({ item: breedId }: ListRenderItemInfo<string>) => (
-    <BreedItem breedId={breedId} />
+    <CatBreedItem breedId={breedId} />
   );
 
   const footerComponent = () => {
@@ -77,7 +77,7 @@ const SelectPetsBreeds = () => {
     setFilterRequestSettings({
       ...filterRequestSettings,
       mode: "selectedPhotos",
-      breed_ids: getBreedIdsStr(selectedBreeds),
+      breed_ids: getBreedIdsStr(selectedCatBreeds),
     });
     router.back();
     openFilterBottomSheet();
@@ -96,7 +96,7 @@ const SelectPetsBreeds = () => {
           </Pressable>
         </View>
         <View style={styles.selectAllEraseIconsContainer}>
-          <Pressable style={styles.iconButton} onPress={selectAllBreeds}>
+          <Pressable style={styles.iconButton} onPress={selectAllCatBreeds}>
             <MaterialCommunityIcons
               name="selection-multiple"
               size={38}
@@ -104,7 +104,7 @@ const SelectPetsBreeds = () => {
             />
           </Pressable>
           <Pressable
-            onPress={clearSelectedBreeds}
+            onPress={clearSelectedCatBreeds}
             style={[styles.iconButton, styles.eraseIcon]}
           >
             <MaterialCommunityIcons
@@ -139,7 +139,7 @@ const SelectPetsBreeds = () => {
         </View>
       </View>
       <FlatList
-        data={filterBreeds(breeds, filterText)}
+        data={filterBreeds(catBreeds, filterText)}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(id: string) => id}
@@ -216,7 +216,7 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT40,
       color: theme.colors.mainText,
       fontFamily: "AmaticBold",
-      marginTop: Platform.OS === "ios" ? 75 : 50,
+      marginTop: Platform.OS === "ios" ? 105 : 80,
       textAlign: "center",
     },
     input: {
@@ -272,4 +272,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default SelectPetsBreeds;
+export default SelectCatBreeds;

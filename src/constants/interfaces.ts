@@ -97,13 +97,22 @@ export interface IApiSlice {
   setTempPetsType: (value: "cats" | "dogs") => void;
 }
 
-export interface IBreedsSlice {
-  breeds: Record<string, BreedType>;
-  selectedBreeds: Record<string, boolean>;
-  setBreeds: (breeds: BreedTypeFromBack[]) => void;
-  toggleBreed: (id: string) => void;
-  clearSelectedBreeds: () => void;
-  selectAllBreeds: () => void;
+export interface ICatBreedsSlice {
+  catBreeds: Record<string, BreedType>;
+  selectedCatBreeds: Record<string, boolean>;
+  setCatBreeds: (breeds: BreedTypeFromBack[]) => void;
+  toggleCatBreed: (id: string) => void;
+  clearSelectedCatBreeds: () => void;
+  selectAllCatBreeds: () => void;
+}
+
+export interface IDogBreedsSlice {
+  dogBreeds: Record<string, BreedType>;
+  selectedDogBreeds: Record<string, boolean>;
+  setDogBreeds: (breeds: BreedTypeFromBack[]) => void;
+  toggleDogBreed: (id: string) => void;
+  clearSelectedDogBreeds: () => void;
+  selectAllDogBreeds: () => void;
 }
 
 export interface ITheme {

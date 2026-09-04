@@ -7,7 +7,8 @@ import { createUploadedPetsSlice } from "./uploadedPetsSlice";
 import { createSettingsSlice } from "./settingsSlice";
 import { createToastSlice } from "./toastSlice";
 import { createApiSlice } from "./apiSlice";
-import { createBreedsSlice } from "./breedsSlice";
+import { createCatBreedsSlice } from "./catBreedsSlice";
+import { createDogBreedsSlice } from "./dogBreedSlice";
 import { StoreState } from "../constants/types";
 import { customStorage } from "./customStorage";
 
@@ -24,7 +25,8 @@ const useStore = create<StoreState>()(
         ...createSettingsSlice(set, get, api),
         ...createToastSlice(set, get, api),
         ...createApiSlice(set, get, api),
-        ...createBreedsSlice(set, get, api),
+        ...createCatBreedsSlice(set, get, api),
+        ...createDogBreedsSlice(set, get, api),
       };
     },
     {

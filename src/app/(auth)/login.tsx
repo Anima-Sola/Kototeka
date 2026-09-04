@@ -26,6 +26,8 @@ import {
   getApiErrorMessage,
   getFirebaseApiErrorMessage,
 } from "../../functions/errorApiMessages";
+import getCatsBreedsAPI from "../../API/getCatsBreeds";
+import getDogsBreedsAPI from "../../API/getDogsBreeds";
 
 type FormValues = {
   email: string;
@@ -47,6 +49,8 @@ const Login = () => {
     setUserDogApiKey,
     setMode,
     setApi,
+    setCatBreeds,
+    setDogBreeds,
   } = useStore();
   const [isLogging, setIsLogging] = useState(false);
   const { ...methods } = useForm<FormValues>({
@@ -77,6 +81,11 @@ const Login = () => {
         setUserDogApiKey("");
         setMode("system");
       }
+      const catBreeds = await getCatsBreedsAPI();
+      const dogBreeds = await getDogsBreedsAPI();
+      setCatBreeds(catBreeds);
+      setDogBreeds(dogBreeds);
+
       setIsSignedIn(true);
 
       router.replace("/(main)");

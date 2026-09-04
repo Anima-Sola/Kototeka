@@ -16,7 +16,10 @@ import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
 import Slider from "@react-native-community/slider";
 import { MIN_LIMIT_PHOTOS, MAX_LIMIT_PHOTOS } from "../../constants/common";
-import { getNumOfSelectedBreedIds } from "../../functions/common";
+import {
+  getBreedIdsStr,
+  getNumOfSelectedBreedIds,
+} from "../../functions/common";
 
 type ChangeNameBSType = {
   hideBottomSheet: (executeOnClose?: boolean) => void;
@@ -32,15 +35,20 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
     petsType,
     setApi,
     setIsApiChanged,
-    selectedBreeds,
-    tempFilterRequestSettings,
+    selectedCatBreeds,
+    selectedDogBreeds,
     tempPetsType,
+    tempFilterRequestSettings,
+    setTempFilterRequestSettings,
   } = useStore();
+
+  const selectedBreeds =
+    petsType === "cats" ? selectedCatBreeds : selectedDogBreeds;
 
   const checkIsFiltersChanged = () => {
     if (
       filterRequestSettings.mode === "selectedPhotos" &&
-      filterRequestSettings.breed_ids.length === 0
+      getNumOfSelectedBreedIds(selectedBreeds) === 0
     )
       return false;
 
@@ -62,14 +70,21 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
     } else {
       setIsFiltersChanged(true);
     }
+    setTempFilterRequestSettings(filterRequestSettings);
     hideBottomSheet(false);
   };
 
   const onCancel = () => hideBottomSheet();
 
-  const changePets = async (value: "cats" | "dogs") => {
+  const changePets = (value: "cats" | "dogs") => {
     if (value === petsType) return;
     setApi(value);
+    if (filterRequestSettings.mode === "selectedPhotos") {
+      setFilterRequestSettings({
+        ...filterRequestSettings,
+        breed_ids: getBreedIdsStr(selectedCatBreeds),
+      });
+    }
   };
 
   const onRadioButtonsValueChange = (
@@ -94,7 +109,8 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
         break;
       case "selectedPhotos":
         hideBottomSheet(false);
-        router.push("/selectPetsBreeds");
+        if (petsType === "cats") router.push("/selectCatBreeds");
+        else router.push("/selectDogBreeds");
     }
   };
 

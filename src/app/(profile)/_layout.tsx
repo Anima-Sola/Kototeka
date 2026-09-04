@@ -7,7 +7,8 @@ export default function ProfileLayout() {
       <Stack.Screen name="favouritePetProfile" />
       <Stack.Screen name="uploadedPetProfile" />
       <Stack.Screen name="apikeys" />
-      <Stack.Screen name="selectPetsBreeds" />
+      <Stack.Screen name="selectCatBreeds" />
+      <Stack.Screen name="selectDogBreeds" />
     </Stack>
   );
 }

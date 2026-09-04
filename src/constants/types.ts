@@ -6,7 +6,8 @@ import {
   ISettingsSlice,
   IToastSlice,
   IApiSlice,
-  IBreedsSlice,
+  ICatBreedsSlice,
+  IDogBreedsSlice,
 } from "./interfaces";
 
 export type IconType = {
@@ -82,4 +83,5 @@ export type StoreState = IAuthSlice &
   ISettingsSlice &
   IToastSlice &
   IApiSlice &
-  IBreedsSlice;
+  ICatBreedsSlice &
+  IDogBreedsSlice;

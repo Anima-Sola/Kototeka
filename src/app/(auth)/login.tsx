@@ -28,6 +28,7 @@ import {
 } from "../../functions/errorApiMessages";
 import getCatsBreedsAPI from "../../API/getCatsBreeds";
 import getDogsBreedsAPI from "../../API/getDogsBreeds";
+import getUserApiKeys from "../../API/FirebaseAPI/getUserApiKeys";
 
 type FormValues = {
   email: string;
@@ -72,13 +73,14 @@ const Login = () => {
 
       if (userId !== userCredential.user.uid) {
         setApi("cats");
+        const userApiKeys = await getUserApiKeys(userCredential.user.uid);
+        setUserCatApiKey(userApiKeys.catApiKey || "");
+        setUserDogApiKey(userApiKeys.dogApiKey || "");
         await fetchUserData(userCredential.user.uid);
 
         if (userCredential.user.displayName)
           setUserName(userCredential.user.displayName);
         setUserId(userCredential.user.uid);
-        setUserCatApiKey("");
-        setUserDogApiKey("");
         setMode("system");
       }
       const catBreeds = await getCatsBreedsAPI();

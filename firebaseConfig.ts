@@ -1,35 +1,23 @@
 import { initializeApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import { initializeFirestore } from "firebase/firestore";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA_ACcEfgFHaOMhdg3yAVGf-vWMZeRjRl8",
+  apiKey: "AIzaSyC3vE1QxUV5B3_CVipvuHbWw2M4kHRCr8Y",
   authDomain: "kototeka-f958e.firebaseapp.com",
-  databaseURL: "https://kototeka-f958e.firebaseio.com",
   projectId: "kototeka-f958e",
-  storageBucket: "kototeka-f958e.appspot.com",
-  messagingSenderId: "sender-id",
-  appId: "app-id",
-  measurementId: "G-measurement-id",
+  storageBucket: "kototeka-f958e.firebasestorage.app",
+  messagingSenderId: "14279691744",
+  appId: "1:14279691744:android:84846178bba7f2a31c2f85",
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
 });
 
 export default auth;
-
-/*
-You are initializing Firebase Auth for React Native without providing
-AsyncStorage. Auth state will default to memory persistence and will not
-persist between sessions. In order to persist auth state, install the package
-"@react-native-async-storage/async-storage" and provide it to
-initializeAuth:
-
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
-*/

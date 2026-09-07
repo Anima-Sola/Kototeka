@@ -21,7 +21,9 @@ import { ITheme } from "../../constants/interfaces";
 import fontSizes from "../../constants/fontSizes";
 import { CATS_BASE_URL, DOGS_BASE_URL } from "../../constants/urls";
 import checkApiKeyAPI from "../../API/checkApiKey";
+import saveUserApiKeys from "../../API/FirebaseAPI/saveUserApiKeys";
 import { getApiErrorMessage } from "../../functions/errorApiMessages";
+import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
 
 const ApiKeys = () => {
   const styles = useThemedStyles(createStyles);
@@ -31,12 +33,14 @@ const ApiKeys = () => {
     userDogApiKey,
     setUserCatApiKey,
     setUserDogApiKey,
+    showSuccessToast,
     showErrorToast,
   } = useStore();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [catApiKey, setCatApiKey] = useState(userCatApiKey);
   const [dogApiKey, setDogApiKey] = useState(userDogApiKey);
+  const [isSavingChanges, setIsSavingChanges] = useState(false);
   const [isChekingCatApiKey, setIsChekingCatApiKey] = useState(false);
   const [isChekingDogApiKey, setIsChekingDogApiKey] = useState(false);
 
@@ -89,10 +93,25 @@ const ApiKeys = () => {
   const removeCatApiKey = () => setCatApiKey("");
   const removeDogApiKey = () => setDogApiKey("");
 
-  const saveChanges = () => {
-    setUserCatApiKey(catApiKey);
-    setUserDogApiKey(dogApiKey);
-    router.back();
+  const saveChanges = async () => {
+    setIsSavingChanges(true);
+
+    try {
+      await saveUserApiKeys({
+        catApiKey,
+        dogApiKey,
+      });
+
+      setUserCatApiKey(catApiKey);
+      setUserDogApiKey(dogApiKey);
+      showSuccessToast('API_KEYS changes saved successfully.')
+      router.back();
+    } catch (error: any) {
+      console.log(error);
+      showErrorToast(getFirebaseApiErrorMessage(error));
+    } finally {
+      setIsSavingChanges(false);
+    }
   };
 
   const isKeysChanged =
@@ -200,6 +219,7 @@ const ApiKeys = () => {
           labelStyle={styles.labelButton}
           disabled={!isKeysChanged}
           onPress={saveChanges}
+          loading={isSavingChanges}
         >
           Save
         </Button>

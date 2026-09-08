@@ -12,10 +12,17 @@ import {
   schedulePushNotification,
 } from "../functions/notifications";
 import { configureGoogleSignIn } from "../API/FirebaseAPI/signInWithGoogle";
+import { getFirebaseApiErrorMessage } from "../functions/errorApiMessages";
 
 export default function RootLayout() {
-  const { isAppReady, isSignedIn, isOnboarding, setResolvedTheme, mode } =
-    useStore();
+  const {
+    isAppReady,
+    isSignedIn,
+    isOnboarding,
+    setResolvedTheme,
+    mode,
+    showErrorToast,
+  } = useStore();
   const systemColorScheme = useColorScheme();
   usePushNotifications();
   const shouldBlockNavigation = useNotificationObserver();
@@ -33,7 +40,11 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    configureGoogleSignIn();
+    try {
+      configureGoogleSignIn();
+    } catch (error: any) {
+      showErrorToast(getFirebaseApiErrorMessage(error));
+    }
   }, []);
 
   if (!isAppReady || shouldBlockNavigation) {

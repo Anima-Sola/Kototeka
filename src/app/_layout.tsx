@@ -11,6 +11,7 @@ import {
   useNotificationObserver,
   schedulePushNotification,
 } from "../functions/notifications";
+import { configureGoogleSignIn } from "../API/FirebaseAPI/signInWithGoogle";
 
 export default function RootLayout() {
   const { isAppReady, isSignedIn, isOnboarding, setResolvedTheme, mode } =
@@ -29,6 +30,10 @@ export default function RootLayout() {
 
   useEffect(() => {
     schedulePushNotification();
+  }, []);
+
+  useEffect(() => {
+    configureGoogleSignIn();
   }, []);
 
   if (!isAppReady || shouldBlockNavigation) {

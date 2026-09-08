@@ -29,6 +29,11 @@ import {
 import getCatsBreedsAPI from "../../API/getCatsBreeds";
 import getDogsBreedsAPI from "../../API/getDogsBreeds";
 import getUserApiKeys from "../../API/FirebaseAPI/getUserApiKeys";
+import GoogleIcon from "../../../assets/Icons/GoogleIcon";
+import {
+  getGoogleSignInErrorMessage,
+  signInWithGoogle,
+} from "../../API/FirebaseAPI/signInWithGoogle";
 
 type FormValues = {
   email: string;
@@ -54,9 +59,44 @@ const Login = () => {
     setDogBreeds,
   } = useStore();
   const [isLogging, setIsLogging] = useState(false);
+  const [isSingInButtonDisabled, setIsSignInButtonDisabled] = useState(false);
+  const [isGoogleLogging, setIsGoogleLogging] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
+
+  const loginWithGoogle = async () => {
+    setIsGoogleLogging(true);
+    setIsSignInButtonDisabled(true);
+
+    try {
+      const user = await signInWithGoogle();
+
+      if (userId !== user.uid) {
+        setApi("cats");
+        const userApiKeys = await getUserApiKeys(user.uid);
+        setUserCatApiKey(userApiKeys.catApiKey || "");
+        setUserDogApiKey(userApiKeys.dogApiKey || "");
+        await fetchUserData(user.uid);
+
+        if (user.displayName) setUserName(user.displayName);
+        setUserId(user.uid);
+        setMode("system");
+      }
+      const catBreeds = await getCatsBreedsAPI();
+      const dogBreeds = await getDogsBreedsAPI();
+      setCatBreeds(catBreeds);
+      setDogBreeds(dogBreeds);
+
+      setIsSignedIn(true);
+      router.replace("/(main)");
+    } catch (error: any) {
+      showErrorToast(getGoogleSignInErrorMessage(error));
+    } finally {
+      setIsGoogleLogging(false);
+      setIsSignInButtonDisabled(false);
+    }
+  };
 
   async function onSubmit(data: FormValues) {
     const email = data.email.trim();
@@ -153,15 +193,33 @@ const Login = () => {
             mode={"contained"}
             loading={isLogging}
             style={
-              methods.formState.isValid
+              methods.formState.isValid && !isSingInButtonDisabled
                 ? styles.signInButton
                 : styles.disabledSignInButton
             }
             labelStyle={styles.singInLabelButton}
-            disabled={!methods.formState.isValid || isLogging}
+            disabled={
+              !methods.formState.isValid || isLogging || isSingInButtonDisabled
+            }
             onPress={methods.handleSubmit(onSubmit)}
           >
             Sing In
+          </Button>
+          <View style={styles.gap} />
+          <Button
+            mode={"contained"}
+            loading={isGoogleLogging}
+            style={styles.signInButton}
+            labelStyle={styles.singInLabelButton}
+            disabled={isGoogleLogging}
+            onPress={loginWithGoogle}
+          >
+            <View style={styles.googleButtonContent}>
+              <View style={styles.googleIconCoinatiner}>
+                <GoogleIcon size={30} />
+              </View>
+              <Text style={styles.singInLabelButton}>Continue with Google</Text>
+            </View>
           </Button>
           <View style={styles.gap} />
           <Button
@@ -241,6 +299,13 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",
       lineHeight: 30,
+    },
+    googleIconCoinatiner: {
+      marginRight: 10,
+    },
+    googleButtonContent: {
+      flexDirection: "row",
+      alignItems: "center",
     },
     singUpLabelButton: {
       color: theme.colors.accent,

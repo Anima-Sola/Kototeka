@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   FlatList,
+  Platform,
 } from "react-native";
 import useStore from "../../store/store";
 import * as ImagePicker from "expo-image-picker";
@@ -220,21 +221,23 @@ const Upload = () => {
 
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
+    emptyContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingBottom: Platform.OS === "ios" ? 90 : 110,
+    },
     loadingContainer: {
       flex: 1,
       backgroundColor: theme.colors.main,
-      paddingTop: 200,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingBottom: Platform.OS === "ios" ? 90 : 110,
     },
     container: {
       flex: 1,
       backgroundColor: theme.colors.main,
-    },
-    emptyContainer: {
-      flex: 1,
-      backgroundColor: theme.colors.main,
-      paddingTop: 200,
-      alignItems: "center",
-      alignSelf: "center",
     },
     plusButton: {
       position: "absolute",

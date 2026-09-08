@@ -5,6 +5,7 @@ import {
   FlatList,
   Text,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
@@ -158,17 +159,15 @@ const Home = () => {
   if (!pets || pets.length === 0)
     return (
       <View style={styles.container}>
+        <TopBar
+          setNumOfColumns={setNumOfColumns}
+          numOfColumns={numColumns}
+          onFilterPress={() => openFilterBottomSheet()}
+        />
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.text}>No loaded pets</Text>
           <Text style={styles.text}>Try to change filters</Text>
-        </View>
-        <View style={styles.topBarContainer}>
-          <TopBar
-            setNumOfColumns={setNumOfColumns}
-            numOfColumns={numColumns}
-            onFilterPress={() => openFilterBottomSheet()}
-          />
         </View>
       </View>
     );
@@ -210,13 +209,16 @@ export const createStyles = (theme: ITheme) =>
     emptyContainer: {
       flex: 1,
       backgroundColor: theme.colors.main,
-      paddingTop: 200,
       alignItems: "center",
+      justifyContent: 'center',
+      paddingBottom: Platform.OS === "ios" ? 90 : 110,
     },
     loadingContainer: {
       flex: 1,
       backgroundColor: theme.colors.main,
-      paddingTop: 200,
+      alignItems: "center",
+      justifyContent: 'center',
+      paddingBottom: Platform.OS === "ios" ? 90 : 110,
     },
     container: {
       flex: 1,

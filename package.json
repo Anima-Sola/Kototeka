@@ -38,6 +38,8 @@
     "react-hook-form": "^7.62.0",
     "react-native": "0.86.0",
     "react-native-gesture-handler": "~2.32.0",
+    "react-native-nitro-google-signin": "^2.1.0",
+    "react-native-nitro-modules": "^0.37.1",
     "react-native-onboarding-swiper": "^1.4.0",
     "react-native-paper": "^5.14.5",
     "react-native-reanimated": "4.5.0",

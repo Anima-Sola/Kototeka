@@ -12,7 +12,12 @@
           "package_name": "com.anonymous.Kototeka"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "14279691744-2c83dpbbdm7ecshtb78c351to7lvpr25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC3vE1QxUV5B3_CVipvuHbWw2M4kHRCr8Y"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "14279691744-2c83dpbbdm7ecshtb78c351to7lvpr25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

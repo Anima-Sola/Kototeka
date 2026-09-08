@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet, FlatList, Text } from "react-native";
+import { View, StyleSheet, FlatList, Text, Platform } from "react-native";
 import { ActivityIndicator as PaperActivityIndicator } from "react-native-paper";
 import getFavouritePetsAPI from "../../API/getFavouritePets";
 import FavouritePetCard from "../../components/PetCard/FavouritePetCard";
@@ -102,16 +102,19 @@ const Favourites = () => {
 };
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
-    loadingContainer: {
-      flex: 1,
-      backgroundColor: theme.colors.main,
-      paddingTop: 200,
-    },
     emptyContainer: {
       flex: 1,
       backgroundColor: theme.colors.main,
-      paddingTop: 200,
       alignItems: "center",
+      justifyContent: "center",
+      paddingBottom: Platform.OS === "ios" ? 90 : 110,
+    },
+    loadingContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.main,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingBottom: Platform.OS === "ios" ? 90 : 110,
     },
     container: {
       flex: 1,

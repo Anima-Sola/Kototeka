@@ -156,6 +156,51 @@ const Settings = () => {
     }
   };
 
+  const changePasswordForm = () => {
+    return (
+      <>
+        <Text style={styles.textHeader}>Change Password</Text>
+        <View style={styles.changePasswordFormContainer}>
+          <FormProvider {...methods}>
+            <View style={styles.inputContainer}>
+              <PasswordInput
+                name="currentPassword"
+                placeholder="Current password"
+                checkFormat={false}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <PasswordInput name="newPassword" placeholder="New password" />
+            </View>
+            <View style={styles.inputContainer}>
+              <RepeatPasswordInput
+                name="repeatNewPassword"
+                placeholder="Repeat new password"
+                passwordToCheck={methods.watch("newPassword")}
+              />
+            </View>
+          </FormProvider>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode={"contained"}
+              style={
+                methods.formState.isValid
+                  ? styles.button
+                  : styles.disabledButton
+              }
+              labelStyle={styles.labelButton}
+              loading={isPasswordChanging}
+              disabled={!methods.formState.isValid || isPasswordChanging}
+              onPress={methods.handleSubmit(onSubmit)}
+            >
+              Change
+            </Button>
+          </View>
+        </View>
+      </>
+    );
+  };
+
   return (
     <>
       <ScrollView style={styles.container}>
@@ -214,44 +259,7 @@ const Settings = () => {
               />
             </TouchableOpacity>
           </View>
-          <Text style={styles.textHeader}>Change Password</Text>
-          <View style={styles.changePasswordFormContainer}>
-            <FormProvider {...methods}>
-              <View style={styles.inputContainer}>
-                <PasswordInput
-                  name="currentPassword"
-                  placeholder="Current password"
-                  checkFormat={false}
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <PasswordInput name="newPassword" placeholder="New password" />
-              </View>
-              <View style={styles.inputContainer}>
-                <RepeatPasswordInput
-                  name="repeatNewPassword"
-                  placeholder="Repeat new password"
-                  passwordToCheck={methods.watch("newPassword")}
-                />
-              </View>
-            </FormProvider>
-            <View style={styles.buttonContainer}>
-              <Button
-                mode={"contained"}
-                style={
-                  methods.formState.isValid
-                    ? styles.button
-                    : styles.disabledButton
-                }
-                labelStyle={styles.labelButton}
-                loading={isPasswordChanging}
-                disabled={!methods.formState.isValid || isPasswordChanging}
-                onPress={methods.handleSubmit(onSubmit)}
-              >
-                Change
-              </Button>
-            </View>
-          </View>
+          {provider === "EmailPassword" && changePasswordForm()}
           <View style={styles.logoutButtonContainer}>
             <Button
               mode={"contained"}

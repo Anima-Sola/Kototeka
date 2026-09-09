@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "14279691744-o5ncb1ln39lbgjk9g625vin8lp2r6l7e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.Kototeka",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "14279691744-2c83dpbbdm7ecshtb78c351to7lvpr25.apps.googleusercontent.com",
           "client_type": 3
         }

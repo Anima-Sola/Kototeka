@@ -12,7 +12,6 @@ import {
   schedulePushNotification,
 } from "../functions/notifications";
 import { configureGoogleSignIn } from "../API/FirebaseAPI/signInWithGoogle";
-import { getFirebaseApiErrorMessage } from "../functions/errorApiMessages";
 
 export default function RootLayout() {
   const {
@@ -21,7 +20,6 @@ export default function RootLayout() {
     isOnboarding,
     setResolvedTheme,
     mode,
-    showErrorToast,
   } = useStore();
   const systemColorScheme = useColorScheme();
   usePushNotifications();
@@ -40,11 +38,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    try {
-      configureGoogleSignIn();
-    } catch (error: any) {
-      showErrorToast(getFirebaseApiErrorMessage(error));
-    }
+    configureGoogleSignIn();
   }, []);
 
   if (!isAppReady || shouldBlockNavigation) {

@@ -30,10 +30,7 @@ import getCatsBreedsAPI from "../../API/getCatsBreeds";
 import getDogsBreedsAPI from "../../API/getDogsBreeds";
 import getUserApiKeys from "../../API/FirebaseAPI/getUserApiKeys";
 import GoogleIcon from "../../../assets/Icons/GoogleIcon";
-import {
-  getGoogleSignInErrorMessage,
-  signInWithGoogle,
-} from "../../API/FirebaseAPI/signInWithGoogle";
+import { signInWithGoogle } from "../../API/FirebaseAPI/signInWithGoogle";
 
 type FormValues = {
   email: string;
@@ -61,6 +58,7 @@ const Login = () => {
   const [isLogging, setIsLogging] = useState(false);
   const [isSingInButtonDisabled, setIsSignInButtonDisabled] = useState(false);
   const [isGoogleLogging, setIsGoogleLogging] = useState(false);
+  const [isGoogleButtonDisabled, setIsGoogleButtonDisabled] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
@@ -91,7 +89,8 @@ const Login = () => {
       setIsSignedIn(true);
       router.replace("/(main)");
     } catch (error: any) {
-      showErrorToast(getGoogleSignInErrorMessage(error));
+      error.code = "auth/Google Sign In failed";
+      showErrorToast(getFirebaseApiErrorMessage(error));
     } finally {
       setIsGoogleLogging(false);
       setIsSignInButtonDisabled(false);
@@ -103,6 +102,7 @@ const Login = () => {
     const password = data.password.trim();
 
     setIsLogging(true);
+    setIsGoogleButtonDisabled(true);
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -140,6 +140,7 @@ const Login = () => {
       }
     } finally {
       setIsLogging(false);
+      setIsGoogleButtonDisabled(false);
     }
   }
 
@@ -209,9 +210,13 @@ const Login = () => {
           <Button
             mode={"contained"}
             loading={isGoogleLogging}
-            style={styles.signInButton}
+            style={
+              !isGoogleButtonDisabled
+                ? styles.signInButton
+                : styles.disabledSignInButton
+            }
             labelStyle={styles.singInLabelButton}
-            disabled={isGoogleLogging}
+            disabled={isGoogleLogging || isGoogleButtonDisabled}
             onPress={loginWithGoogle}
           >
             <View style={styles.googleButtonContent}>
@@ -227,6 +232,7 @@ const Login = () => {
             style={styles.singUpButton}
             labelStyle={styles.singUpLabelButton}
             onPress={() => router.navigate("/signUp")}
+            disabled={isGoogleLogging || isLogging}
           >
             Sing Up
           </Button>

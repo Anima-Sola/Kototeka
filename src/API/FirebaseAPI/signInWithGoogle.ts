@@ -1,7 +1,6 @@
 import {
   GoogleOneTapSignIn,
   isCancelledResponse,
-  isErrorWithCode,
   isSuccessResponse,
   isNoSavedCredentialFoundResponse,
 } from "react-native-nitro-google-signin";
@@ -10,7 +9,8 @@ import auth from "../../../firebaseConfig";
 
 export function configureGoogleSignIn() {
   GoogleOneTapSignIn.configure({
-    webClientId: "14279691744-2c83dpbbdm7ecshtb78c351to7lvpr25.apps.googleusercontent.com",
+    webClientId:
+      "14279691744-2c83dpbbdm7ecshtb78c351to7lvpr25.apps.googleusercontent.com",
   });
 }
 
@@ -46,12 +46,4 @@ export async function signInWithGoogle() {
   const result = await signInWithCredential(auth, credential);
 
   return result.user;
-}
-
-export function getGoogleSignInErrorMessage(error: unknown) {
-  if (isErrorWithCode(error)) {
-    return `Google Sign-In failed (${error.code}): ${error.message}`;
-  }
-
-  return error instanceof Error ? error.message : "Google Sign-In failed";
 }

@@ -47,8 +47,11 @@ export const getFirebaseApiErrorMessage = (error: FirebaseError): string => {
     case "auth/email-already-in-use":
       message = "A user with this email address is already registered.";
       break;
+    case "auth/Google Sign In failed":
+      message = "Google Sign In failed.";
+      break;
     default:
-      message = `Firebase error: ${error.code} ${error.message}`;
+      message = `Firebase error: ${error.message}`;
   }
 
   return message;

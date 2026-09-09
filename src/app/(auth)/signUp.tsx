@@ -48,6 +48,7 @@ const SignUp = () => {
     setUserName,
     setCatBreeds,
     setDogBreeds,
+    setProvider,
   } = useStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -84,6 +85,7 @@ const SignUp = () => {
       setCatBreeds(catBreeds);
       setDogBreeds(dogBreeds);
 
+      setProvider('EmailPassword');
       setIsSignedIn(true);
 
       router.replace("/(main)");

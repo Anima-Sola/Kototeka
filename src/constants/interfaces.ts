@@ -12,12 +12,14 @@ export interface IAuthSlice {
   userName: string;
   userId: string;
   isOnboarding: boolean;
+  provider: "EmailPassword" | "GoogleAccount" | "";
   setIsSignedIn: (value: boolean) => void;
   setIsAppReady: (value: boolean) => void;
   setIsHydrated: (value: boolean) => void;
   setUserName: (value: string) => void;
   setUserId: (value: string) => void;
   setIsOnBoarding: (value: boolean) => void;
+  setProvider: (value: "EmailPassword" | "GoogleAccount" | "") => void;
 }
 
 export interface IPetsSlice {

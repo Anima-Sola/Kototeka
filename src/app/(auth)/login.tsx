@@ -54,6 +54,7 @@ const Login = () => {
     setApi,
     setCatBreeds,
     setDogBreeds,
+    setProvider,
   } = useStore();
   const [isLogging, setIsLogging] = useState(false);
   const [isSingInButtonDisabled, setIsSignInButtonDisabled] = useState(false);
@@ -86,6 +87,7 @@ const Login = () => {
       setCatBreeds(catBreeds);
       setDogBreeds(dogBreeds);
 
+      setProvider("GoogleAccount");
       setIsSignedIn(true);
       router.replace("/(main)");
     } catch (error: any) {
@@ -128,6 +130,7 @@ const Login = () => {
       setCatBreeds(catBreeds);
       setDogBreeds(dogBreeds);
 
+      setProvider("EmailPassword");
       setIsSignedIn(true);
 
       router.replace("/(main)");
@@ -147,6 +150,8 @@ const Login = () => {
   const logout = async () => {
     try {
       await signOut(auth);
+      setUserCatApiKey("");
+      setUserDogApiKey("");
       setIsSignedIn(false);
     } catch (error: any) {
       throw error;

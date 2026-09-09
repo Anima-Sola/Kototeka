@@ -23,6 +23,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import ChangeNameBS from "../../components/BottomSheets/ChangeNameBS";
 import DeleteAccountBS from "../../components/BottomSheets/DeleteAccountBS";
+import DeleteGoogleAccountBS from "../../components/BottomSheets/DeleteGoogleAcountBS";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
 import RepeatPasswordInput from "../../components/TextInputs/RepeatPasswordInput";
 import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
@@ -47,6 +48,9 @@ const Settings = () => {
     userName,
     showErrorToast,
     showSuccessToast,
+    provider,
+    setUserCatApiKey,
+    setUserDogApiKey,
   } = useStore();
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -60,7 +64,12 @@ const Settings = () => {
   };
 
   const openDeleteAccountBottomSheet = () => {
-    showBottomSheet(<DeleteAccountBS hideBottomSheet={hideBottomSheet} />);
+    if (provider === "EmailPassword")
+      showBottomSheet(<DeleteAccountBS hideBottomSheet={hideBottomSheet} />);
+    else
+      showBottomSheet(
+        <DeleteGoogleAccountBS hideBottomSheet={hideBottomSheet} />,
+      );
   };
 
   const logout = async () => {
@@ -68,6 +77,8 @@ const Settings = () => {
 
     try {
       await signOut(auth);
+      setUserCatApiKey("");
+      setUserDogApiKey("");
       setIsSignedIn(false);
       router.replace("/(auth)/login");
     } catch (error: any) {
@@ -164,7 +175,7 @@ const Settings = () => {
               labelStyle={styles.labelButton}
               onPress={() => router.push("/apikeys")}
             >
-              Add API Keys
+              API Keys
             </Button>
           </View>
           <Text style={styles.textHeader}>Theme</Text>

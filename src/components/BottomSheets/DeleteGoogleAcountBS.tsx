@@ -1,6 +1,5 @@
 import { FC, useState } from "react";
-import { View, StyleSheet, ScrollView, Platform } from "react-native";
-import { useForm, FormProvider } from "react-hook-form";
+import { View, Text, StyleSheet, ScrollView, Platform } from "react-native";
 import useStore from "../../store/store";
 import { useRouter } from "expo-router";
 import { Button } from "react-native-paper";
@@ -8,7 +7,6 @@ import { ITheme } from "../../constants/interfaces";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import fontSizes from "../../constants/fontSizes";
 import BottomSheetTopBar from "../BottomSheetTopBar/BottomSheetTopBar";
-import PasswordInput from "../TextInputs/PasswordInput";
 import deleteUserAccount from "../../API/FirebaseAPI/deleteAccount";
 import { getFirebaseApiErrorMessage } from "../../functions/errorApiMessages";
 
@@ -16,11 +14,9 @@ type DeleteAccountBSType = {
   hideBottomSheet: () => void;
 };
 
-type FormValues = {
-  currentPassword: string;
-};
-
-const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
+const DeleteGoogleAccountBS: FC<DeleteAccountBSType> = ({
+  hideBottomSheet,
+}) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const {
@@ -31,18 +27,15 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
     setUserDogApiKey,
   } = useStore();
   const [isLoading, setIsLoading] = useState(false);
-  const { ...methods } = useForm<FormValues>({
-    mode: "onChange",
-  });
 
-  async function onSubmit(data: FormValues) {
+  async function deleteAccount() {
     setIsLoading(true);
 
     try {
-      await deleteUserAccount(data.currentPassword);
+      await deleteUserAccount();
+      setIsSignedIn(false);
       setUserCatApiKey("");
       setUserDogApiKey("");
-      setIsSignedIn(false);
       router.replace("/(auth)/login");
       setTimeout(() => showSuccessToast("Your account has been deleted"), 1000);
     } catch (error: any) {
@@ -56,46 +49,38 @@ const DeleteAccountBS: FC<DeleteAccountBSType> = ({ hideBottomSheet }) => {
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <BottomSheetTopBar title={"Delete Account"} />
-      <FormProvider {...methods}>
-        <View style={styles.inputContainer}>
-          <PasswordInput
-            name="currentPassword"
-            placeholder="Current password"
-            checkFormat={false}
-          />
-        </View>
-        <View
-          style={{
-            ...styles.buttonsContainer,
-            paddingBottom: Platform.OS === "ios" ? 0 : 30,
-          }}
+      <View style={styles.gap} />
+      <Text style={styles.text}>
+        This is a deletion of a Paws&Love app account, not a Google account.
+      </Text>
+      <View style={styles.gap} />
+      <View
+        style={{
+          ...styles.buttonsContainer,
+          paddingBottom: Platform.OS === "ios" ? 0 : 30,
+        }}
+      >
+        <Button
+          mode={"contained"}
+          loading={isLoading}
+          style={styles.enabledButton}
+          labelStyle={styles.labelButton}
+          disabled={isLoading}
+          onPress={deleteAccount}
         >
-          <Button
-            mode={"contained"}
-            loading={isLoading}
-            style={
-              methods.formState.isValid
-                ? styles.enabledButton
-                : styles.disabledButton
-            }
-            labelStyle={styles.labelButton}
-            disabled={!methods.formState.isValid || isLoading}
-            onPress={methods.handleSubmit(onSubmit)}
-          >
-            Delete
-          </Button>
-          <View style={styles.gap} />
-          <Button
-            mode={"contained"}
-            style={styles.enabledButton}
-            labelStyle={styles.labelButton}
-            onPress={hideBottomSheet}
-            disabled={isLoading}
-          >
-            Cancel
-          </Button>
-        </View>
-      </FormProvider>
+          Delete
+        </Button>
+        <View style={styles.gap} />
+        <Button
+          mode={"contained"}
+          style={styles.enabledButton}
+          labelStyle={styles.labelButton}
+          onPress={hideBottomSheet}
+          disabled={isLoading}
+        >
+          Cancel
+        </Button>
+      </View>
     </ScrollView>
   );
 };
@@ -111,11 +96,8 @@ export const createStyles = (theme: ITheme) =>
       color: theme.colors.mainText,
       fontSize: fontSizes.FONT16,
       fontFamily: "ShantellRegular",
-    },
-    inputContainer: {
-      height: 74,
-      marginTop: 10,
       paddingHorizontal: 16,
+      textAlign: "center",
     },
     buttonsContainer: {
       paddingHorizontal: 16,
@@ -145,4 +127,4 @@ export const createStyles = (theme: ITheme) =>
     },
   });
 
-export default DeleteAccountBS;
+export default DeleteGoogleAccountBS;

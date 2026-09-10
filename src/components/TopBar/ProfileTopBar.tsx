@@ -54,7 +54,7 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
           onPress={() => {
             if (onFavouriteIconPress) onFavouriteIconPress();
           }}
-          size={32}
+          size={22}
           color={styles.iconColor.color}
           isShadow={false}
         />
@@ -65,7 +65,7 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
         <TouchableOpacity onPress={onDeleteIconPress}>
           <FontAwesome
             name="trash-o"
-            size={32}
+            size={22}
             color={styles.iconColor.color}
           />
         </TouchableOpacity>
@@ -120,28 +120,28 @@ const ProfileTopBar: FC<ProfileTopBarProps> = ({
   };
 
   const onBack = () => {
-    if(onBackIconPress) onBackIconPress();
+    if (onBackIconPress) onBackIconPress();
     else router.back();
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.icon} onPress={onBack}>
-        <Feather name="arrow-left" size={32} color={styles.iconColor.color} />
+      <TouchableOpacity style={styles.backIcon} onPress={onBack}>
+        <Feather name="arrow-left" size={26} color={styles.iconColor.color} />
       </TouchableOpacity>
       <View style={styles.shareIconsContainer}>
         <View style={styles.icon}>
           {isRequestInProcess ? (
-            <ActivityIndicator size={32} color={styles.iconColor.color} />
+            <ActivityIndicator size={22} color={styles.iconColor.color} />
           ) : (
             treshOrFavouriteIcon()
           )}
         </View>
         <TouchableOpacity style={styles.icon} onPress={shareImage}>
-          <Feather name="share-2" size={32} color={styles.iconColor.color} />
+          <Feather name="share-2" size={22} color={styles.iconColor.color} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon} onPress={downloadImage}>
-          <Feather name="download" size={32} color={styles.iconColor.color} />
+          <Feather name="download" size={22} color={styles.iconColor.color} />
         </TouchableOpacity>
       </View>
       {downloadProgress > 0 && downloadProgress < 1 && (
@@ -160,12 +160,36 @@ export const createStyles = (theme: ITheme) =>
       height: 50,
       backgroundColor: theme.colors.statusBarTransluscent,
       flexDirection: "row",
+      alignItems: 'center',
       justifyContent: "space-between",
+      paddingHorizontal: 6,
     },
     icon: {
-      width: 50,
+      marginHorizontal: 5,
+      backgroundColor: theme.colors.secondaryTransluscent,
+      width: 40,
+      height: 40,
       alignItems: "center",
       justifyContent: "center",
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 14,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      marginLeft: 10,
+      borderWidth: 1,
+      borderColor: theme.colors.disabled,
+    },
+    backIcon: {
+      marginHorizontal: 5,
+      backgroundColor: theme.colors.secondaryTransluscent,
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 20,
+      marginRight: 10,
+      borderWidth: 1,
+      borderColor: theme.colors.disabled,
     },
     shareIconsContainer: {
       flexDirection: "row",

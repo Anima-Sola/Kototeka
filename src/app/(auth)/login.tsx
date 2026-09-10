@@ -176,9 +176,12 @@ const Login = () => {
               <PasswordInput name="password" checkFormat={false} />
             </View>
           </FormProvider>
-          <Link style={styles.restorePasswordLink} href="/restorePassword">
-            Forgot Password?
-          </Link>
+          <TouchableOpacity
+            onPress={() => router.push("/restorePassword")}
+            disabled={isEmailLogging || isGoogleLogging}
+          >
+            <Text style={styles.restorePasswordLink}>Forgot Password?</Text>
+          </TouchableOpacity>
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -186,6 +189,7 @@ const Login = () => {
               setIsOnBoarding(true);
               router.replace("/onboarding0");
             }}
+            disabled={isEmailLogging || isGoogleLogging}
           >
             <Text style={styles.backToIntroLink}>Back to intro</Text>
           </TouchableOpacity>

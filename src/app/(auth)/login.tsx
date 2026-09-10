@@ -10,7 +10,7 @@ import {
 import { useRouter, Link } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { LinearGradient } from "expo-linear-gradient";
 import { auth } from "../../../firebaseConfig";
@@ -31,6 +31,7 @@ import getDogsBreedsAPI from "../../API/getDogsBreeds";
 import getUserApiKeys from "../../API/FirebaseAPI/getUserApiKeys";
 import GoogleIcon from "../../../assets/Icons/GoogleIcon";
 import { signInWithGoogle } from "../../API/FirebaseAPI/signInWithGoogle";
+import { DEFAULT_LIMIT_PHOTOS } from "../../constants/common";
 
 type FormValues = {
   email: string;
@@ -55,47 +56,56 @@ const Login = () => {
     setCatBreeds,
     setDogBreeds,
     setProvider,
+    setFilterRequestSettings,
   } = useStore();
-  const [isLogging, setIsLogging] = useState(false);
-  const [isSingInButtonDisabled, setIsSignInButtonDisabled] = useState(false);
+  const [isEmailLogging, setIsEmailLogging] = useState(false);
   const [isGoogleLogging, setIsGoogleLogging] = useState(false);
-  const [isGoogleButtonDisabled, setIsGoogleButtonDisabled] = useState(false);
   const { ...methods } = useForm<FormValues>({
     mode: "onChange",
   });
 
+  const setNewLoggedUserData = async (user: User) => {
+    setApi("cats");
+    const userApiKeys = await getUserApiKeys(user.uid);
+    setUserCatApiKey(userApiKeys.catApiKey || "");
+    setUserDogApiKey(userApiKeys.dogApiKey || "");
+    setFilterRequestSettings({
+      limit: DEFAULT_LIMIT_PHOTOS,
+      has_breeds: false,
+      breed_ids: "",
+      mode: "allPhotos",
+    });
+    await fetchUserData(user.uid);
+
+    if (user.displayName) setUserName(user.displayName);
+    setUserId(user.uid);
+    setMode("system");
+  };
+
+  const loadBreeds = async () => {
+    const catBreeds = await getCatsBreedsAPI();
+    const dogBreeds = await getDogsBreedsAPI();
+    setCatBreeds(catBreeds);
+    setDogBreeds(dogBreeds);
+  };
+
   const loginWithGoogle = async () => {
     setIsGoogleLogging(true);
-    setIsSignInButtonDisabled(true);
 
     try {
       const user = await signInWithGoogle();
 
-      if (userId !== user.uid) {
-        setApi("cats");
-        const userApiKeys = await getUserApiKeys(user.uid);
-        setUserCatApiKey(userApiKeys.catApiKey || "");
-        setUserDogApiKey(userApiKeys.dogApiKey || "");
-        await fetchUserData(user.uid);
-
-        if (user.displayName) setUserName(user.displayName);
-        setUserId(user.uid);
-        setMode("system");
-      }
-      const catBreeds = await getCatsBreedsAPI();
-      const dogBreeds = await getDogsBreedsAPI();
-      setCatBreeds(catBreeds);
-      setDogBreeds(dogBreeds);
-
+      if (userId !== user.uid) await setNewLoggedUserData(user);
+      await loadBreeds();
       setProvider("GoogleAccount");
       setIsSignedIn(true);
+
       router.replace("/(main)");
     } catch (error: any) {
       error.code = "auth/Google Sign In failed";
       showErrorToast(getFirebaseApiErrorMessage(error));
     } finally {
       setIsGoogleLogging(false);
-      setIsSignInButtonDisabled(false);
     }
   };
 
@@ -103,8 +113,7 @@ const Login = () => {
     const email = data.email.trim();
     const password = data.password.trim();
 
-    setIsLogging(true);
-    setIsGoogleButtonDisabled(true);
+    setIsEmailLogging(true);
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -113,23 +122,9 @@ const Login = () => {
         password,
       );
 
-      if (userId !== userCredential.user.uid) {
-        setApi("cats");
-        const userApiKeys = await getUserApiKeys(userCredential.user.uid);
-        setUserCatApiKey(userApiKeys.catApiKey || "");
-        setUserDogApiKey(userApiKeys.dogApiKey || "");
-        await fetchUserData(userCredential.user.uid);
-
-        if (userCredential.user.displayName)
-          setUserName(userCredential.user.displayName);
-        setUserId(userCredential.user.uid);
-        setMode("system");
-      }
-      const catBreeds = await getCatsBreedsAPI();
-      const dogBreeds = await getDogsBreedsAPI();
-      setCatBreeds(catBreeds);
-      setDogBreeds(dogBreeds);
-
+      if (userId !== userCredential.user.uid)
+        await setNewLoggedUserData(userCredential.user);
+      await loadBreeds();
       setProvider("EmailPassword");
       setIsSignedIn(true);
 
@@ -142,8 +137,7 @@ const Login = () => {
         logout();
       }
     } finally {
-      setIsLogging(false);
-      setIsGoogleButtonDisabled(false);
+      setIsEmailLogging(false);
     }
   }
 
@@ -197,15 +191,15 @@ const Login = () => {
           </TouchableOpacity>
           <Button
             mode={"contained"}
-            loading={isLogging}
+            loading={isEmailLogging}
             style={
-              methods.formState.isValid && !isSingInButtonDisabled
+              methods.formState.isValid && !isGoogleLogging
                 ? styles.signInButton
                 : styles.disabledSignInButton
             }
             labelStyle={styles.singInLabelButton}
             disabled={
-              !methods.formState.isValid || isLogging || isSingInButtonDisabled
+              !methods.formState.isValid || isEmailLogging || isGoogleLogging
             }
             onPress={methods.handleSubmit(onSubmit)}
           >
@@ -216,12 +210,12 @@ const Login = () => {
             mode={"contained"}
             loading={isGoogleLogging}
             style={
-              !isGoogleButtonDisabled
+              !isEmailLogging
                 ? styles.signInButton
                 : styles.disabledSignInButton
             }
             labelStyle={styles.singInLabelButton}
-            disabled={isGoogleLogging || isGoogleButtonDisabled}
+            disabled={isEmailLogging}
             onPress={loginWithGoogle}
           >
             <View style={styles.googleButtonContent}>
@@ -234,10 +228,18 @@ const Login = () => {
           <View style={styles.gap} />
           <Button
             mode={"outlined"}
-            style={styles.singUpButton}
-            labelStyle={styles.singUpLabelButton}
+            style={
+              !isEmailLogging && !isGoogleLogging
+                ? styles.signUpButton
+                : styles.disabledSignUpButton
+            }
+            labelStyle={
+              !isEmailLogging && !isGoogleLogging
+                ? styles.singUpLabelButton
+                : styles.disabledSingUpLabelButton
+            }
             onPress={() => router.navigate("/signUp")}
-            disabled={isGoogleLogging || isLogging}
+            disabled={isEmailLogging || isGoogleLogging}
           >
             Sing Up
           </Button>
@@ -305,6 +307,9 @@ export const createStyles = (theme: ITheme) =>
       backgroundColor: theme.colors.main,
       borderColor: theme.colors.accent,
     },
+    disabledSignUpButton: {
+      borderColor: theme.colors.disabled,
+    },
     singInLabelButton: {
       color: theme.colors.secondary,
       fontSize: fontSizes.FONT18,
@@ -320,6 +325,12 @@ export const createStyles = (theme: ITheme) =>
     },
     singUpLabelButton: {
       color: theme.colors.accent,
+      fontSize: fontSizes.FONT18,
+      fontFamily: "ShantellBold",
+      lineHeight: 30,
+    },
+    disabledSingUpLabelButton: {
+      color: theme.colors.secondaryText,
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",
       lineHeight: 30,

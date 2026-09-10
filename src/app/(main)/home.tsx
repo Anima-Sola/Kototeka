@@ -51,7 +51,7 @@ const Home = () => {
 
   const fetchAddedPetsData = async () => {
     if (
-      pets.length <= filterRequestSettings.limit ||
+      pets.length < filterRequestSettings.limit ||
       pets.length >= MAX_NUMBER_OF_PHOTOS
     )
       return;

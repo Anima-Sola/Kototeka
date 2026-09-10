@@ -13,89 +13,150 @@ type TopBarType = {
   onFilterPress?: () => void;
 };
 
-const TopBar: FC<TopBarType> = ({ numOfColumns, setNumOfColumns, onFilterPress }) => {
+const TopBar: FC<TopBarType> = ({
+  numOfColumns,
+  setNumOfColumns,
+  onFilterPress,
+}) => {
   const styles = useThemedStyles(createStyles);
 
   return (
     <View style={styles.container}>
       <View style={styles.gridContainer}>
-        <View style={styles.gridIcon}>
-          <TouchableOpacity onPress={() => setNumOfColumns(1)}>
-            <FontAwesome
-              name="square"
-              size={32}
-              color={
-                numOfColumns === 1
-                  ? styles.iconColorSelected.color
-                  : styles.iconColor.color
-              }
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.gridIcon}>
-          <TouchableOpacity onPress={() => setNumOfColumns(2)}>
-            <Entypo
-              name="grid"
-              size={45}
-              color={
-                numOfColumns === 2
-                  ? styles.iconColorSelected.color
-                  : styles.iconColor.color
-              }
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.gridIcon}>
-          <TouchableOpacity onPress={() => setNumOfColumns(3)}>
-            <Fontisto
-              name="nav-icon-grid"
-              size={28}
-              color={
-                numOfColumns === 3
-                  ? styles.iconColorSelected.color
-                  : styles.iconColor.color
-              }
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => setNumOfColumns(1)}
+          style={
+            numOfColumns === 1
+              ? styles.gridIconContainerSelected
+              : styles.gridIconContainer
+          }
+        >
+          <FontAwesome
+            name="square"
+            size={18}
+            color={
+              numOfColumns === 1
+                ? styles.iconColorSelected.color
+                : styles.iconColor.color
+            }
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setNumOfColumns(2)}
+          style={
+            numOfColumns === 2
+              ? styles.gridIconContainerSelected
+              : styles.gridIconContainer
+          }
+        >
+          <Entypo
+            name="grid"
+            size={24}
+            color={
+              numOfColumns === 2
+                ? styles.iconColorSelected.color
+                : styles.iconColor.color
+            }
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setNumOfColumns(3)}
+          style={
+            numOfColumns === 3
+              ? styles.gridIconContainerSelected
+              : styles.gridIconContainer
+          }
+        >
+          <Fontisto
+            name="nav-icon-grid"
+            size={16}
+            color={
+              numOfColumns === 3
+                ? styles.iconColorSelected.color
+                : styles.iconColor.color
+            }
+          />
+        </TouchableOpacity>
       </View>
-      <View style={styles.filterContainer}>
-        {onFilterPress && (
-          <TouchableOpacity onPress={onFilterPress}>
-            <Ionicons name="options" size={40} color={styles.iconColor.color} />
-          </TouchableOpacity>
-        )}
-      </View>
+      {onFilterPress && (
+        <TouchableOpacity
+          onPress={onFilterPress}
+          style={styles.filterContainer}
+        >
+          <Ionicons
+            name="options"
+            size={24}
+            color={styles.filterIconColor.color}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
+
 export const createStyles = (theme: ITheme) =>
   StyleSheet.create({
     container: {
       height: 50,
       backgroundColor: theme.colors.statusBarTransluscent,
       flexDirection: "row",
+      alignItems: "center",
       justifyContent: "space-between",
     },
     gridContainer: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      marginLeft: 3,
+      marginLeft: 6,
     },
-    gridIcon: {
+    gridIconContainer: {
       marginHorizontal: 5,
-    },
-    filterContainer: {
+      backgroundColor: theme.colors.secondaryTransluscent,
+      width: 40,
+      height: 40,
       alignItems: "center",
       justifyContent: "center",
-      width: 50,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 20,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      marginRight: 10,
+      borderWidth: 1,
+      borderColor: theme.colors.disabled,
+    },
+    gridIconContainerSelected: {
+      marginHorizontal: 5,
+      backgroundColor: theme.colors.accent,
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+      borderTopLeftRadius: 8,
+      borderTopRightRadius: 20,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      marginRight: 10,
+    },
+    filterContainer: {
+      marginHorizontal: 5,
+      backgroundColor: theme.colors.secondaryTransluscent,
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 20,
+      marginRight: 10,
+      borderWidth: 1,
+      borderColor: theme.colors.disabled,
     },
     iconColor: {
-      color: theme.colors.accent,
+      color: theme.colors.secondaryText,
     },
     iconColorSelected: {
-      color: theme.colors.accent2,
+      color: theme.colors.main,
+    },
+    filterIconColor: {
+      color: theme.colors.accent,
     },
   });
 

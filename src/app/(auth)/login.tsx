@@ -57,6 +57,7 @@ const Login = () => {
     setDogBreeds,
     setProvider,
     setFilterRequestSettings,
+    setNumOfColumns,
   } = useStore();
   const [isEmailLogging, setIsEmailLogging] = useState(false);
   const [isGoogleLogging, setIsGoogleLogging] = useState(false);
@@ -80,6 +81,7 @@ const Login = () => {
     if (user.displayName) setUserName(user.displayName);
     setUserId(user.uid);
     setMode("system");
+    setNumOfColumns(2);
   };
 
   const loadBreeds = async () => {

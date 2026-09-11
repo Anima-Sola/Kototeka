@@ -38,9 +38,9 @@ const Upload = () => {
     userId,
     showErrorToast,
     isApiChanged,
+    numOfColumns,
   } = useStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [numColumns, setNumOfColumns] = useState(2);
   const [isCameraGallaryBtnsVisible, setIsCameraGallaryBtnsVisible] =
     useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -160,7 +160,6 @@ const Upload = () => {
   const renderItem = ({ item }: { item: PetType }) => (
     <UploadedPetCard
       pet={item}
-      numOfColumns={numColumns}
       isListRefreshing={isLoading}
     />
   );
@@ -168,7 +167,7 @@ const Upload = () => {
   if (isApiChanged) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar />
         <View style={styles.loadingContainer}>
           <PaperActivityIndicator size={"large"} />
           <Text style={styles.loadingText}>Pets are coming!</Text>
@@ -180,7 +179,7 @@ const Upload = () => {
   if (uploadedPets.length === 0) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar />
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.emptyText}>No uploaded pets</Text>
@@ -196,14 +195,14 @@ const Upload = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        key={numColumns}
+        key={numOfColumns}
         data={uploadedPets}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
         onRefresh={() => fetchUploadedPetsData()}
         refreshing={isLoading}
-        numColumns={numColumns}
+        numColumns={numOfColumns}
         maxToRenderPerBatch={20}
         ListFooterComponent={<View style={styles.footer} />}
         contentContainerStyle={styles.flatListContent}
@@ -211,7 +210,7 @@ const Upload = () => {
         progressViewOffset={30}
       />
       <View style={styles.topBarContainer}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar />
       </View>
       {addImageButtons()}
       {isUploading && <FullScreenLoadingIndicator />}

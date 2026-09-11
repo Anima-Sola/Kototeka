@@ -42,11 +42,11 @@ const Home = () => {
     setTempFilterRequestSettings,
     tempPetsType,
     setTempPetsType,
+    numOfColumns,
   } = useStore();
   const styles = useThemedStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingPetsLoading, setIsAddingPetsLoading] = useState(false);
-  const [numColumns, setNumOfColumns] = useState(2);
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
   const fetchAddedPetsData = async () => {
@@ -119,7 +119,6 @@ const Home = () => {
   const renderItem = ({ item }: { item: PetType }) => (
     <PetCard
       pet={item}
-      numOfColumns={numColumns}
       isListRefreshing={isLoading}
     />
   );
@@ -147,7 +146,7 @@ const Home = () => {
   if (isApiChanged || isFiltersChanged) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar />
         <View style={styles.loadingContainer}>
           <PaperActivityIndicator size={"large"} />
           <Text style={styles.text}>Pets are coming!</Text>
@@ -160,8 +159,6 @@ const Home = () => {
     return (
       <View style={styles.container}>
         <TopBar
-          setNumOfColumns={setNumOfColumns}
-          numOfColumns={numColumns}
           onFilterPress={() => openFilterBottomSheet()}
         />
         <View style={styles.emptyContainer}>
@@ -175,14 +172,14 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        key={numColumns}
+        key={numOfColumns}
         data={pets}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
         onRefresh={refreshPetsList}
         refreshing={isLoading}
-        numColumns={numColumns}
+        numColumns={numOfColumns}
         onEndReached={fetchAddedPetsData}
         onEndReachedThreshold={0.3}
         ListFooterComponent={footerComponent}
@@ -193,8 +190,6 @@ const Home = () => {
       />
       <View style={styles.topBarContainer}>
         <TopBar
-          setNumOfColumns={setNumOfColumns}
-          numOfColumns={numColumns}
           onFilterPress={() => {
             if (!isLoading) openFilterBottomSheet();
           }}

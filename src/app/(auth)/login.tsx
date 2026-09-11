@@ -14,7 +14,7 @@ import { signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { LinearGradient } from "expo-linear-gradient";
 import { auth } from "../../../firebaseConfig";
-import { Button } from "react-native-paper";
+import { Button, ActivityIndicator } from "react-native-paper";
 import EmailInput from "../../components/TextInputs/EmailInput";
 import PasswordInput from "../../components/TextInputs/PasswordInput";
 import fontSizes from "../../constants/fontSizes";
@@ -212,22 +212,29 @@ const Login = () => {
           <View style={styles.gap} />
           <Button
             mode={"contained"}
-            loading={isGoogleLogging}
             style={
               !isEmailLogging
                 ? styles.signInButton
                 : styles.disabledSignInButton
             }
             labelStyle={styles.singInLabelButton}
+            icon={() => (
+              <View style={styles.googleButtonIcon}>
+                {isGoogleLogging && (
+                  <View style={styles.activityIndicatorContainer}>
+                    <ActivityIndicator
+                      color={styles.singInLabelButton.color}
+                      size={18}
+                    />
+                  </View>
+                )}
+                <GoogleIcon size={30} />
+              </View>
+            )}
             disabled={isEmailLogging}
             onPress={loginWithGoogle}
           >
-            <View style={styles.googleButtonContent}>
-              <View style={styles.googleIconCoinatiner}>
-                <GoogleIcon size={30} />
-              </View>
-              <Text style={styles.singInLabelButton}>Continue with Google</Text>
-            </View>
+            Continue with Google
           </Button>
           <View style={styles.gap} />
           <Button
@@ -320,10 +327,7 @@ export const createStyles = (theme: ITheme) =>
       fontFamily: "ShantellBold",
       lineHeight: 30,
     },
-    googleIconCoinatiner: {
-      marginRight: 10,
-    },
-    googleButtonContent: {
+    googleButtonIcon: {
       flexDirection: "row",
       alignItems: "center",
     },
@@ -338,6 +342,9 @@ export const createStyles = (theme: ITheme) =>
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellBold",
       lineHeight: 30,
+    },
+    activityIndicatorContainer: {
+      marginRight: 8,
     },
     gap: {
       height: 10,

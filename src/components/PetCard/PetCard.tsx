@@ -20,11 +20,10 @@ import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 type PetCardProps = {
   pet: PetType;
-  numOfColumns: number;
   isListRefreshing: boolean;
 };
 
-const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
+const PetCard: FC<PetCardProps> = ({ pet, isListRefreshing }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const {
@@ -34,6 +33,7 @@ const PetCard: FC<PetCardProps> = ({ pet, numOfColumns, isListRefreshing }) => {
     addFavoritePetBreeds,
     userId,
     showErrorToast,
+    numOfColumns,
   } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);

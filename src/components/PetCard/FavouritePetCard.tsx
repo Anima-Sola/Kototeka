@@ -16,18 +16,13 @@ import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 type PetCardProps = {
   pet: favouritePetType;
-  numOfColumns: number;
   isListRefreshing: boolean;
 };
 
-const FavouritePetCard: FC<PetCardProps> = ({
-  pet,
-  numOfColumns,
-  isListRefreshing,
-}) => {
+const FavouritePetCard: FC<PetCardProps> = ({ pet, isListRefreshing }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { deleteFavouritePet, showErrorToast } = useStore();
+  const { deleteFavouritePet, showErrorToast, numOfColumns } = useStore();
   const [isFavouriteToggling, setIsFavouriteToggling] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);

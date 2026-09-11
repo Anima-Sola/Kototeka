@@ -74,8 +74,10 @@ export interface IUploadedPetsSlice {
 export interface ISettingsSlice {
   mode: "light" | "dark" | "system";
   resolvedTheme: "light" | "dark";
+  numOfColumns: number;
   setMode: (mode: "light" | "dark" | "system") => void;
   setResolvedTheme: (theme: "light" | "dark") => void;
+  setNumOfColumns: (value: number) => void;
 }
 
 export interface IToastSlice {

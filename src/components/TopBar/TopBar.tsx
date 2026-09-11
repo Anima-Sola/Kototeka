@@ -6,18 +6,16 @@ import Fontisto from "@expo/vector-icons/Fontisto";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useThemedStyles } from "../../hooks/useThemedStyles";
 import { ITheme } from "../../constants/interfaces";
+import useStore from "../../store/store";
 
 type TopBarType = {
-  numOfColumns: number;
-  setNumOfColumns: (value: number) => void;
   onFilterPress?: () => void;
 };
 
 const TopBar: FC<TopBarType> = ({
-  numOfColumns,
-  setNumOfColumns,
   onFilterPress,
 }) => {
+  const { numOfColumns, setNumOfColumns } = useStore();
   const styles = useThemedStyles(createStyles);
 
   return (

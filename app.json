@@ -14,7 +14,8 @@
         "NSPhotoLibraryAddUsageDescription": "Приложение сохраняет изображения в фотопленку",
         "NSPhotoLibraryUsageDescription": "Приложение получает доступ к фотопленке для сохранения изображений"
       },
-      "bundleIdentifier": "com.anonymous.Kototeka"
+      "bundleIdentifier": "com.anonymous.Kototeka",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "userInterfaceStyle": "automatic",

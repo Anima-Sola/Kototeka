@@ -23,18 +23,13 @@ import { getApiErrorMessage } from "../../functions/errorApiMessages";
 
 type PetCardProps = {
   pet: PetType;
-  numOfColumns: number;
   isListRefreshing: boolean;
 };
 
-const UploadedPetCard: FC<PetCardProps> = ({
-  pet,
-  numOfColumns,
-  isListRefreshing,
-}) => {
+const UploadedPetCard: FC<PetCardProps> = ({ pet, isListRefreshing }) => {
   const styles = useThemedStyles(createStyles);
   const router = useRouter();
-  const { deleteUploadedPet, showErrorToast } = useStore();
+  const { deleteUploadedPet, showErrorToast, numOfColumns } = useStore();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoadingError, setIsImageLoadingError] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

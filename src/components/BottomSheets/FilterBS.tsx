@@ -184,7 +184,7 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
           value={filterRequestSettings.mode}
         >
           <View style={styles.radioButtonContainer}>
-            <RadioButton value="allPhotos" />
+            <RadioButton.Android value="allPhotos" />
             <TouchableOpacity
               onPress={() => onRadioButtonsValueChange("allPhotos")}
             >
@@ -192,7 +192,7 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.radioButtonContainer}>
-            <RadioButton value="randomPhotos" />
+            <RadioButton.Android value="randomPhotos" />
             <TouchableOpacity
               onPress={() => onRadioButtonsValueChange("randomPhotos")}
             >
@@ -200,7 +200,7 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.radioButtonContainer}>
-            <RadioButton value="selectedPhotos" />
+            <RadioButton.Android value="selectedPhotos" />
             <TouchableOpacity
               onPress={() => onRadioButtonsValueChange("selectedPhotos")}
             >

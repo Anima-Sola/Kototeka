@@ -11,6 +11,8 @@ export function configureGoogleSignIn() {
   GoogleOneTapSignIn.configure({
     webClientId:
       "14279691744-2c83dpbbdm7ecshtb78c351to7lvpr25.apps.googleusercontent.com",
+
+    iosClientId: "14279691744-q99b7tmmaedl50md37vk7osqa84v18pq.apps.googleusercontent.com",
   });
 }
 

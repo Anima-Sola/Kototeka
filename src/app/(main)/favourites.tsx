@@ -22,9 +22,9 @@ const Favourites = () => {
     userId,
     isApiChanged,
     showErrorToast,
+    numOfColumns,
   } = useStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [numColumns, setNumOfColumns] = useState(2);
 
   const fetchFavouritePetsData = async () => {
     setIsLoading(true);
@@ -48,7 +48,6 @@ const Favourites = () => {
   const renderItem = ({ item }: { item: favouritePetType }) => (
     <FavouritePetCard
       pet={item}
-      numOfColumns={numColumns}
       isListRefreshing={isLoading}
     />
   );
@@ -56,7 +55,7 @@ const Favourites = () => {
   if (isApiChanged) {
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar />
         <View style={styles.loadingContainer}>
           <PaperActivityIndicator size={"large"} />
           <Text style={styles.text}>Pets are coming!</Text>
@@ -68,7 +67,7 @@ const Favourites = () => {
   if (!favouritePets || favouritePets.length === 0)
     return (
       <View style={styles.container}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar />
         <View style={styles.emptyContainer}>
           <Ionicons name="paw-sharp" size={50} color={styles.iconColor.color} />
           <Text style={styles.text}>No favourite pets</Text>
@@ -80,14 +79,14 @@ const Favourites = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        key={numColumns}
+        key={numOfColumns}
         data={favouritePets}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
         onRefresh={fetchFavouritePetsData}
         refreshing={isLoading}
-        numColumns={numColumns}
+        numColumns={numOfColumns}
         maxToRenderPerBatch={20}
         ListFooterComponent={<View style={styles.footer} />}
         contentContainerStyle={styles.flatListContent}
@@ -95,7 +94,7 @@ const Favourites = () => {
         progressViewOffset={30}
       />
       <View style={styles.topBarContainer}>
-        <TopBar setNumOfColumns={setNumOfColumns} numOfColumns={numColumns} />
+        <TopBar />
       </View>
     </View>
   );

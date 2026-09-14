@@ -104,19 +104,23 @@ export interface IApiSlice {
 export interface ICatBreedsSlice {
   catBreeds: Record<string, BreedType>;
   selectedCatBreeds: Record<string, boolean>;
+  catBreedFilterStr: string;
   setCatBreeds: (breeds: BreedTypeFromBack[]) => void;
   toggleCatBreed: (id: string) => void;
   clearSelectedCatBreeds: () => void;
   selectAllCatBreeds: () => void;
+  setCatBreedFilterStr: (value: string) => void;
 }
 
 export interface IDogBreedsSlice {
   dogBreeds: Record<string, BreedType>;
   selectedDogBreeds: Record<string, boolean>;
+  dogBreedFilterStr: string;
   setDogBreeds: (breeds: BreedTypeFromBack[]) => void;
   toggleDogBreed: (id: string) => void;
   clearSelectedDogBreeds: () => void;
   selectAllDogBreeds: () => void;
+  setDogBreedFilterStr: (value: string) => void;
 }
 
 export interface ITheme {

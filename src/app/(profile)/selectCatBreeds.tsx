@@ -8,6 +8,7 @@ import {
   ListRenderItemInfo,
   TextInput,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -49,9 +50,11 @@ const SelectCatBreeds = () => {
     tempFilterRequestSettings,
     tempPetsType,
     setApi,
+    catBreedFilterStr,
+    setCatBreedFilterStr,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
-  const [filterText, setFilterText] = useState("");
+  const [filterText, setFilterText] = useState(catBreedFilterStr);
 
   const onFilterBottomSheetClose = () => {
     setFilterRequestSettings(tempFilterRequestSettings);
@@ -79,7 +82,7 @@ const SelectCatBreeds = () => {
       mode: "selectedPhotos",
       breed_ids: getBreedIdsStr(selectedCatBreeds),
     });
-    router.back();
+    (setCatBreedFilterStr(filterText), router.back());
     openFilterBottomSheet();
   };
 
@@ -129,12 +132,22 @@ const SelectCatBreeds = () => {
             autoCapitalize="none"
             autoCorrect={false}
           />
-          <View pointerEvents="none" style={styles.searchIconContainer}>
-            <MaterialIcons
-              name="search"
-              size={28}
-              color={styles.iconColor.color}
-            />
+          <View style={styles.searchIconContainer}>
+            {filterText.length !== 0 ? (
+              <TouchableOpacity onPress={() => setFilterText("")}>
+                <MaterialIcons
+                  name="close"
+                  size={28}
+                  color={styles.iconColor.color}
+                />
+              </TouchableOpacity>
+            ) : (
+              <MaterialIcons
+                name="search"
+                size={28}
+                color={styles.iconColor.color}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -238,7 +251,6 @@ export const createStyles = (theme: ITheme) =>
     placeholderColor: {
       color: theme.colors.placeholder,
     },
-
     text: {
       fontSize: fontSizes.FONT18,
       fontFamily: "ShantellRegular",

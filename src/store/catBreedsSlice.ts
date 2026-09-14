@@ -8,6 +8,7 @@ export const createCatBreedsSlice = (
 ): ICatBreedsSlice => ({
   catBreeds: {},
   selectedCatBreeds: {},
+  catBreedFilterStr: "",
   setCatBreeds: (breeds: BreedTypeFromBack[]) => {
     const breedsObject: Record<string, BreedType> = {};
 
@@ -30,11 +31,7 @@ export const createCatBreedsSlice = (
       },
     }));
   },
-  clearSelectedCatBreeds: () => {
-    set({
-      selectedCatBreeds: {},
-    });
-  },
+  clearSelectedCatBreeds: () => set({ selectedCatBreeds: {} }),
   selectAllCatBreeds: () => {
     set((state: ICatBreedsSlice) => {
       const selectedCatBreeds: Record<string, boolean> = {};
@@ -48,4 +45,5 @@ export const createCatBreedsSlice = (
       };
     });
   },
+  setCatBreedFilterStr: (value) => set({ catBreedFilterStr: value }),
 });

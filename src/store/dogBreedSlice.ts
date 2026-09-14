@@ -8,6 +8,7 @@ export const createDogBreedsSlice = (
 ): IDogBreedsSlice => ({
   dogBreeds: {},
   selectedDogBreeds: {},
+  dogBreedFilterStr: "",
   setDogBreeds: (breeds: BreedTypeFromBack[]) => {
     const breedsObject: Record<string, BreedType> = {};
 
@@ -48,4 +49,5 @@ export const createDogBreedsSlice = (
       };
     });
   },
+  setDogBreedFilterStr: (value) => set({ dogBreedFilterStr: value }),
 });

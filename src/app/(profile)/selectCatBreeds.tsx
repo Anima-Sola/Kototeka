@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -9,8 +9,9 @@ import {
   TextInput,
   Pressable,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Button } from "react-native-paper";
@@ -54,7 +55,6 @@ const SelectCatBreeds = () => {
     setCatBreedFilterStr,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
-  const [filterText, setFilterText] = useState(catBreedFilterStr);
 
   const onFilterBottomSheetClose = () => {
     setFilterRequestSettings(tempFilterRequestSettings);
@@ -82,9 +82,23 @@ const SelectCatBreeds = () => {
       mode: "selectedPhotos",
       breed_ids: getBreedIdsStr(selectedCatBreeds),
     });
-    (setCatBreedFilterStr(filterText), router.back());
+    router.back();
     openFilterBottomSheet();
   };
+
+  useFocusEffect(
+      useCallback(() => {
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          () => {
+            onGoBack();
+            return true;
+          },
+        );
+  
+        return () => backHandler.remove();
+      }, [onGoBack]),
+    );
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
@@ -125,16 +139,16 @@ const SelectCatBreeds = () => {
             style={styles.input}
             placeholder={"Find breeds"}
             placeholderTextColor={styles.placeholderColor.color}
-            value={filterText}
+            value={catBreedFilterStr}
             defaultValue={""}
-            onChangeText={(newText) => setFilterText(newText)}
+            onChangeText={(newText) => setCatBreedFilterStr(newText)}
             keyboardType="default"
             autoCapitalize="none"
             autoCorrect={false}
           />
           <View style={styles.searchIconContainer}>
-            {filterText.length !== 0 ? (
-              <TouchableOpacity onPress={() => setFilterText("")}>
+            {catBreedFilterStr.length !== 0 ? (
+              <TouchableOpacity onPress={() => setCatBreedFilterStr("")}>
                 <MaterialIcons
                   name="close"
                   size={28}
@@ -152,7 +166,7 @@ const SelectCatBreeds = () => {
         </View>
       </View>
       <FlatList
-        data={filterBreeds(catBreeds, filterText)}
+        data={filterBreeds(catBreeds, catBreedFilterStr)}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(id: string) => id}

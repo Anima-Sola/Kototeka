@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -9,8 +9,9 @@ import {
   TextInput,
   Pressable,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Button } from "react-native-paper";
@@ -54,7 +55,6 @@ const SelectDogBreeds = () => {
     setDogBreedFilterStr,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
-  const [filterText, setFilterText] = useState(dogBreedFilterStr);
 
   const onFilterBottomSheetClose = () => {
     setFilterRequestSettings(tempFilterRequestSettings);
@@ -75,17 +75,30 @@ const SelectDogBreeds = () => {
   const footerComponent = () => {
     return <View style={styles.footer} />;
   };
-
+  
   const onGoBack = () => {
     setFilterRequestSettings({
       ...filterRequestSettings,
       mode: "selectedPhotos",
       breed_ids: getBreedIdsStr(selectedDogBreeds),
     });
-    setDogBreedFilterStr(filterText);
     router.back();
     openFilterBottomSheet();
-  };
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          onGoBack();
+          return true;
+        },
+      );
+
+      return () => backHandler.remove();
+    }, [onGoBack]),
+  );
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
@@ -126,16 +139,16 @@ const SelectDogBreeds = () => {
             style={styles.input}
             placeholder={"Find breeds"}
             placeholderTextColor={styles.placeholderColor.color}
-            value={filterText}
+            value={dogBreedFilterStr}
             defaultValue={""}
-            onChangeText={(newText) => setFilterText(newText)}
+            onChangeText={(newText) => setDogBreedFilterStr(newText)}
             keyboardType="default"
             autoCapitalize="none"
             autoCorrect={false}
           />
           <View style={styles.searchIconContainer}>
-            {filterText.length !== 0 ? (
-              <TouchableOpacity onPress={() => setFilterText("")}>
+            {dogBreedFilterStr.length !== 0 ? (
+              <TouchableOpacity onPress={() => setDogBreedFilterStr("")}>
                 <MaterialIcons
                   name="close"
                   size={28}
@@ -153,7 +166,7 @@ const SelectDogBreeds = () => {
         </View>
       </View>
       <FlatList
-        data={filterBreeds(dogBreeds, filterText)}
+        data={filterBreeds(dogBreeds, dogBreedFilterStr)}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(id: string) => id}

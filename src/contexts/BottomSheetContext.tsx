@@ -13,6 +13,7 @@ import {
   Dimensions,
   StyleSheet,
   Platform,
+  BackHandler,
   PanResponder,
   Keyboard,
 } from "react-native";
@@ -105,6 +106,20 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
       if (executeOnClose) onClose?.();
     });
   };
+
+  useEffect(() => {
+    if (Platform.OS !== "android" || !visible) return;
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        hideBottomSheet();
+        return true;
+      },
+    );
+
+    return () => backHandler.remove();
+  }, [visible]);
 
   const handleContentLayout = (event: any) => {
     const { height } = event.nativeEvent.layout;

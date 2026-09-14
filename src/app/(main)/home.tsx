@@ -38,9 +38,7 @@ const Home = () => {
     showErrorToast,
     petsType,
     setApi,
-    tempFilterRequestSettings,
     setTempFilterRequestSettings,
-    tempPetsType,
     setTempPetsType,
     numOfColumns,
   } = useStore();
@@ -100,18 +98,19 @@ const Home = () => {
     if (isApiChanged || isFiltersChanged) updatePets();
   }, [isApiChanged, isFiltersChanged]);
 
-  const onFilterBottomSheetClose = () => {
-    setFilterRequestSettings(tempFilterRequestSettings);
-    setApi(tempPetsType);
-  };
-
   const openFilterBottomSheet = () => {
-    setTempFilterRequestSettings(filterRequestSettings);
-    setTempPetsType(petsType);
+    const initialPetsType = petsType;
+    const initialFilterRequestSettings = filterRequestSettings;
+
+    setTempFilterRequestSettings(initialFilterRequestSettings);
+    setTempPetsType(initialPetsType);
 
     return showBottomSheet(
       <FilterBS hideBottomSheet={hideBottomSheet} />,
-      onFilterBottomSheetClose,
+      () => {
+        setFilterRequestSettings(initialFilterRequestSettings);
+        setApi(initialPetsType);
+      },
     );
   };
 

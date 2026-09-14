@@ -79,10 +79,16 @@ const FilterBS: FC<ChangeNameBSType> = ({ hideBottomSheet }) => {
   const changePets = (value: "cats" | "dogs") => {
     if (value === petsType) return;
     setApi(value);
+
+    const breedIdsStr =
+      value === "cats"
+        ? getBreedIdsStr(selectedCatBreeds)
+        : getBreedIdsStr(selectedDogBreeds);
+
     if (filterRequestSettings.mode === "selectedPhotos") {
       setFilterRequestSettings({
         ...filterRequestSettings,
-        breed_ids: getBreedIdsStr(selectedCatBreeds),
+        breed_ids: breedIdsStr,
       });
     }
   };

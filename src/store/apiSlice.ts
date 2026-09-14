@@ -39,5 +39,4 @@ export const createApiSlice = (set: any, get: any, api: any): IApiSlice => ({
       tempPetsType: value,
     });
   }
-
 });

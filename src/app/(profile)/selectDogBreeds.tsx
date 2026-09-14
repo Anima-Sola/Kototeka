@@ -48,23 +48,24 @@ const SelectDogBreeds = () => {
     filterRequestSettings,
     setFilterRequestSettings,
     selectedDogBreeds,
-    tempPetsType,
     tempFilterRequestSettings,
+    tempPetsType,
     setApi,
     dogBreedFilterStr,
     setDogBreedFilterStr,
   } = useStore();
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
-  const onFilterBottomSheetClose = () => {
-    setFilterRequestSettings(tempFilterRequestSettings);
-    setApi(tempPetsType);
-  };
-
   const openFilterBottomSheet = () => {
+    const initialPetsType = tempPetsType;
+    const initialFilterRequestSettings = tempFilterRequestSettings;
+
     showBottomSheet(
       <FilterBS hideBottomSheet={hideBottomSheet} />,
-      onFilterBottomSheetClose,
+      () => {
+        setFilterRequestSettings(initialFilterRequestSettings);
+        setApi(initialPetsType);
+      },
     );
   };
 
